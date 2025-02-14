@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <link href="assets/bootstrap.min.css" rel="stylesheet">
+    <style>
+        nav {
+            margin: 0px;
+        }
+        #response-container {
+            display: none;
+            padding: 1rem;
+            margin: 3rem 5%;
+            font-size: 120%;
+            border: 5px dashed #ccc;
+            word-wrap: break-word;
+        }
+        label {
+            margin-left: 0.3rem;
+            margin-right: 0.3rem;
+        }
+        button {
+            font-size: 100%;
+            padding: 0.5rem;
+            margin: 0.3rem;
+            text-transform: uppercase;
+        }
+        .nav-link {
+            color:white!important;
+        }
+        tr, td {
+            border: 1px solid black;
+        }
+
+
+        /* Define widths for the table columns */
+        #data-table td:nth-child(1) {
+            width: 20%;
+        }
+
+        #data-table td:nth-child(2),
+        #data-table td:nth-child(3) {
+            width: 40%;
+        }
+
+.droptarget {
+  height: 200px;
+  padding: 5px;
+  border: 1px solid black;
+}
+
+    </style>
+</head>
+<body style="padding: 5px;">
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top text-white" id="navBar" style="background: #50B498;"> 
+    </nav>
+    <br>
+    <br>
+    <br>
+    <br>
+
+
+    <div class="row mt-1 bg-light" style="height: 500px;">
+        
+    </div>
+
+
+<script>
+
+        function showNavbar() {
+            pywebview.api.navbar().then(getNavbar);
+        }
+
+        function getNavbar(response) {
+            const a = document.getElementById('navBar');
+            a.innerHTML = response.message;
+        }
+        window.addEventListener('pywebviewready', function() {
+            showNavbar();
+        });
+
+</script>
+    <script src="assets/bootstrap.min.js"></script>
+    <script src="assets/sweetalert.js"></script>
+</body>
+</html>

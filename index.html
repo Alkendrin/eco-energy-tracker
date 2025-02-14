@@ -1,0 +1,1388 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+    <link href="assets/bootstrap.min.css" rel="stylesheet">
+    <style>
+
+      #loading-screen {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #ffffff;
+    }
+
+        hr {
+            width: 300px;
+            height: 2px;
+            margin: auto;
+            margin-bottom: 5px;
+        }
+        .room-title {
+            padding-bottom: 20px;
+            border-bottom: 3px solid black;
+            width: 200px;
+            margin-bottom: 30px!important;
+            margin:auto;
+        }
+        nav {
+            margin: 0px;
+        }
+
+        #response-container {
+            display: none;
+            padding: 1rem;
+            margin: 3rem 5%;
+            font-size: 120%;
+            border: 5px dashed #ccc;
+            word-wrap: break-word;
+        }
+
+        label {
+            margin-left: 0.3rem;
+            margin-right: 0.3rem;
+        }
+
+        button {
+            font-size: 100%;
+            padding: 0.5rem;
+            margin: 0.3rem;
+           
+        }
+
+        .nav-link {
+            color: white !important;
+        }
+
+        tr,
+        td {
+            border: 1px solid black;
+        }
+
+
+        /* Define widths for the table columns */
+        #data-table td:nth-child(1) {
+            width: 20%;
+        }
+
+        #data-table td:nth-child(2),
+        #data-table td:nth-child(3) {
+            width: 40%;
+        }
+
+        .droptarget {
+            overflow-y: auto!important;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+            min-height: 35px;
+            max-height: 35px; /* Set a max-height to allow scrolling */
+            padding: 5px;
+/*            border: 1px solid black;*/
+            margin-bottom: 15px;
+            position: relative;
+        }
+        .sleeping-door {
+            position: absolute;
+            width:50px; 
+            height:10px;
+            background:gray;
+            z-index:100;
+        }
+        .standing-door {
+            position: absolute;
+            width:10px; 
+            height:50px;
+            background:gray;
+            z-index:100;
+        }
+
+        .red-door-color {
+            background:red!important;
+        }
+
+        .orange-door-color {
+            background:orange!important;
+        }
+
+        .yellow-door-color {
+            background:yellow!important;
+        }
+
+        .green-door-color {
+            background:green!important;
+        }
+
+        .blue-door-color {
+            background:skyblue!important;
+        }
+
+        .violet-door-color {
+            background:violet!important;
+        }
+
+
+        .droptargets {
+            min-height: 35px;
+            max-height: 35px; /* Set a max-height to allow scrolling */
+            padding: 5px;
+/*            border: 1px solid black;*/
+        }
+
+        #droptarget {
+            height: 50px;
+            padding: 5px;
+            border: none !important;
+
+        }
+
+            .room {
+     border: 2px solid black;
+     text-align: center;
+     background: blanchedalmond;
+     position: relative;
+     margin: auto;
+    }
+    .door {
+     border: 2px dashed black;
+     margin-top: 5px;
+    }
+    .toggleInput {
+        width: 90px;
+    }
+
+    .room-title {
+        text-align: center!important;
+    }
+
+
+/*    .result-container {
+            margin: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .result-item {
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .result-item h4 {
+            margin: 0;
+            font-size: 16px;
+            color: #333;
+        }
+        .result-item p {
+            margin: 0;
+            font-size: 14px;
+            color: #666;
+        }*/
+
+        .bg-light {
+            background: #eaeaea!important;
+        }
+    </style>
+</head>
+
+<body style="padding: 5px;">
+   <div id="loading-screen">
+    <img src="loading.png" alt="Loading" />
+  </div>
+
+<main id="body">
+
+<div class="row" style="height: 100vh!important;">
+    <div class="col-md-2">
+        <div class="row">
+            <div class="col-md-12 p-2" style="height:70vh">
+                <div class="bg-light pt-2" style="height: 100%;width: 100%;">
+                    <h5  style="text-align: center;">Eco Energy Tracker</h5>
+                    <div id="navBar"></div>
+
+                    <div class="row mt-3" style="width:auto;margin:auto">
+
+                    <div class="col-12"> </div>
+                    <div class="col-12">
+        <!--             <button type="button" style="width: 100%;background:#CE3A00; border:none;"  class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#receiptModal">
+                      View Receipt
+                    </button>  -->
+                    </div>
+                        <div class="col-12"> Input Hours: 
+<!--                             <select name="" id="speed" class="form-control"> 
+                                <option value="5000">5 seconds as 1 hour</option> 
+                                <option value="10000">10 seconds as 1 hour</option>
+                                <option value="15000">15 seconds as 1 hour</option>
+                            </select>  -->
+<!--                             <select name="" id="speed" class="form-control"> 
+                                <option value="5000">30 Days</option> 
+                                <option value="10000">24 Hours</option>
+                                <option value="15000">1 Hour</option>
+                                 <option value="15000">Custom number of hours</option>
+                            </select>  -->
+                            <input id="hours" class="form-control">
+                        </div>
+                        <div class="col-12" style="margin:auto!important"> ₱ / Rate per kWh: <input type="number" min="1" id="ratePerHour" class="form-control"> 
+                             <button type="button" id="compute"  class="btn text-white mt-2" style="background:#CE3A00;width: 100%;margin: auto;">Run</button>
+                            <button type="button" id="stop"  class="btn text-white  mt-2" style="background:#CE3A00;width: 100%;display: none;margin: auto;"></button> 
+                        </div>
+                        <div class="col-12 bg-success" style="margin:auto;"> 
+                            <center>
+                           
+                         </center> 
+
+                        </div>
+
+                    </div>
+                    
+
+
+
+
+                </div>
+            </div>
+            <div class="col-md-12 p-2" style="height:30vh">
+                <div class="bg-light" style="height: 100%;width: 100%;" id="persepective"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+         <div class="row">
+            <div class="col-md-12 p-2" style="height:83vh; position: relative; overflow: auto;">
+                <div class="bg-light" style="height: 100%;width: 100%; overflow: auto;">
+                      <br>
+                      <br>
+                       <div class="row px-2" style="margin:auto"> 
+                        <div class="col-4 my-auto "> <h6  style="text-align: center;"> <span id="stitle">  </span></h6>  </div> 
+                        <div class="col-4 my-auto ">  <h6 style="text-align: center;" id="hrsTitle"></h6>   </div> 
+                        <div class="col-4 my-auto mx-auto ">  <img src="delete.png" style="margin: auto;" class="droptarget" id="delete"
+                            style="width:45px;height:45px;border:none!important;"> 
+                        </div> 
+                        </div>
+
+                    <div class="row m-4" id="roomContainer" style="overflow: auto;">
+                    </div>
+                    
+                </div>
+
+            </div>      
+  <div id="applianceList" class="col-md-12 p-2 my-auto" style="height:15vh;display: grid; grid-template-columns: repeat(13, 1fr);gap:15px; overflow: auto; z-index: 1;">
+    <!-- Your other content here -->
+</div>
+        </div>
+    </div>
+    <div class="col-md-4 p-2">
+         <div class="bg-light p-2" style="height: 100vh;width: 100%;overflow: auto;">
+                 
+                <h5 class="text-center" id="exampleModalLabe" onclick="document.getElementById('results').style.display = 'block';">Consumption Summary</h5>
+            <h5 class="text-center" id="simulation_title"></h5>
+          <div id="results" class="result-container"></div>
+
+
+
+                      <h5 class="text-center" id="compt" style="cursor:pointer" onclick="showComparative();" >Comparative Analysis</h5>
+            <h5 class="text-center" id="targett" style="cursor:pointer" onclick="showTarget();" >Target Consumption</h5> 
+
+
+
+            <div id="showComparativeDiv" style="overflow:auto!important;width:100%!important;height: auto!important; margin: auto;">
+            
+                <h3 class="text-center" id="simulation_title"></h3>
+                <div id="resultsComparative" class="result-container p-1" style="height: auto!important;"></div>
+            </div>
+
+
+             <div id="showTargetDiv"  style="overflow:auto!important;width:100%!important; margin: auto; ">
+                
+                <form id="targetForm" style="width:100%; margin: auto;overflow: auto;">
+                    <div class="row" style="width:100%; margin: auto;">
+                        <div class="col-12" >
+                            <div class="col-12 row" style="width:100%; margin: auto;">
+                                    
+                                  <h5  style="font-size: 14px;" class="text-center">Target Energy 
+                                    <input class="form-check-input" type="checkbox"  value="1" id="checkEnergy"></h5>
+                                  <h5 style="font-size: 14px;" class="text-center">Target Bill
+                                    <input class="form-check-input" type="checkbox"  value="1" id="checkTarget"></h5>
+                                    
+                             
+
+                               <div class="col-12 row" id="inputEnergy" style="width:100%; margin: auto;">
+                              <div class="col-12" style="margin: auto;" style="width:100%; margin: auto;">
+                                    <label for="targetAmount">Input kWh:</label>
+                                    <input type="number" class="form-control" style="width: 100%;" id="targetKWH" required>
+                              </div>
+                              
+
+                                <div class="col-12"  style="width:100%; margin: auto;">
+                                <button type="button" style="margin-left:0px;background:#CE3A00;border:none; width: 100%;" class="btn btn-primary mt-2" onclick="calculateSuggestionsEnergy()">Calculate</button>
+                                </div>
+
+
+                                </div>
+
+
+
+                        </div>
+                        </div>
+                        <div class="col-12 row" style="width:100%; margin: auto;overflow:auto">
+                              
+                             <div class="col-12 row" id="inputTarget" style="width:100%%; margin: auto;">
+                              <div class="col-12" style="margin: auto;">
+                                    <label for="targetAmount" style="font-size: 14px;">Target Bill Amount:</label>
+                                    <input type="number" class="form-control" style="width: 100%;" id="targetAmount" required>
+                              </div>
+                              <div class="col-12" style="margin: auto;" style="width:100%; margin: auto;">
+                                      <label for="targetHours" style="font-size: 14px;">Target Hours:</label>
+                                    <input type="number" class="form-control" style="width: 100%;" id="targetHours" required>
+                              </div>
+
+                               <div class="col-12" style="width:100%; margin: auto;">
+                                         <button type="button" style="margin-left:0px;background:#CE3A00;border:none;width: 100%;" class="btn btn-primary mt-2" onclick="calculateSuggestions()">Calculate</button>
+                              </div>
+                        
+                              </div>
+                        </div>
+                        
+                    </div>
+
+
+                      <h5 class="text-center">Recommendations</h5>
+          <div id="suggestions" class="result-container " style="overflow:auto"></div>
+        </form>
+
+      
+         </div>
+
+
+         </div>
+      
+         </div>
+    </div>
+
+<!--   <nav class="navbar navbar-expand-lg navbar-light fixed-top text-white"  style="background: #FFAA33;">
+    </nav>
+    <br>
+    <br> -->
+
+
+
+
+
+<!-- Modal -->
+<!-- <div class="modal fade" id="receiptModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog  modal-lg modal-dialog-end modal-dialog-scrollable" style="position: absolute; right: 0; top: 0; margin: 0; ">
+    <div class="modal-content">
+      <div class="modal-header" style="border: none!important;">
+        <img align="right" src="arrow-right.svg" style="position:absolute!important; right:10px;top:10px;width:30px" data-bs-dismiss="modal" aria-label="Close" />
+      </div>
+      <div class="modal-body" style="overflow:auto!important">
+                <h2 class="text-center" id="exampleModalLabel">Consumption Summary</h2>
+            <h3 class="text-center" id="simulation_title"></h3>
+          <div id="results" class="result-container"></div>
+      </div>
+      
+    </div>
+  </div>
+</div>
+ -->
+
+<!-- Modal -->
+<div class="modal fade" id="comparativeModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog  modal-xl modal-dialog-end modal-dialog-scrollable" style="width:auto!important;">
+    <div class="modal-content" style="width:auto!important;">
+      <div class="modal-header" style="border: none!important;height: 50px!important;">
+       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <!-- <div class="modal-body" style="overflow:auto!important;width:auto!important;height: auto!important;">
+                <h2 class="text-center" style="margin-top:-20px!important" id="exampleModalLabel">Comparative Analysis</h2>
+            <h3 class="text-center" id="simulation_title"></h3>
+          <div id="resultsComparative" class="result-container p-5" style="height: auto!important;"></div>
+      </div> -->
+      
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="targetModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog  modal-xl modal-dialog-end modal-dialog-scrollable" style="width:auto!important;">
+    <div class="modal-content" style="width:auto!important;">
+      <div class="modal-header" style="border: none!important;height: 50px!important;">
+       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+     <!--  <div class="modal-body" style="overflow:auto!important;width:auto!important;">
+                <h2 class="text-center" style="margin-top:-20px!important" id="exampleModalLabel">Target Consumption</h2>
+                <form id="targetForm">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="col-12 row">
+                              <div class="col-12">
+                                  <h2 class="text-center">Target Energy 
+                                    <input class="form-check-input" type="checkbox" value="1" id="checkEnergy"></h2>
+                                
+                              </div> 
+
+                               <div class="col-12 row" id="inputEnergy">
+                              <div class="col-12" >
+                                    <label for="targetAmount">Input kWh:</label>
+                                    <input type="number" class="form-control" id="targetKWH" required>
+                              </div>
+                              <button type="button" style="background:#CE3A00;border:none;" class="btn btn-primary mt-2" onclick="calculateSuggestionsEnergy()">Recommendations</button>
+                              </div>
+
+                        </div>
+                        </div>
+                        <div class="col-6 row">
+                              <div class="col-12">
+                                  <h2 class="text-center">Target Bill
+                                    <input class="form-check-input" type="checkbox" value="1" id="checkTarget"></h2>
+                                    
+                              </div>  
+                             <div class="col-12 row" id="inputTarget">
+                              <div class="col-6">
+                                    <label for="targetAmount">Target Bill Amount:</label>
+                                    <input type="number" class="form-control" id="targetAmount" required>
+                              </div>
+                              <div class="col-6">
+                                      <label for="targetHours">Target Hours:</label>
+                                    <input type="number" class="form-control"  id="targetHours" required>
+                              </div>
+                              <button type="button" style="background:#CE3A00;border:none;" class="btn btn-primary mt-2" onclick="calculateSuggestions()">Recommendations</button>
+                              </div>
+                        </div>
+                        
+                    </div>
+        </form>
+
+        <h2 class="text-center">Recommendations</h2>
+          <div id="suggestions" class="result-container p-5"></div>
+         </div> -->
+      
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+    <p id="demo"></p>
+
+
+
+ 
+
+    <footer class="footer mt-auto fixed-bottom" style="background: #FFAA33!important; width: 100%!important;display: none;">
+        <center>
+            <img src="arrow-up.png" id="openDrawer" style="width: 50px;">
+            <img src="down.png" id="closeDrawer" style="width: 50px;">
+        </center>
+        <div class="container" id="applianceContainer" style="width: 100%!important;">
+            <div id="applianceList" class="row">
+            </div>
+        </div>
+    </footer>
+
+<!-- Modal Structure -->
+<div class="modal fade" id="appModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalLabel"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Toggle Switch -->
+                <div class="form-check form-switch">
+                    <label class="form-check-label" for="toggleSwitch">Toggle On/Off Appliance</label>
+                    <input type="hidden" id="inputSaver">
+                    <input class="form-check-input toggleInput" onchange="toggleInputValue()" checked type="checkbox" id="toggleSwitch">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</main>
+
+<script>
+      document.getElementById('body').style.display = 'none'; // Show the main body
+
+
+    // Wait for 3 seconds before showing the main body
+    setTimeout(() => {
+      document.getElementById('loading-screen').style.display = 'none'; // Hide the loading screen
+        document.getElementById('body').style.display = ''; // Show the main body
+    }, 3000); // 3000 milliseconds = 3 seconds
+  </script>
+
+
+<script type="text/javascript">
+
+function showHouse() {
+    var housename = localStorage.getItem('sessionId');
+
+    
+        const container = document.getElementById('persepective');
+
+        // Create a new image element
+        const img = document.createElement('img');
+
+        if (housename == 87) {
+        img.src = 'assets/perspective/bungalow1.png'; 
+        }
+        if (housename == 91) {
+        img.src = 'assets/perspective/bungalow2.png'; 
+        }
+        if (housename == 92) {
+        img.src = 'assets/perspective/bungalow3.png'; 
+        }
+
+                if (housename == 89) {
+        img.src = 'assets/perspective/duplex1.png'; 
+        }
+                if (housename == 85) {
+        img.src = 'assets/perspective/duplex2.png'; 
+        }
+                if (housename == 86) {
+        img.src = 'assets/perspective/duplex3.png'; 
+        }
+
+
+                if (housename == 84) {
+        img.src = 'assets/perspective/t1.png'; 
+        }
+                if (housename == 88) {
+        img.src = 'assets/perspective/t2.png'; 
+        }
+                if (housename == 90) {
+        img.src = 'assets/perspective/t3.png'; 
+        }
+
+        img.alt = 'Example Image';
+
+        // Make the image responsive to the container's size
+        img.style.width = '100%';
+        img.style.height = '100%';
+        img.style.objectFit = 'contain'; // Ensures the image fits inside the container without distortion
+
+        // Clear previous content and add the image to the container
+        container.innerHTML = '';
+        container.appendChild(img);
+    
+}
+
+
+
+
+const element = document.getElementById("checkEnergy");
+const element2 = document.getElementById("checkTarget");
+  document.getElementById("inputTarget").style.display = 'none';
+  document.getElementById("inputEnergy").style.display = 'none';
+
+
+element.addEventListener("click", () => {
+  element2.checked = false;
+  hide();
+});
+
+element2.addEventListener("click", () => {
+  element.checked = false;
+  hide2();
+});
+
+function hide() {
+    document.getElementById('suggestions').innerHTML = '';
+  document.getElementById("inputTarget").style.display = 'none';
+  document.getElementById("inputEnergy").style.display = '';
+}
+
+function hide2() {
+document.getElementById('suggestions').innerHTML = '';
+
+  document.getElementById("inputEnergy").style.display = 'none';
+  document.getElementById("inputTarget").style.display = '';
+}
+
+</script>
+
+
+
+    <script>
+
+        
+
+        function calculateSuggestionsEnergy() {
+
+           
+
+        var sessionId = localStorage.getItem('sessionId');
+                if (!sessionId) {
+                    alert('Pelect house first');
+                    return;
+                }
+
+
+                if (document.getElementById('hours').value < 1) {
+                    alert('Please input hours that is greater than 0.');
+                    return;
+                }
+
+  
+            const target_kwh = document.getElementById('targetKWH').value;
+             var ratePerHour = document.getElementById('ratePerHour').value;
+
+
+            document.getElementById('suggestions').innerHTML = '';
+
+            if (target_kwh && ratePerHour) {
+    
+                // Send data to Python backend
+                const suggestions = pywebview.api.get_suggestions_energy(target_kwh, ratePerHour,sessionId)
+                .then(getSuggestionEnergy);
+                
+                // Display suggestions
+
+
+            } else {
+                alert("Please enter valid kwh, and rate Per Hour.");
+            }
+        }
+
+
+        function getSuggestionEnergy(response) {
+
+                const suggestionsDiv = document.getElementById('suggestions');
+                suggestions.innerHTML = response.message;
+                // suggestionsDiv.innerHTML = suggestions; // Clear previous results
+                // response.message.forEach(item => {
+                //     const div = document.createElement('div');
+                //     div.innerHTML = `<p>${item.appliance} in ${item.room} - Run for ${item.hours.toFixed(2)} hours</p>`;
+                //     suggestionsDiv.appendChild(div);
+                // });
+
+        }
+
+
+
+        function calculateSuggestions() {
+
+        var sessionId = localStorage.getItem('sessionId');
+                if (!sessionId) {
+                    alert('select house first');
+                    return;
+                }
+
+  
+            const targetAmount = document.getElementById('targetAmount').value;
+            const targetHours = document.getElementById('targetHours').value;
+             var ratePerHour = document.getElementById('ratePerHour').value;
+            document.getElementById('suggestions').innerHTML = '';
+
+            if (targetAmount && targetHours && ratePerHour) {
+    
+                // Send data to Python backend
+                const suggestions = pywebview.api.get_suggestions(parseFloat(targetAmount), targetHours, ratePerHour,sessionId)
+                .then(getSuggestion);
+                
+                // Display suggestions
+
+
+            } else {
+                alert("Please enter valid target amount, rate Per Hour, and hours.");
+            }
+        }
+
+
+        function getSuggestion(response) {
+
+                const suggestionsDiv = document.getElementById('suggestions');
+                suggestions.innerHTML = response.message;
+                // suggestionsDiv.innerHTML = suggestions; // Clear previous results
+                // response.message.forEach(item => {
+                //     const div = document.createElement('div');
+                //     div.innerHTML = `<p>${item.appliance} in ${item.room} - Run for ${item.hours.toFixed(2)} hours</p>`;
+                //     suggestionsDiv.appendChild(div);
+                // });
+
+        }
+    </script>
+
+<script>
+    
+
+document.addEventListener('show.bs.modal', function (event) {
+    // Get the triggering element
+    const triggerElement = event.relatedTarget;
+    
+    // Retrieve the data-input-hr attribute
+    const inputHrValue = triggerElement.getAttribute('data-input-hr');
+    
+    // Set the value of the input in the modal
+    // const modalInput = document.getElementById('modalInput');
+    // modalInput.value = inputHrValue;
+
+    var input = document.getElementById('inputSaver');
+    input.value = inputHrValue;
+
+});
+
+
+    document.getElementById('appModal').addEventListener('shown.bs.modal', initializeToggleSwitch);
+
+    function toggleInputValue() {
+        var inputID = document.getElementById('inputSaver').value;
+        var input = document.getElementById(inputID);
+        var toggleSwitch = document.getElementById('toggleSwitch');
+
+        // Toggle the value between "1" and "0"
+        input.value = input.value === "1" ? "0" : "1";
+
+        // Set the toggle switch checked state based on the input value
+        toggleSwitch.checked = input.value === "1";
+    }
+
+    function initializeToggleSwitch() {
+    var inputID = document.getElementById('inputSaver').value;
+    var input = document.getElementById(inputID);
+    var toggleSwitch = document.getElementById('toggleSwitch');
+
+    // Set the toggle switch checked state based on the current input value
+    toggleSwitch.checked = input.value === "1";
+}
+
+
+
+</script>
+
+
+    <script>
+    let running = false;
+let myArray = [];
+let intervalId;
+
+// Start simulation on clicking the "Start" button
+const computeBtn = document.getElementById("compute");
+computeBtn.addEventListener("click", function () {
+
+    var sessionId = localStorage.getItem('sessionId');
+    if (!sessionId) {
+        alert('select house first');
+        return;
+    }
+
+    // Reset the variables for a new simulation
+    myArray = [];
+    running = true;
+
+    var ratePerHour = document.getElementById('ratePerHour').value;
+    var hours = document.getElementById('hours').value;  // Get the user input for hours
+
+    if (ratePerHour < 1) {
+        alert('Please enter rate per kWh');
+    } else if (hours <= 0) {
+        alert('Please enter valid hours');
+    } else {
+        // document.getElementById("compute").style.display = 'none';
+        // document.getElementById("stop").style.display = '';
+
+        startSimulation(hours, ratePerHour);  // Start the simulation using the input hours
+    }
+
+});
+
+// Simulation function
+async function startSimulation(hours, ratePerHour) {
+    let hoursTracker = {};
+
+    // Get appliance inputs and accumulate usage over the total hours entered
+    let applianceInputs = document.querySelectorAll('.toggleInput');
+    applianceInputs.forEach((input) => {
+        let inputValue = parseFloat(input.value) || 0;
+        let inputId = input.id;
+
+        if (hoursTracker[inputId]) {
+            hoursTracker[inputId] += inputValue;
+        } else {
+            hoursTracker[inputId] = inputValue;
+        }
+    });
+
+    // After processing inputs, compute energy based on total hours
+    computeEnergy(hoursTracker, ratePerHour, hours);
+
+    stopAndCompute();
+}
+
+// Function to compute energy based on hours
+function computeEnergy(hoursTracker, ratePerHour, totalHours) {
+    myArray = {}; // Use an object to group by roomName
+
+    Object.keys(hoursTracker).forEach(id => {
+        var parts = id.split("_");
+        var canvas_id = parts[0];
+        var watts = parseFloat(parts[1]);
+        var applianceName = parts[2];
+        var roomName = parts[3]; // Get the room name
+
+        if (!isNaN(watts)) {
+            var hours_used = hoursTracker[id] * totalHours; // Multiply by total hours to get the usage over the specified period
+            var energy = (watts * hours_used) / 1000; // kWh
+            var amount = ratePerHour * energy;
+
+            // Check if the roomName group exists, if not, create it
+            if (!myArray[roomName]) {
+                myArray[roomName] = [];
+            }
+
+            // Push the result under the appropriate roomName group
+            myArray[roomName].push({
+                id: canvas_id,
+                hours_used: hours_used,
+                energy: energy,
+                amount: amount,
+                applianceName: applianceName,
+                wattage: watts,
+            });
+        }
+    });
+
+    // Optionally, display the results (e.g., on the page or in the console)
+    console.log(myArray);
+}
+
+// Stop simulation and show the results
+const stopBtn = document.getElementById("stop");
+stopBtn.addEventListener("click", function () {
+    running = false;
+    clearInterval(intervalId);
+
+    // Switch buttons again
+    document.getElementById("compute").style.display = '';
+    document.getElementById("stop").style.display = 'none';
+
+    stopAndCompute();
+});
+
+function stopAndCompute() {
+    document.getElementById('results').style.display = 'block';
+    
+    // Clear the previous content
+    const resultsDiv = document.getElementById("results");
+    resultsDiv.innerHTML = '';
+
+    let totalEnergy = 0; // Variable to store total energy consumption
+    let totalCost = 0;   // Variable to store total cost
+
+    // Create the table and add headers
+    let table = document.createElement('table');
+    table.className = 'table table-striped'; // Add classes for styling
+    table.innerHTML = `
+        <thead>
+            <tr>
+                <th>Room</th>
+                <th>Appliance</th>
+                <th>Wattage</th>
+                <th>Usage</th>
+                <th>kWh</th>
+                <th>Budget (₱)</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    `;
+    let tableBody = table.querySelector('tbody');
+
+    // Loop through each room and its appliances
+    Object.keys(myArray).forEach(roomName => {
+        // Loop through each appliance in the room
+        myArray[roomName].forEach(item => {
+            // Create a row for each appliance
+            let row = document.createElement('tr');
+
+            // Add the room name and appliance details to the row
+            row.innerHTML = `
+                <td>${roomName}</td>
+                <td>${item.applianceName}</td>
+                <td>${item.wattage} W</td>
+                <td>${item.hours_used}</td>
+                <td>${item.energy}</td>
+                <td>₱${item.amount.toFixed(2)}</td>
+            `;
+            tableBody.appendChild(row);
+
+            // Accumulate total energy and cost
+            totalEnergy += item.energy;
+            totalCost += item.amount;
+        });
+    });
+
+    // Create a row for total energy and cost
+    let totalRow = document.createElement('tr');
+    totalRow.innerHTML = `
+        <td colspan="4" class="text-center"><strong>Total</strong></td>
+        <td><strong>${totalEnergy.toFixed(2)} kWh</strong></td>
+        <td><strong>₱${totalCost.toFixed(2)}</strong></td>
+    `;
+    tableBody.appendChild(totalRow);
+
+    // Append the table to the results
+    resultsDiv.appendChild(table);
+
+    // Show modal or display the results
+    var myModal = new bootstrap.Modal(document.getElementById('receiptModal'), {
+        keyboard: false
+    });
+    myModal.show();
+}
+
+document.getElementById('showTargetDiv').style.display = 'none';
+
+function showTarget() { 
+document.getElementById('showComparativeDiv').style.display = 'none';
+document.getElementById('showTargetDiv').style.display = 'block';
+
+document.getElementById('compt').style.backgroundColor = 'black!important';
+document.getElementById('targett').style.backgroundColor = 'red!important';
+
+
+    // var myModal = new bootstrap.Modal(document.getElementById('targetModal'), {
+    //     keyboard: false
+    // });
+    // myModal.show();
+}
+
+document.getElementById('showComparativeDiv').style.display = 'none';
+function showComparative() { 
+document.getElementById('showTargetDiv').style.display = 'none';
+
+    
+ document.getElementById('showComparativeDiv').style.display = 'block';
+
+
+document.getElementById('compt').style.backgroundColor = 'red!important';
+document.getElementById('targett').style.backgroundColor = 'black!important';
+
+
+    const resultsDiv = document.getElementById('resultsComparative');
+    resultsDiv.style.display = 'block';
+    resultsDiv.innerHTML = '';  // Clear the previous content
+
+    // Make the div scrollable with a fixed height
+    resultsDiv.style.overflowY = 'auto';
+    resultsDiv.style.maxHeight = 'auto';
+    
+    let totalEnergy = 0; // Variable to store total energy consumption across all rooms
+    let totalCost = 0;   // Variable to store total cost across all rooms
+    
+    let rowDiv = null;  // Placeholder for a new Bootstrap row
+
+    // Loop through each room and its appliances
+    Object.keys(myArray).forEach((roomName, index) => {
+        let roomEnergy = 0; // Variable to store energy consumption for the current room
+        let roomCost = 0;   // Variable to store cost for the current room
+
+        if (index % 3 === 0) {
+            // Create a new row every 3 columns
+            rowDiv = document.createElement('div');
+            rowDiv.className = 'row';
+            resultsDiv.appendChild(rowDiv);
+        }
+
+        // Create a Bootstrap column for each room box
+        let roomDiv = document.createElement('div');
+        roomDiv.className = 'col-md-12'; // Bootstrap 3 column for 3 boxes per row
+        roomDiv.style.border = '1px solid #ccc';
+        roomDiv.style.padding = '5px';
+        // roomDiv.style.backgroundColor = '#f9f9f9';
+        roomDiv.style.borderRadius = '5px';
+
+        // Room title
+        let roomTitle = document.createElement('p');
+        roomTitle.className = 'room-title text-center';
+        roomTitle.textContent = roomName; // Set room name as the title
+        roomDiv.appendChild(roomTitle);
+
+        // Add each appliance under the room title
+        myArray[roomName].forEach(item => {
+            let resultItem = document.createElement('div');
+            resultItem.className = 'result-item';
+            resultItem.innerHTML = `<p class="text-center">
+                ${item.applianceName}...${item.hours_used} hours....${item.energy.toFixed(2)} kWh.......₱${item.amount.toFixed(2)}
+            </p>`;
+            roomDiv.appendChild(resultItem);
+
+            // Accumulate room's total energy and cost
+            roomEnergy += item.energy;
+            roomCost += item.amount;
+
+            // Accumulate overall total energy and cost
+            totalEnergy += item.energy;
+            totalCost += item.amount;
+        });
+
+        // Display room total for energy and cost
+        let roomTotalDiv = document.createElement('div');
+        roomTotalDiv.className = 'room-total text-center';
+        roomTotalDiv.innerHTML = `<p>Room Total: ${roomEnergy.toFixed(2)} kWh.....₱${roomCost.toFixed(2)}</p>`;
+        roomDiv.appendChild(roomTotalDiv);
+
+        // Append room div to the current row
+        rowDiv.appendChild(roomDiv);
+    });
+
+    // Create a div for the total results across all rooms
+    let totalDiv = document.createElement('div');
+    totalDiv.className = 'total-results text-center';
+    totalDiv.style.marginTop = '15px';
+    totalDiv.innerHTML = `<p>Total Energy Consumption: ${totalEnergy.toFixed(2)} kWh.....₱${totalCost.toFixed(2)}</p>`;
+
+    // Append the total div to the main results
+    resultsDiv.appendChild(totalDiv);
+
+    // Show modal or display the results
+    // var myModal = new bootstrap.Modal(document.getElementById('comparativeModal'), {
+    //     keyboard: false
+    // });
+
+
+   
+
+}
+
+
+
+</script>
+
+    <script>
+
+
+        // for footer/appliance show hide document.getElementById('applianceContainer').style.display = 'none';
+
+        function updateCanvas(sessionId, roomId, imageId, fromRoom, canvasId) {
+            pywebview.api.update_appliance_canvas(sessionId, roomId, imageId, fromRoom, canvasId).then(canvasShowMessage);
+        }
+
+        function removeFromCanvas(canvasId) {
+            pywebview.api.delete_appliance_canvas(canvasId).then(canvasShowMessage);
+        }
+
+
+        function addToCanvas(sessionId, roomId, imageId) {
+            pywebview.api.add_appliance_canvas(sessionId, roomId, imageId).then(canvasShowMessage);
+        }
+
+
+        function canvasShowMessage(response) {
+
+            showRoom();
+
+            Swal.fire({
+                position: "top-end",
+                icon: response.message ? "success" : "error",
+                title: response.message ? response.message : response.error,
+                showConfirmButton: false,
+                timer: 1500
+            });
+        }
+
+
+        function setID(name, simulationId) {
+
+            localStorage.setItem('sessionName', name)
+            localStorage.setItem('sessionId', simulationId)
+            var sessionName = localStorage.getItem('sessionName');
+            var sessionId = localStorage.getItem('sessionId');
+            document.getElementById('stitle').innerHTML = sessionName
+            document.getElementById('simulation_title').innerHTML = sessionName
+
+            showHouse();
+
+
+            if (sessionName) {
+                //document.getElementById('addRoom').style.display = '';
+                document.getElementById('delete').style.display = '';
+            } else {
+                //document.getElementById('addRoom').style.display = 'none';
+                document.getElementById('delete').style.display = 'none';
+            }
+
+            document.getElementById('results').style.display = 'none';
+
+            showRoom();
+
+        }
+
+        var closeDrawer = document.getElementById('closeDrawer');
+        var openDrawer = document.getElementById('openDrawer');
+
+        closeDrawer.style.display = 'none';
+
+        // toggle drawer
+        var open = document.getElementById('openDrawer')
+        open.addEventListener("click", toggleDrawerOpen);
+        function toggleDrawerOpen() {
+            document.getElementById('applianceContainer').style.display = 'block';
+            openDrawer.style.display = 'none';
+            closeDrawer.style.display = 'block';
+        }
+        var close = document.getElementById('closeDrawer')
+        close.addEventListener("click", toggleDrawerClose);
+        function toggleDrawerClose() {
+            document.getElementById('applianceContainer').style.display = 'none';
+            openDrawer.style.display = 'block';
+            closeDrawer.style.display = 'none';
+        }
+
+        function showNavbar() {
+            pywebview.api.navbar().then(getNavbar);
+        }
+
+
+        function getNavbar(response) {
+            const a = document.getElementById('navBar');
+            a.innerHTML = response.message;
+        }
+
+        function showRoom() {
+            var simulationId = localStorage.getItem('sessionId');
+            pywebview.api.fetch_room(simulationId).then(outputRoom);
+        }
+
+        function outputRoom(response) {
+            var a = document.getElementById('roomContainer');
+            a.innerHTML = response.message;
+        }
+
+
+        function createRoom() {
+            var room = document.getElementById('roomName').value;
+            var simulationId = localStorage.getItem('sessionId');
+            pywebview.api.create_room(room, simulationId).then(roomShowMessage);
+        }
+
+        function roomShowMessage(response) {
+
+            showRoom();
+
+            Swal.fire({
+                position: "top-end",
+                icon: response.message ? "success" : "error",
+                title: response.message ? response.message : response.error,
+                showConfirmButton: false,
+                timer: 1500
+            });
+        }
+
+
+        function createSimulation() {
+            var name = document.getElementById('simulationName').value;
+            pywebview.api.create_simulation(name).then(simulationShowMessage);
+
+        }
+
+        function simulationShowMessage(response) {
+
+            var name = document.getElementById('simulationName').value;
+            localStorage.setItem('sessionName', name)
+            localStorage.setItem('sessionId', response.session_id)
+            var sessionName = localStorage.getItem('sessionName');
+            var sessionId = localStorage.getItem('sessionId');
+            document.getElementById('stitle').innerHTML = sessionName
+
+            showRoom();
+
+            if (sessionName) {
+                //document.getElementById('addRoom').style.display = '';
+            } else {
+               // document.getElementById('addRoom').style.display = 'none';
+            }
+
+            Swal.fire({
+                position: "top-end",
+                icon: response.message ? "success" : "error",
+                title: response.message ? response.message : response.error,
+                showConfirmButton: false,
+                timer: 1500
+            });
+        }
+
+        function showAppliance() {
+            pywebview.api.appliance_list().then(outputApplianceList);
+        }
+
+
+        function outputApplianceList(response) {
+            const a = document.getElementById('applianceList');
+            a.innerHTML = response.message;
+        }
+
+        // Display response in an HTML table
+        function showResponse(response) {
+
+            const tbody = document.getElementById('table-body');
+            tbody.innerHTML = response.message;
+
+            // Check if response has any data
+        }
+
+        window.addEventListener('pywebviewready', function () {
+            showNavbar();
+            showAppliance();
+
+            var sessionName = localStorage.getItem('sessionName');
+
+            document.getElementById('stitle').innerHTML = sessionName
+            document.getElementById('simulation_title').innerHTML = sessionName
+            if (sessionName) {
+               // document.getElementById('addRoom').style.display = 'block';
+                document.getElementById('delete').style.display = 'block';
+
+                showRoom();
+
+            } else {
+                //document.getElementById('addRoom').style.display = 'none';
+                document.getElementById('delete').style.display = 'none';
+
+            }
+
+
+
+        });
+
+    </script>
+
+    <script>
+
+        let draggedElement = null;
+
+        // Handle drag start event
+        document.addEventListener("dragstart", function (event) {
+            // Store the dragged element reference
+            //   draggedElement = event.target;
+
+            // Set the dragged data (we can use the element's ID or a reference)
+            event.dataTransfer.setData("Text", event.target.id);
+            event.dataTransfer.setData("custom_id", event.target.dataset.customId);
+            event.dataTransfer.setData("is_update", event.target.dataset.isUpdate);
+            event.dataTransfer.setData("canvas_id", event.target.dataset.canvasId);
+
+
+            // Output some text when starting to drag the element
+            //   document.getElementById("demo").innerHTML = "Started to drag the element.";
+
+            // Change the opacity of the draggable element
+            //   event.target.style.opacity = "0.4";
+        });
+
+        // Change output text color while dragging
+        document.addEventListener("drag", function (event) {
+            //   document.getElementById("demo").style.color = "red";
+        });
+
+        // Reset opacity and output text when drag ends
+        document.addEventListener("dragend", function (event) {
+            //   document.getElementById("demo").innerHTML = "Finished dragging the element.";
+            event.target.style.opacity = "1";
+        });
+
+        // Handle drag enter event (change border of the drop target)
+        document.addEventListener("dragenter", function (event) {
+            if (event.target.className == "droptarget") {
+                event.target.style.border = "3px dotted red";
+            }
+        });
+
+        // Allow drop event by preventing the default action
+        document.addEventListener("dragover", function (event) {
+            event.preventDefault();
+        });
+
+        // Handle drag leave event (reset border of the drop target)
+        document.addEventListener("dragleave", function (event) {
+            if (event.target.className == "droptarget") {
+                event.target.style.border = "";
+            }
+        });
+
+        // Handle drop event
+        document.addEventListener("drop", function (event) {
+            event.preventDefault();
+
+
+            const roomId = event.target.id;
+
+            // Only proceed if the drop target has the class 'droptarget'
+            if (event.target.className == "droptarget") {
+                // document.getElementById("demo").style.color = "";
+                event.target.style.border = "";
+
+                const imageId = event.dataTransfer.getData("Text");
+                const fromRoom = event.dataTransfer.getData("custom_id");
+                const isUpdate = event.dataTransfer.getData("is_update");
+                const canvasId = event.dataTransfer.getData("canvas_id");
+
+                var sessionName = localStorage.getItem('sessionName');
+                var sessionId = localStorage.getItem('sessionId');
+
+
+                //dont accept drag drop if same room, and logic for updating or adding
+
+
+                if (roomId != 'delete') {
+
+                    if (fromRoom !== roomId) {
+
+                        if (isUpdate == '1') {
+
+                            updateCanvas(sessionId, roomId, imageId, fromRoom, canvasId);
+
+                        } else {
+
+                            addToCanvas(sessionId, roomId, imageId);
+
+                        }
+                    }
+
+                } else {
+                    removeFromCanvas(canvasId);
+                }
+
+
+
+                //save to canvas table on db
+                //addToCanvas(sessionId ,roomId, imageId);
+
+                // Remove the dragged element from its original container (if it has a parent)
+                // if (draggedElement && draggedElement.parentNode) {
+                //   draggedElement.parentNode.removeChild(draggedElement);
+                // }
+
+                // Append the dragged element (or a new image) to the drop target
+                event.target.appendChild(draggedElement);
+            }
+        });
+
+
+
+
+    </script>
+
+    <script src="assets/bootstrap.min.js"></script>
+    <script src="assets/sweetalert.js"></script>
+
+    <script type="text/javascript">
+    
+
+
+
+</script>
+</body>
+
+</html>
