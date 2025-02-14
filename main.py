@@ -4,7 +4,17 @@ import sqlite3
 import base64
 import uuid
 
+# To browser
+import threading
+from flask import Flask, send_from_directory, request, jsonify
+app = Flask(__name__)
+
 class Api:
+
+	# To browser
+	def create_room(self, room, simulation_id):
+		print(f"Python received create_room: {room}, {simulation_id}")
+		return f"Room '{room}' created successfully!"
 
 	def delete_appliance_canvas(self, canvas_id):
 		try:
@@ -1926,14 +1936,39 @@ class Api:
 def on_loaded():
 	window.toggle_fullscreen()
 
+# To browser
+api = Api()
+
+# Serve HTML and static files
+@app.route('/')
+def serve_html():
+    return send_from_directory(os.getcwd(), 'index.html')
+
+@app.route('/<path:filename>')
+def serve_static(filename):
+    return send_from_directory(os.getcwd(), filename)
+
+# Expose PyWebView API through Flask
+@app.route('/api/create_room', methods=['POST'])
+def create_room():
+    data = request.json
+    return jsonify({"message": api.create_room(data['room'], data['simulationId'])})
 
 if __name__ == '__main__':
-	api = Api()
-	
-	# Get the path to the HTML file
-	current_dir = os.path.dirname(os.path.realpath(__file__))
-	html_path = os.path.join(current_dir, 'index.html')
+    # Start Flask server in a separate thread
+    threading.Thread(target=lambda: app.run(host='127.0.0.1', port=5000, debug=False, use_reloader=False), daemon=True).start()
+    
+    # Open PyWebView with the Flask server URL
+    window = webview.create_window('ECO ENERGY', 'http://127.0.0.1:5000', js_api=api)
+    webview.start()
 
-	# Create the window using the external HTML file
-	window = webview.create_window('ECO ENEGERY', html_path, js_api=api, width=1000, height=700,)
-	webview.start()
+# if __name__ == '__main__':
+# 	api = Api()
+	
+# 	# Get the path to the HTML file
+# 	current_dir = os.path.dirname(os.path.realpath(__file__))
+# 	html_path = os.path.join(current_dir, 'index.html')
+
+# 	# Create the window using the external HTML file
+# 	window = webview.create_window('ECO ENEGERY', html_path, js_api=api, width=1000, height=700,)
+# 	webview.start()
