@@ -7,7 +7,9 @@ import uuid
 # To browser
 import threading
 from flask import Flask, send_from_directory, request, jsonify
+from flask_cors import CORS
 app = Flask(__name__)
+CORS(app)  
 
 class Api:
 
@@ -1936,13 +1938,29 @@ class Api:
 def on_loaded():
 	window.toggle_fullscreen()
 
-# To browser
 api = Api()
 
+# To browser
+
+# For navbar (list of house)
+@app.route('/api/navbar')
+def navbar():
+    return jsonify(api.navbar())
+
+@app.route('/api/appliance_list')
+def appliance_list():
+    return jsonify(api.appliance_list())
+
+@app.route('/api/fetch_room')
+def fetch_room():
+
+	simulation_id = request.args.get("simulationId")
+	return jsonify(api.fetch_room(simulation_id))
+	
 # Serve HTML and static files
 @app.route('/')
 def serve_html():
-    return send_from_directory(os.getcwd(), 'index.html')
+    return send_from_directory('.', 'index.html')
 
 @app.route('/<path:filename>')
 def serve_static(filename):
@@ -1961,6 +1979,7 @@ if __name__ == '__main__':
     # Open PyWebView with the Flask server URL
     window = webview.create_window('ECO ENERGY', 'http://127.0.0.1:5000', js_api=api)
     webview.start()
+
 
 # if __name__ == '__main__':
 # 	api = Api()
