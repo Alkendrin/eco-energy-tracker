@@ -1235,9 +1235,25 @@
       }
 
       function addToCanvas(sessionId, roomId, imageId) {
-        pywebview.api
-          .add_appliance_canvas(sessionId, roomId, imageId)
-          .then(canvasShowMessage);
+        // pywebview.api
+        //   .add_appliance_canvas(sessionId, roomId, imageId)
+        //   .then(canvasShowMessage);
+        fetch("http://127.0.0.1:5000/api/add_appliance_canvas", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            sessionId: sessionId,
+            roomId: roomId,
+            imageId: imageId,
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => canvasShowMessage(data))
+          .catch((error) =>
+            console.error("Error adding appliance to canvas:", error)
+          );
       }
 
       function canvasShowMessage(response) {

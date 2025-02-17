@@ -1953,9 +1953,16 @@ def appliance_list():
 
 @app.route('/api/fetch_room')
 def fetch_room():
-
 	simulation_id = request.args.get("simulationId")
 	return jsonify(api.fetch_room(simulation_id))
+
+@app.route('/api/add_appliance_canvas')
+def add_appliance_canvas():
+    data = request.json  # Get JSON data from request
+    session_id = data.get("sessionId")
+    room_id = data.get("roomId")
+    image_id = data.get("imageId")
+    return jsonify(api.add_appliance_canvas(session_id, room_id, image_id)) 
 	
 # Serve HTML and static files
 @app.route('/')
