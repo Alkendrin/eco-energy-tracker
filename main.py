@@ -14,9 +14,9 @@ CORS(app)
 class Api:
 
 	# To browser
-	def create_room(self, room, simulation_id):
-		print(f"Python received create_room: {room}, {simulation_id}")
-		return f"Room '{room}' created successfully!"
+	# def create_room(self, room, simulation_id):
+	# 	print(f"Python received create_room: {room}, {simulation_id}")
+	# 	return f"Room '{room}' created successfully!"
 
 	def delete_appliance_canvas(self, canvas_id):
 		try:
@@ -1956,7 +1956,7 @@ def fetch_room():
 	simulation_id = request.args.get("simulationId")
 	return jsonify(api.fetch_room(simulation_id))
 
-@app.route('/api/add_appliance_canvas')
+@app.route('/api/add_appliance_canvas', methods=['POST'])
 def add_appliance_canvas():
     data = request.json  # Get JSON data from request
     session_id = data.get("sessionId")
@@ -1979,11 +1979,71 @@ def create_room():
     data = request.json
     return jsonify({"message": api.create_room(data['room'], data['simulationId'])})
 
+@app.route('/api/get_suggestions_energy', methods=['POST'])
+def get_suggestions_energy():
+    data = request.json
+    if not data:
+        return jsonify({'error': 'No data received'}), 400
+        
+    target_kwh = data.get('target_kwh')
+    rate_per_hour = data.get('rate_per_hour')
+    session_id = data.get('session_id')
+    
+    if not all([target_kwh, rate_per_hour, session_id]):
+        return jsonify({'error': 'Missing required parameters'}), 400
+        
+    return jsonify(api.get_suggestions_energy(target_kwh, rate_per_hour, session_id))
+
+@app.route('/api/get_suggestions', methods=['POST'])
+def get_suggestions():
+    data = request.json
+    if not data:
+        return jsonify({'error': 'No data received'}), 400
+        
+    target_amount = data.get('target_amount')
+    target_hours = data.get('target_hours')
+    rate_per_hour = data.get('rate_per_hour')
+    session_id = data.get('session_id')
+    
+    if not all([target_amount, target_hours, rate_per_hour, session_id]):
+        return jsonify({'error': 'Missing required parameters'}), 400
+        
+    return jsonify(api.get_suggestions(target_amount, target_hours, rate_per_hour, session_id))
+
+@app.route('/api/update_appliance_canvas', methods=['POST'])
+def update_appliance_canvas():
+    data = request.json
+    if not data:
+        return jsonify({'error': 'No data received'}), 400
+        
+    session_id = data.get('session_id')
+    room_id = data.get('room_id')
+    image_id = data.get('image_id')
+    from_room = data.get('from_room')
+    canvas_id = data.get('canvas_id')
+    
+    if not all([session_id, room_id, image_id, from_room, canvas_id]):
+        return jsonify({'error': 'Missing required parameters'}), 400
+        
+    return jsonify(api.update_appliance_canvas(session_id, room_id, image_id, from_room, canvas_id))	
+
+@app.route('/api/delete_appliance_canvas', methods=['POST'])
+def delete_appliance_canvas():
+    data = request.json
+    if not data:
+        return jsonify({'error': 'No data received'}), 400
+        
+    canvas_id = data.get('canvas_id')
+    if not canvas_id:
+        return jsonify({'error': 'Missing canvas_id parameter'}), 400
+        
+    return jsonify(api.delete_appliance_canvas(canvas_id))
+
 if __name__ == '__main__':
     # Start Flask server in a separate thread
     threading.Thread(target=lambda: app.run(host='127.0.0.1', port=5000, debug=False, use_reloader=False), daemon=True).start()
     
-    # Open PyWebView with the Flask server URL
+    # Open with the Flask server URL
     window = webview.create_window('ECO ENERGY', 'http://127.0.0.1:5000', js_api=api)
     webview.start()
 

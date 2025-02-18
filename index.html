@@ -811,13 +811,33 @@
 
         if (target_kwh && ratePerHour) {
           // Send data to Python backend
-          const suggestions = pywebview.api
-            .get_suggestions_energy(target_kwh, ratePerHour, sessionId)
-            .then(getSuggestionEnergy);
+          //   const suggestions = pywebview.api
+          //     .get_suggestions_energy(target_kwh, ratePerHour, sessionId)
+          //     .then(getSuggestionEnergy);
 
-          // Display suggestions
+          //   // Display suggestions
+          // } else {
+          //   alert("Please enter valid kwh, and rate Per Hour.");
+          // }
+          fetch("http://127.0.0.1:5000/api/get_suggestions_energy", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              target_kwh: target_kwh,
+              rate_per_hour: ratePerHour,
+              session_id: sessionId,
+            }),
+          })
+            .then((response) => response.json())
+            .then((data) => getSuggestionEnergy(data))
+            .catch((error) => {
+              console.error("Error calculating suggestions:", error);
+              alert("Error calculating suggestions. Please try again.");
+            });
         } else {
-          alert("Please enter valid kwh, and rate Per Hour.");
+          alert("Please enter valid kWh and rate per hour.");
         }
       }
 
@@ -846,14 +866,32 @@
 
         if (targetAmount && targetHours && ratePerHour) {
           // Send data to Python backend
-          const suggestions = pywebview.api
-            .get_suggestions(
-              parseFloat(targetAmount),
-              targetHours,
-              ratePerHour,
-              sessionId
-            )
-            .then(getSuggestion);
+          // const suggestions = pywebview.api
+          //   .get_suggestions(
+          //     parseFloat(targetAmount),
+          //     targetHours,
+          //     ratePerHour,
+          //     sessionId
+          //   )
+          //   .then(getSuggestion);
+          fetch("http://127.0.0.1:5000/api/get_suggestions", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              target_amount: parseFloat(targetAmount),
+              target_hours: targetHours,
+              rate_per_hour: ratePerHour,
+              session_id: sessionId,
+            }),
+          })
+            .then((response) => response.json())
+            .then((data) => getSuggestion(data))
+            .catch((error) => {
+              console.error("Error calculating suggestions:", error);
+              alert("Error calculating suggestions. Please try again.");
+            });
 
           // Display suggestions
         } else {
@@ -1219,19 +1257,61 @@
       // for footer/appliance show hide document.getElementById('applianceContainer').style.display = 'none';
 
       function updateCanvas(sessionId, roomId, imageId, fromRoom, canvasId) {
-        pywebview.api
-          .update_appliance_canvas(
-            sessionId,
-            roomId,
-            imageId,
-            fromRoom,
-            canvasId
-          )
-          .then(canvasShowMessage);
+        // pywebview.api
+        //   .update_appliance_canvas(
+        //     sessionId,
+        //     roomId,
+        //     imageId,
+        //     fromRoom,
+        //     canvasId
+        //   )
+        //   .then(canvasShowMessage);
+        fetch("http://127.0.0.1:5000/api/update_appliance_canvas", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            session_id: sessionId,
+            room_id: roomId,
+            image_id: imageId,
+            from_room: fromRoom,
+            canvas_id: canvasId,
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => canvasShowMessage(data))
+          .catch((error) => {
+            console.error("Error updating appliance canvas:", error);
+            Swal.fire({
+              icon: "error",
+              title: "Error",
+              text: "Failed to update appliance position",
+            });
+          });
       }
 
       function removeFromCanvas(canvasId) {
-        pywebview.api.delete_appliance_canvas(canvasId).then(canvasShowMessage);
+        // pywebview.api.delete_appliance_canvas(canvasId).then(canvasShowMessage);
+        fetch("http://127.0.0.1:5000/api/delete_appliance_canvas", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            canvas_id: canvasId,
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => canvasShowMessage(data))
+          .catch((error) => {
+            console.error("Error removing from canvas:", error);
+            Swal.fire({
+              icon: "error",
+              title: "Error",
+              text: "Failed to remove appliance",
+            });
+          });
       }
 
       function addToCanvas(sessionId, roomId, imageId) {
@@ -1343,6 +1423,7 @@
         a.innerHTML = response.message;
       }
 
+      // Does this do anything?
       function createRoom() {
         var room = document.getElementById("roomName").value;
         var simulationId = localStorage.getItem("sessionId");
@@ -1361,6 +1442,7 @@
         });
       }
 
+      // Does this do anything?
       function createSimulation() {
         var name = document.getElementById("simulationName").value;
         pywebview.api.create_simulation(name).then(simulationShowMessage);
@@ -1440,11 +1522,17 @@
       let draggedElement = null;
 
       // Handle drag start event
+      // Changed to handle browser but doesn't work on app
       document.addEventListener("dragstart", function (event) {
         // Store the dragged element reference
         //   draggedElement = event.target;
 
         // Set the dragged data (we can use the element's ID or a reference)
+        // event.dataTransfer.setData("Text", event.target.id);
+        // event.dataTransfer.setData("custom_id", event.target.dataset.customId);
+        // event.dataTransfer.setData("is_update", event.target.dataset.isUpdate);
+        // event.dataTransfer.setData("canvas_id", event.target.dataset.canvasId);
+        draggedElement = event.target.cloneNode(true); // Clone the dragged element
         event.dataTransfer.setData("Text", event.target.id);
         event.dataTransfer.setData("custom_id", event.target.dataset.customId);
         event.dataTransfer.setData("is_update", event.target.dataset.isUpdate);
