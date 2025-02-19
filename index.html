@@ -2,182 +2,8 @@
 <html>
   <head lang="en">
     <meta charset="UTF-8" />
+    <link href="style.css" rel="stylesheet" />
     <link href="assets/bootstrap.min.css" rel="stylesheet" />
-    <style>
-      #loading-screen {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        background-color: #ffffff;
-      }
-
-      hr {
-        width: 300px;
-        height: 2px;
-        margin: auto;
-        margin-bottom: 5px;
-      }
-      .room-title {
-        padding-bottom: 20px;
-        border-bottom: 3px solid black;
-        width: 200px;
-        margin-bottom: 30px !important;
-        margin: auto;
-      }
-      nav {
-        margin: 0px;
-      }
-
-      #response-container {
-        display: none;
-        padding: 1rem;
-        margin: 3rem 5%;
-        font-size: 120%;
-        border: 5px dashed #ccc;
-        word-wrap: break-word;
-      }
-
-      label {
-        margin-left: 0.3rem;
-        margin-right: 0.3rem;
-      }
-
-      button {
-        font-size: 100%;
-        padding: 0.5rem;
-        margin: 0.3rem;
-      }
-
-      .nav-link {
-        color: white !important;
-      }
-
-      tr,
-      td {
-        border: 1px solid black;
-      }
-
-      /* Define widths for the table columns */
-      #data-table td:nth-child(1) {
-        width: 20%;
-      }
-
-      #data-table td:nth-child(2),
-      #data-table td:nth-child(3) {
-        width: 40%;
-      }
-
-      .droptarget {
-        overflow-y: auto !important;
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-        min-height: 35px;
-        max-height: 35px; /* Set a max-height to allow scrolling */
-        padding: 5px;
-        /*            border: 1px solid black;*/
-        margin-bottom: 15px;
-        position: relative;
-      }
-      .sleeping-door {
-        position: absolute;
-        width: 50px;
-        height: 10px;
-        background: gray;
-        z-index: 100;
-      }
-      .standing-door {
-        position: absolute;
-        width: 10px;
-        height: 50px;
-        background: gray;
-        z-index: 100;
-      }
-
-      .red-door-color {
-        background: red !important;
-      }
-
-      .orange-door-color {
-        background: orange !important;
-      }
-
-      .yellow-door-color {
-        background: yellow !important;
-      }
-
-      .green-door-color {
-        background: green !important;
-      }
-
-      .blue-door-color {
-        background: skyblue !important;
-      }
-
-      .violet-door-color {
-        background: violet !important;
-      }
-
-      .droptargets {
-        min-height: 35px;
-        max-height: 35px; /* Set a max-height to allow scrolling */
-        padding: 5px;
-        /*            border: 1px solid black;*/
-      }
-
-      #droptarget {
-        height: 50px;
-        padding: 5px;
-        border: none !important;
-      }
-
-      .room {
-        border: 2px solid black;
-        text-align: center;
-        background: blanchedalmond;
-        position: relative;
-        margin: auto;
-      }
-      .door {
-        border: 2px dashed black;
-        margin-top: 5px;
-      }
-      .toggleInput {
-        width: 90px;
-      }
-
-      .room-title {
-        text-align: center !important;
-      }
-
-      /*    .result-container {
-            margin: 20px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        .result-item {
-            margin-bottom: 10px;
-            padding: 10px;
-            background-color: #f9f9f9;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        .result-item h4 {
-            margin: 0;
-            font-size: 16px;
-            color: #333;
-        }
-        .result-item p {
-            margin: 0;
-            font-size: 14px;
-            color: #666;
-        }*/
-
-      .bg-light {
-        background: #eaeaea !important;
-      }
-    </style>
   </head>
 
   <body style="padding: 5px">
@@ -188,13 +14,17 @@
 
     <main id="body">
       <div class="row" style="height: 100vh !important">
+        <!-- input data section -->
         <div class="col-md-2">
+          <!-- try not to nest too hard, make left and right section fixed while have middle flexible -->
           <div class="row">
             <div class="col-md-12 p-2" style="height: 70vh">
               <div class="bg-light pt-2" style="height: 100%; width: 100%">
                 <h5 style="text-align: center">Eco Energy Tracker</h5>
+                <!-- rename navbar to house list -->
                 <div id="navBar"></div>
 
+                <!-- input hours -->
                 <div class="row mt-3" style="width: auto; margin: auto">
                   <div class="col-12"></div>
                   <div class="col-12">
@@ -217,6 +47,9 @@
                             </select>  -->
                     <input id="hours" class="form-control" />
                   </div>
+
+                  <!-- input rate, run, and targets -->
+                  <div class="col-12"></div>
                   <div class="col-12" style="margin: auto !important">
                     ₱ / Rate per kWh:
                     <input
@@ -270,6 +103,8 @@
                 </div>
               </div>
             </div>
+
+            <!-- perspective -->
             <div class="col-md-12 p-2" style="height: 30vh">
               <div
                 class="bg-light"
@@ -279,6 +114,8 @@
             </div>
           </div>
         </div>
+
+        <!-- layout/appliance section -->
         <div class="col-md-6">
           <div class="row">
             <div
@@ -294,12 +131,14 @@
                 <div class="row px-2" style="margin: auto">
                   <div class="col-4 my-auto">
                     <h6 style="text-align: center">
+                      <!-- current room name -->
                       <span id="stitle"> </span>
                     </h6>
                   </div>
-                  <div class="col-4 my-auto">
+                  <!-- <div class="col-4 my-auto">
                     <h6 style="text-align: center" id="hrsTitle"></h6>
-                  </div>
+                  </div> -->
+                  <!-- delete -->
                   <div class="col-4 my-auto mx-auto">
                     <img
                       src="delete.png"
@@ -311,6 +150,7 @@
                   </div>
                 </div>
 
+                <!-- the room container itself -->
                 <div
                   class="row m-4"
                   id="roomContainer"
@@ -318,6 +158,8 @@
                 ></div>
               </div>
             </div>
+
+            <!-- appliance -->
             <div
               id="applianceList"
               class="col-md-12 p-2 my-auto"
@@ -329,16 +171,17 @@
                 overflow: auto;
                 z-index: 1;
               "
-            >
-              <!-- Your other content here -->
-            </div>
+            ></div>
           </div>
         </div>
+
+        <!-- the summary sections -->
         <div class="col-md-4 p-2">
           <div
             class="bg-light p-2"
             style="height: 100vh; width: 100%; overflow: auto"
           >
+            <!-- i dont think the onclick is needed, rename id-->
             <h5
               class="text-center"
               id="exampleModalLabe"
@@ -348,313 +191,8 @@
             </h5>
             <h5 class="text-center" id="simulation_title"></h5>
 
+            <!-- the result container -->
             <div id="results" class="result-container"></div>
-
-            <h5
-              class="text-center"
-              id="compt"
-              style="cursor: pointer"
-              onclick="showComparative();"
-            >
-              Comparative Analysis
-            </h5>
-            <h5
-              class="text-center"
-              id="targett"
-              style="cursor: pointer"
-              onclick="showTarget();"
-            >
-              Target Consumption
-            </h5>
-
-            <div
-              id="showComparativeDiv"
-              style="
-                overflow: auto !important;
-                width: 100% !important;
-                height: auto !important;
-                margin: auto;
-              "
-            >
-              <h3 class="text-center" id="simulation_title"></h3>
-              <div
-                id="resultsComparative"
-                class="result-container p-1"
-                style="height: auto !important"
-              ></div>
-            </div>
-
-            <div
-              id="showTargetDiv"
-              style="
-                overflow: auto !important;
-                width: 100% !important;
-                margin: auto;
-              "
-            >
-              <form
-                id="targetForm"
-                style="width: 100%; margin: auto; overflow: auto"
-              >
-                <div class="row" style="width: 100%; margin: auto">
-                  <div class="col-12">
-                    <div class="col-12 row" style="width: 100%; margin: auto">
-                      <h5 style="font-size: 14px" class="text-center">
-                        Target Energy
-                        <input
-                          class="form-check-input"
-                          type="checkbox"
-                          value="1"
-                          id="checkEnergy"
-                        />
-                      </h5>
-                      <h5 style="font-size: 14px" class="text-center">
-                        Target Bill
-                        <input
-                          class="form-check-input"
-                          type="checkbox"
-                          value="1"
-                          id="checkTarget"
-                        />
-                      </h5>
-
-                      <div
-                        class="col-12 row"
-                        id="inputEnergy"
-                        style="width: 100%; margin: auto"
-                      >
-                        <div
-                          class="col-12"
-                          style="margin: auto"
-                          style="width: 100%; margin: auto"
-                        >
-                          <label for="targetAmount">Input kWh:</label>
-                          <input
-                            type="number"
-                            class="form-control"
-                            style="width: 100%"
-                            id="targetKWH"
-                            required
-                          />
-                        </div>
-
-                        <div class="col-12" style="width: 100%; margin: auto">
-                          <button
-                            type="button"
-                            style="
-                              margin-left: 0px;
-                              background: #ce3a00;
-                              border: none;
-                              width: 100%;
-                            "
-                            class="btn btn-primary mt-2"
-                            onclick="calculateSuggestionsEnergy()"
-                          >
-                            Calculate
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    class="col-12 row"
-                    style="width: 100%; margin: auto; overflow: auto"
-                  >
-                    <div
-                      class="col-12 row"
-                      id="inputTarget"
-                      style="width: 100%%; margin: auto"
-                    >
-                      <div class="col-12" style="margin: auto">
-                        <label for="targetAmount" style="font-size: 14px"
-                          >Target Bill Amount:</label
-                        >
-                        <input
-                          type="number"
-                          class="form-control"
-                          style="width: 100%"
-                          id="targetAmount"
-                          required
-                        />
-                      </div>
-                      <div
-                        class="col-12"
-                        style="margin: auto"
-                        style="width: 100%; margin: auto"
-                      >
-                        <label for="targetHours" style="font-size: 14px"
-                          >Target Hours:</label
-                        >
-                        <input
-                          type="number"
-                          class="form-control"
-                          style="width: 100%"
-                          id="targetHours"
-                          required
-                        />
-                      </div>
-
-                      <div class="col-12" style="width: 100%; margin: auto">
-                        <button
-                          type="button"
-                          style="
-                            margin-left: 0px;
-                            background: #ce3a00;
-                            border: none;
-                            width: 100%;
-                          "
-                          class="btn btn-primary mt-2"
-                          onclick="calculateSuggestions()"
-                        >
-                          Calculate
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <h5 class="text-center">Recommendations</h5>
-                <div
-                  id="suggestions"
-                  class="result-container"
-                  style="overflow: auto"
-                ></div>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!--   <nav class="navbar navbar-expand-lg navbar-light fixed-top text-white"  style="background: #FFAA33;">
-    </nav>
-    <br>
-    <br> -->
-
-      <!-- Modal -->
-      <!-- <div class="modal fade" id="receiptModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog  modal-lg modal-dialog-end modal-dialog-scrollable" style="position: absolute; right: 0; top: 0; margin: 0; ">
-    <div class="modal-content">
-      <div class="modal-header" style="border: none!important;">
-        <img align="right" src="arrow-right.svg" style="position:absolute!important; right:10px;top:10px;width:30px" data-bs-dismiss="modal" aria-label="Close" />
-      </div>
-      <div class="modal-body" style="overflow:auto!important">
-                <h2 class="text-center" id="exampleModalLabel">Consumption Summary</h2>
-            <h3 class="text-center" id="simulation_title"></h3>
-          <div id="results" class="result-container"></div>
-      </div>
-      
-    </div>
-  </div>
-</div>
- -->
-
-      <!-- Modal -->
-      <div
-        class="modal fade"
-        id="comparativeModal"
-        tabindex="-1"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
-      >
-        <div
-          class="modal-dialog modal-xl modal-dialog-end modal-dialog-scrollable"
-          style="width: auto !important"
-        >
-          <div class="modal-content" style="width: auto !important">
-            <div
-              class="modal-header"
-              style="border: none !important; height: 50px !important"
-            >
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <!-- <div class="modal-body" style="overflow:auto!important;width:auto!important;height: auto!important;">
-                <h2 class="text-center" style="margin-top:-20px!important" id="exampleModalLabel">Comparative Analysis</h2>
-            <h3 class="text-center" id="simulation_title"></h3>
-          <div id="resultsComparative" class="result-container p-5" style="height: auto!important;"></div>
-      </div> -->
-          </div>
-        </div>
-      </div>
-
-      <!-- Modal -->
-      <div
-        class="modal fade"
-        id="targetModal"
-        tabindex="-1"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
-      >
-        <div
-          class="modal-dialog modal-xl modal-dialog-end modal-dialog-scrollable"
-          style="width: auto !important"
-        >
-          <div class="modal-content" style="width: auto !important">
-            <div
-              class="modal-header"
-              style="border: none !important; height: 50px !important"
-            >
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <!--  <div class="modal-body" style="overflow:auto!important;width:auto!important;">
-                <h2 class="text-center" style="margin-top:-20px!important" id="exampleModalLabel">Target Consumption</h2>
-                <form id="targetForm">
-                    <div class="row">
-                        <div class="col-6">
-                            <div class="col-12 row">
-                              <div class="col-12">
-                                  <h2 class="text-center">Target Energy 
-                                    <input class="form-check-input" type="checkbox" value="1" id="checkEnergy"></h2>
-                                
-                              </div> 
-
-                               <div class="col-12 row" id="inputEnergy">
-                              <div class="col-12" >
-                                    <label for="targetAmount">Input kWh:</label>
-                                    <input type="number" class="form-control" id="targetKWH" required>
-                              </div>
-                              <button type="button" style="background:#CE3A00;border:none;" class="btn btn-primary mt-2" onclick="calculateSuggestionsEnergy()">Recommendations</button>
-                              </div>
-
-                        </div>
-                        </div>
-                        <div class="col-6 row">
-                              <div class="col-12">
-                                  <h2 class="text-center">Target Bill
-                                    <input class="form-check-input" type="checkbox" value="1" id="checkTarget"></h2>
-                                    
-                              </div>  
-                             <div class="col-12 row" id="inputTarget">
-                              <div class="col-6">
-                                    <label for="targetAmount">Target Bill Amount:</label>
-                                    <input type="number" class="form-control" id="targetAmount" required>
-                              </div>
-                              <div class="col-6">
-                                      <label for="targetHours">Target Hours:</label>
-                                    <input type="number" class="form-control"  id="targetHours" required>
-                              </div>
-                              <button type="button" style="background:#CE3A00;border:none;" class="btn btn-primary mt-2" onclick="calculateSuggestions()">Recommendations</button>
-                              </div>
-                        </div>
-                        
-                    </div>
-        </form>
-
-        <h2 class="text-center">Recommendations</h2>
-          <div id="suggestions" class="result-container p-5"></div>
-         </div> -->
-          </div>
-        </div>
-      </div>
 
       <p id="demo"></p>
 
