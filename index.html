@@ -225,6 +225,7 @@
                       id="ratePerHour"
                       class="form-control"
                     />
+
                     <button
                       type="button"
                       id="compute"
@@ -233,7 +234,25 @@
                     >
                       Run
                     </button>
-                    <button
+
+                    <div class="col-12">
+                      Target kWh:
+                      <input
+                        type="number"
+                        id="targetKwh"
+                        class="form-control"
+                      />
+                    </div>
+                    <div class="col-12">
+                      Target Bill:
+                      <input
+                        type="number"
+                        id="targetBill"
+                        class="form-control"
+                      />
+                    </div>
+
+                    <!-- <button
                       type="button"
                       id="stop"
                       class="btn text-white mt-2"
@@ -243,7 +262,7 @@
                         display: none;
                         margin: auto;
                       "
-                    ></button>
+                    ></button> -->
                   </div>
                   <div class="col-12 bg-success" style="margin: auto">
                     <center></center>
@@ -328,6 +347,7 @@
               Consumption Summary
             </h5>
             <h5 class="text-center" id="simulation_title"></h5>
+
             <div id="results" class="result-container"></div>
 
             <h5
@@ -1120,6 +1140,32 @@
         <td><strong>₱${totalCost.toFixed(2)}</strong></td>
     `;
         tableBody.appendChild(totalRow);
+
+        var targetKwh = document.getElementById("targetKwh").value;
+        var targetBill = document.getElementById("targetBill").value;
+
+        // Check if target kWh or target Bill has input and append an extra row
+        if (targetKwh || targetBill) {
+          let targetRow = document.createElement("tr");
+          targetRow.innerHTML = `
+            <td colspan="4" class="text-center"><strong>Target</strong></td>
+            <td><strong>${targetKwh ? targetKwh + " kWh" : ""}</strong></td>
+            <td><strong>₱${targetBill ? targetBill : ""}</strong></td>
+          `;
+          tableBody.appendChild(targetRow);
+
+          let differenceRow = document.createElement("tr");
+          differenceRow.innerHTML = `
+            <td colspan="4" class="text-center"><strong>Difference</strong></td>
+            <td><strong>${
+              targetKwh ? (targetKwh - totalEnergy).toFixed(2) + " kWh" : ""
+            }</strong></td>
+            <td><strong>₱${
+              targetBill ? (targetBill - totalCost).toFixed(2) : ""
+            }</strong></td>
+          `;
+          tableBody.appendChild(differenceRow);
+        }
 
         // Append the table to the results
         resultsDiv.appendChild(table);
