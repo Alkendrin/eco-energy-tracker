@@ -193,31 +193,12 @@
 
             <!-- the result container -->
             <div id="results" class="result-container"></div>
+          </div>
+        </div>
 
       <p id="demo"></p>
 
-      <footer
-        class="footer mt-auto fixed-bottom"
-        style="
-          background: #ffaa33 !important;
-          width: 100% !important;
-          display: none;
-        "
-      >
-        <center>
-          <img src="arrow-up.png" id="openDrawer" style="width: 50px" />
-          <img src="down.png" id="closeDrawer" style="width: 50px" />
-        </center>
-        <div
-          class="container"
-          id="applianceContainer"
-          style="width: 100% !important"
-        >
-          <div id="applianceList" class="row"></div>
-        </div>
-      </footer>
-
-      <!-- Modal Structure -->
+      <!-- appliance toggle modal -->
       <div
         class="modal fade"
         id="appModal"
@@ -267,10 +248,11 @@
       //     document.getElementById("loading-screen").style.display = "none"; // Hide the loading screen
       //     document.getElementById("body").style.display = ""; // Show the main body
       //   }, 3000); // 3000 milliseconds = 3 seconds
-    </script>
 
-    <script type="text/javascript">
+      // perspective
+
       function showHouse() {
+        
         var housename = localStorage.getItem("sessionId");
 
         const container = document.getElementById("persepective");
@@ -319,37 +301,8 @@
         container.innerHTML = "";
         container.appendChild(img);
       }
-
-      const element = document.getElementById("checkEnergy");
-      const element2 = document.getElementById("checkTarget");
-      document.getElementById("inputTarget").style.display = "none";
-      document.getElementById("inputEnergy").style.display = "none";
-
-      element.addEventListener("click", () => {
-        element2.checked = false;
-        hide();
-      });
-
-      element2.addEventListener("click", () => {
-        element.checked = false;
-        hide2();
-      });
-
-      function hide() {
-        document.getElementById("suggestions").innerHTML = "";
-        document.getElementById("inputTarget").style.display = "none";
-        document.getElementById("inputEnergy").style.display = "";
-      }
-
-      function hide2() {
-        document.getElementById("suggestions").innerHTML = "";
-
-        document.getElementById("inputEnergy").style.display = "none";
-        document.getElementById("inputTarget").style.display = "";
-      }
-    </script>
-
-    <script>
+      
+      // calculate kwh target
       function calculateSuggestionsEnergy() {
         var sessionId = localStorage.getItem("sessionId");
         if (!sessionId) {
@@ -401,15 +354,9 @@
 
       function getSuggestionEnergy(response) {
         const suggestionsDiv = document.getElementById("suggestions");
-        suggestions.innerHTML = response.message;
-        // suggestionsDiv.innerHTML = suggestions; // Clear previous results
-        // response.message.forEach(item => {
-        //     const div = document.createElement('div');
-        //     div.innerHTML = `<p>${item.appliance} in ${item.room} - Run for ${item.hours.toFixed(2)} hours</p>`;
-        //     suggestionsDiv.appendChild(div);
-        // });
       }
 
+      // calculate bill target
       function calculateSuggestions() {
         var sessionId = localStorage.getItem("sessionId");
         if (!sessionId) {
@@ -460,16 +407,9 @@
       function getSuggestion(response) {
         const suggestionsDiv = document.getElementById("suggestions");
         suggestions.innerHTML = response.message;
-        // suggestionsDiv.innerHTML = suggestions; // Clear previous results
-        // response.message.forEach(item => {
-        //     const div = document.createElement('div');
-        //     div.innerHTML = `<p>${item.appliance} in ${item.room} - Run for ${item.hours.toFixed(2)} hours</p>`;
-        //     suggestionsDiv.appendChild(div);
-        // });
       }
-    </script>
 
-    <script>
+      // for appliance toggle
       document.addEventListener("show.bs.modal", function (event) {
         // Get the triggering element
         const triggerElement = event.relatedTarget;
@@ -953,27 +893,6 @@
         document.getElementById("results").style.display = "none";
 
         showRoom();
-      }
-
-      var closeDrawer = document.getElementById("closeDrawer");
-      var openDrawer = document.getElementById("openDrawer");
-
-      closeDrawer.style.display = "none";
-
-      // toggle drawer
-      var open = document.getElementById("openDrawer");
-      open.addEventListener("click", toggleDrawerOpen);
-      function toggleDrawerOpen() {
-        document.getElementById("applianceContainer").style.display = "block";
-        openDrawer.style.display = "none";
-        closeDrawer.style.display = "block";
-      }
-      var close = document.getElementById("closeDrawer");
-      close.addEventListener("click", toggleDrawerClose);
-      function toggleDrawerClose() {
-        document.getElementById("applianceContainer").style.display = "none";
-        openDrawer.style.display = "block";
-        closeDrawer.style.display = "none";
       }
 
       async function showNavbar() {
