@@ -449,9 +449,7 @@
         // Set the toggle switch checked state based on the current input value
         toggleSwitch.checked = input.value === "1";
       }
-    </script>
 
-    <script>
       let running = false;
       let myArray = [];
       let intervalId;
@@ -544,19 +542,6 @@
         console.log(myArray);
       }
 
-      // Stop simulation and show the results
-      const stopBtn = document.getElementById("stop");
-      stopBtn.addEventListener("click", function () {
-        running = false;
-        clearInterval(intervalId);
-
-        // Switch buttons again
-        document.getElementById("compute").style.display = "";
-        document.getElementById("stop").style.display = "none";
-
-        stopAndCompute();
-      });
-
       function stopAndCompute() {
         document.getElementById("results").style.display = "block";
 
@@ -647,139 +632,9 @@
 
         // Append the table to the results
         resultsDiv.appendChild(table);
-
-        // Show modal or display the results
-        var myModal = new bootstrap.Modal(
-          document.getElementById("receiptModal"),
-          {
-            keyboard: false,
-          }
-        );
-        myModal.show();
       }
 
-      document.getElementById("showTargetDiv").style.display = "none";
-
-      function showTarget() {
-        document.getElementById("showComparativeDiv").style.display = "none";
-        document.getElementById("showTargetDiv").style.display = "block";
-
-        document.getElementById("compt").style.backgroundColor =
-          "black!important";
-        document.getElementById("targett").style.backgroundColor =
-          "red!important";
-
-        // var myModal = new bootstrap.Modal(document.getElementById('targetModal'), {
-        //     keyboard: false
-        // });
-        // myModal.show();
-      }
-
-      document.getElementById("showComparativeDiv").style.display = "none";
-      function showComparative() {
-        document.getElementById("showTargetDiv").style.display = "none";
-
-        document.getElementById("showComparativeDiv").style.display = "block";
-
-        document.getElementById("compt").style.backgroundColor =
-          "red!important";
-        document.getElementById("targett").style.backgroundColor =
-          "black!important";
-
-        const resultsDiv = document.getElementById("resultsComparative");
-        resultsDiv.style.display = "block";
-        resultsDiv.innerHTML = ""; // Clear the previous content
-
-        // Make the div scrollable with a fixed height
-        resultsDiv.style.overflowY = "auto";
-        resultsDiv.style.maxHeight = "auto";
-
-        let totalEnergy = 0; // Variable to store total energy consumption across all rooms
-        let totalCost = 0; // Variable to store total cost across all rooms
-
-        let rowDiv = null; // Placeholder for a new Bootstrap row
-
-        // Loop through each room and its appliances
-        Object.keys(myArray).forEach((roomName, index) => {
-          let roomEnergy = 0; // Variable to store energy consumption for the current room
-          let roomCost = 0; // Variable to store cost for the current room
-
-          if (index % 3 === 0) {
-            // Create a new row every 3 columns
-            rowDiv = document.createElement("div");
-            rowDiv.className = "row";
-            resultsDiv.appendChild(rowDiv);
-          }
-
-          // Create a Bootstrap column for each room box
-          let roomDiv = document.createElement("div");
-          roomDiv.className = "col-md-12"; // Bootstrap 3 column for 3 boxes per row
-          roomDiv.style.border = "1px solid #ccc";
-          roomDiv.style.padding = "5px";
-          // roomDiv.style.backgroundColor = '#f9f9f9';
-          roomDiv.style.borderRadius = "5px";
-
-          // Room title
-          let roomTitle = document.createElement("p");
-          roomTitle.className = "room-title text-center";
-          roomTitle.textContent = roomName; // Set room name as the title
-          roomDiv.appendChild(roomTitle);
-
-          // Add each appliance under the room title
-          myArray[roomName].forEach((item) => {
-            let resultItem = document.createElement("div");
-            resultItem.className = "result-item";
-            resultItem.innerHTML = `<p class="text-center">
-                ${item.applianceName}...${
-              item.hours_used
-            } hours....${item.energy.toFixed(
-              2
-            )} kWh.......₱${item.amount.toFixed(2)}
-            </p>`;
-            roomDiv.appendChild(resultItem);
-
-            // Accumulate room's total energy and cost
-            roomEnergy += item.energy;
-            roomCost += item.amount;
-
-            // Accumulate overall total energy and cost
-            totalEnergy += item.energy;
-            totalCost += item.amount;
-          });
-
-          // Display room total for energy and cost
-          let roomTotalDiv = document.createElement("div");
-          roomTotalDiv.className = "room-total text-center";
-          roomTotalDiv.innerHTML = `<p>Room Total: ${roomEnergy.toFixed(
-            2
-          )} kWh.....₱${roomCost.toFixed(2)}</p>`;
-          roomDiv.appendChild(roomTotalDiv);
-
-          // Append room div to the current row
-          rowDiv.appendChild(roomDiv);
-        });
-
-        // Create a div for the total results across all rooms
-        let totalDiv = document.createElement("div");
-        totalDiv.className = "total-results text-center";
-        totalDiv.style.marginTop = "15px";
-        totalDiv.innerHTML = `<p>Total Energy Consumption: ${totalEnergy.toFixed(
-          2
-        )} kWh.....₱${totalCost.toFixed(2)}</p>`;
-
-        // Append the total div to the main results
-        resultsDiv.appendChild(totalDiv);
-
-        // Show modal or display the results
-        // var myModal = new bootstrap.Modal(document.getElementById('comparativeModal'), {
-        //     keyboard: false
-        // });
-      }
-    </script>
-
-    <script>
-      // for footer/appliance show hide document.getElementById('applianceContainer').style.display = 'none';
-
+      // canvas update functions
       function updateCanvas(sessionId, roomId, imageId, fromRoom, canvasId) {
         // pywebview.api
         //   .update_appliance_canvas(
@@ -862,16 +717,9 @@
 
       function canvasShowMessage(response) {
         showRoom();
-
-        Swal.fire({
-          position: "top-end",
-          icon: response.message ? "success" : "error",
-          title: response.message ? response.message : response.error,
-          showConfirmButton: false,
-          timer: 1500,
-        });
       }
 
+      // select current layout
       function setID(name, simulationId) {
         localStorage.setItem("sessionName", name);
         localStorage.setItem("sessionId", simulationId);
@@ -895,6 +743,7 @@
         showRoom();
       }
 
+      // show list of layout
       async function showNavbar() {
         // pywebview.api.navbar().then(getNavbar);
         fetch("http://127.0.0.1:5000/api/navbar")
@@ -910,6 +759,7 @@
         a.innerHTML = response.message;
       }
 
+      // layout container
       function showRoom() {
         var simulationId = localStorage.getItem("sessionId");
         // pywebview.api.fetch_room(simulationId).then(outputRoom);
@@ -926,56 +776,7 @@
         a.innerHTML = response.message;
       }
 
-      // Does this do anything?
-      function createRoom() {
-        var room = document.getElementById("roomName").value;
-        var simulationId = localStorage.getItem("sessionId");
-        pywebview.api.create_room(room, simulationId).then(roomShowMessage);
-      }
-
-      function roomShowMessage(response) {
-        showRoom();
-
-        Swal.fire({
-          position: "top-end",
-          icon: response.message ? "success" : "error",
-          title: response.message ? response.message : response.error,
-          showConfirmButton: false,
-          timer: 1500,
-        });
-      }
-
-      // Does this do anything?
-      function createSimulation() {
-        var name = document.getElementById("simulationName").value;
-        pywebview.api.create_simulation(name).then(simulationShowMessage);
-      }
-
-      function simulationShowMessage(response) {
-        var name = document.getElementById("simulationName").value;
-        localStorage.setItem("sessionName", name);
-        localStorage.setItem("sessionId", response.session_id);
-        var sessionName = localStorage.getItem("sessionName");
-        var sessionId = localStorage.getItem("sessionId");
-        document.getElementById("stitle").innerHTML = sessionName;
-
-        showRoom();
-
-        if (sessionName) {
-          //document.getElementById('addRoom').style.display = '';
-        } else {
-          // document.getElementById('addRoom').style.display = 'none';
-        }
-
-        Swal.fire({
-          position: "top-end",
-          icon: response.message ? "success" : "error",
-          title: response.message ? response.message : response.error,
-          showConfirmButton: false,
-          timer: 1500,
-        });
-      }
-
+      // show appliance list
       function showAppliance() {
         // pywebview.api.appliance_list().then(outputApplianceList);
         fetch("http://127.0.0.1:5000/api/appliance_list")
@@ -986,21 +787,6 @@
           );
       }
 
-      function outputApplianceList(response) {
-        const a = document.getElementById("applianceList");
-        a.innerHTML = response.message;
-      }
-
-      // Display response in an HTML table
-      function showResponse(response) {
-        const tbody = document.getElementById("table-body");
-        tbody.innerHTML = response.message;
-
-        // Check if response has any data
-      }
-
-      // To run in
-      // window.addEventListener("pywebviewready", function () {
       window.addEventListener("DOMContentLoaded", function () {
         showNavbar();
         showAppliance();
@@ -1019,44 +805,16 @@
           document.getElementById("delete").style.display = "none";
         }
       });
-    </script>
-
-    <script>
-      let draggedElement = null;
-
-      // Handle drag start event
+ 
+      // Drag and drop functions
       // Changed to handle browser but doesn't work on app
+      let draggedElement = null;
       document.addEventListener("dragstart", function (event) {
-        // Store the dragged element reference
-        //   draggedElement = event.target;
-
-        // Set the dragged data (we can use the element's ID or a reference)
-        // event.dataTransfer.setData("Text", event.target.id);
-        // event.dataTransfer.setData("custom_id", event.target.dataset.customId);
-        // event.dataTransfer.setData("is_update", event.target.dataset.isUpdate);
-        // event.dataTransfer.setData("canvas_id", event.target.dataset.canvasId);
         draggedElement = event.target.cloneNode(true); // Clone the dragged element
         event.dataTransfer.setData("Text", event.target.id);
         event.dataTransfer.setData("custom_id", event.target.dataset.customId);
         event.dataTransfer.setData("is_update", event.target.dataset.isUpdate);
         event.dataTransfer.setData("canvas_id", event.target.dataset.canvasId);
-
-        // Output some text when starting to drag the element
-        //   document.getElementById("demo").innerHTML = "Started to drag the element.";
-
-        // Change the opacity of the draggable element
-        //   event.target.style.opacity = "0.4";
-      });
-
-      // Change output text color while dragging
-      document.addEventListener("drag", function (event) {
-        //   document.getElementById("demo").style.color = "red";
-      });
-
-      // Reset opacity and output text when drag ends
-      document.addEventListener("dragend", function (event) {
-        //   document.getElementById("demo").innerHTML = "Finished dragging the element.";
-        event.target.style.opacity = "1";
       });
 
       // Handle drag enter event (change border of the drop target)
