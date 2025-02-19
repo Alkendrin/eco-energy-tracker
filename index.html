@@ -810,7 +810,7 @@
       // Changed to handle browser but doesn't work on app
       let draggedElement = null;
       document.addEventListener("dragstart", function (event) {
-        draggedElement = event.target.cloneNode(true); // Clone the dragged element
+        draggedElement = event.target;
         event.dataTransfer.setData("Text", event.target.id);
         event.dataTransfer.setData("custom_id", event.target.dataset.customId);
         event.dataTransfer.setData("is_update", event.target.dataset.isUpdate);
