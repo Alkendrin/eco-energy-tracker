@@ -238,7 +238,7 @@
       </div>
     </main>
 
-    <script>
+    <!-- <script>
       // Disabling Loading Screen
       //   document.getElementById("body").style.display = "none"; // Show the main body
 
@@ -250,7 +250,6 @@
       //   }, 3000); // 3000 milliseconds = 3 seconds
 
       // perspective
-
       function showHouse() {
         
         var housename = localStorage.getItem("sessionId");
@@ -321,15 +320,6 @@
         document.getElementById("suggestions").innerHTML = "";
 
         if (target_kwh && ratePerHour) {
-          // Send data to Python backend
-          //   const suggestions = pywebview.api
-          //     .get_suggestions_energy(target_kwh, ratePerHour, sessionId)
-          //     .then(getSuggestionEnergy);
-
-          //   // Display suggestions
-          // } else {
-          //   alert("Please enter valid kwh, and rate Per Hour.");
-          // }
           fetch("http://127.0.0.1:5000/api/get_suggestions_energy", {
             method: "POST",
             headers: {
@@ -370,15 +360,6 @@
         document.getElementById("suggestions").innerHTML = "";
 
         if (targetAmount && targetHours && ratePerHour) {
-          // Send data to Python backend
-          // const suggestions = pywebview.api
-          //   .get_suggestions(
-          //     parseFloat(targetAmount),
-          //     targetHours,
-          //     ratePerHour,
-          //     sessionId
-          //   )
-          //   .then(getSuggestion);
           fetch("http://127.0.0.1:5000/api/get_suggestions", {
             method: "POST",
             headers: {
@@ -636,15 +617,6 @@
 
       // canvas update functions
       function updateCanvas(sessionId, roomId, imageId, fromRoom, canvasId) {
-        // pywebview.api
-        //   .update_appliance_canvas(
-        //     sessionId,
-        //     roomId,
-        //     imageId,
-        //     fromRoom,
-        //     canvasId
-        //   )
-        //   .then(canvasShowMessage);
         fetch("http://127.0.0.1:5000/api/update_appliance_canvas", {
           method: "POST",
           headers: {
@@ -671,7 +643,6 @@
       }
 
       function removeFromCanvas(canvasId) {
-        // pywebview.api.delete_appliance_canvas(canvasId).then(canvasShowMessage);
         fetch("http://127.0.0.1:5000/api/delete_appliance_canvas", {
           method: "POST",
           headers: {
@@ -694,9 +665,6 @@
       }
 
       function addToCanvas(sessionId, roomId, imageId) {
-        // pywebview.api
-        //   .add_appliance_canvas(sessionId, roomId, imageId)
-        //   .then(canvasShowMessage);
         fetch("http://127.0.0.1:5000/api/add_appliance_canvas", {
           method: "POST",
           headers: {
@@ -745,7 +713,6 @@
 
       // show list of layout
       async function showNavbar() {
-        // pywebview.api.navbar().then(getNavbar);
         fetch("http://127.0.0.1:5000/api/navbar")
           .then((response) => response.json())
           .then((data) => getNavbar(data))
@@ -762,7 +729,6 @@
       // layout container
       function showRoom() {
         var simulationId = localStorage.getItem("sessionId");
-        // pywebview.api.fetch_room(simulationId).then(outputRoom);
         fetch(
           `http://127.0.0.1:5000/api/fetch_room?simulationId=${simulationId}`
         )
@@ -778,13 +744,17 @@
 
       // show appliance list
       function showAppliance() {
-        // pywebview.api.appliance_list().then(outputApplianceList);
         fetch("http://127.0.0.1:5000/api/appliance_list")
           .then((response) => response.json())
           .then((data) => outputApplianceList(data))
           .catch((error) =>
             console.error("Error fetching appliance list:", error)
           );
+      }
+  
+      function outputApplianceList(response) {
+        const a = document.getElementById("applianceList");
+        a.innerHTML = response.message;
       }
 
       window.addEventListener("DOMContentLoaded", function () {
@@ -868,23 +838,14 @@
           } else {
             removeFromCanvas(canvasId);
           }
-
-          //save to canvas table on db
-          //addToCanvas(sessionId ,roomId, imageId);
-
-          // Remove the dragged element from its original container (if it has a parent)
-          // if (draggedElement && draggedElement.parentNode) {
-          //   draggedElement.parentNode.removeChild(draggedElement);
-          // }
-
-          // Append the dragged element (or a new image) to the drop target
           event.target.appendChild(draggedElement);
         }
       });
-    </script>
+    </script> -->
 
     <script src="assets/bootstrap.min.js"></script>
     <script src="assets/sweetalert.js"></script>
+    <script src="script.js"></script>
 
     <script type="text/javascript"></script>
   </body>
