@@ -13,227 +13,45 @@ CORS(app)
 
 class Api:
 
-	# To browser
-	# def create_room(self, room, simulation_id):
-	# 	print(f"Python received create_room: {room}, {simulation_id}")
-	# 	return f"Room '{room}' created successfully!"
+	# list of house
+	def navbar(self):
 
-	def delete_appliance_canvas(self, canvas_id):
-		try:
-			# Connect to the SQLite database
-			connection = sqlite3.connect('ecoenergy.db')
-			cursor = connection.cursor()
-				
-			# Insert the appliance and image path into the database
-			query = "DELETE FROM canvas WHERE id = ?;"
-			cursor.execute(query, (canvas_id,))
-			connection.commit()  # Commit the transaction
-				
-			return {'message': 'Removed successfully.'}
+		# Connect to the SQLite database (it will create the file if it doesn't exist)
+		connection = sqlite3.connect('ecoenergy.db')
+		cursor = connection.cursor()
 			
-		except sqlite3.Error as e:
-			return {'error': 'Error occured please try again'}
-			
-		finally:
-			if cursor:
-				cursor.close()
-			if connection:
-				connection.close()
+		# Execute the query
+		cursor.execute("SELECT * FROM simulation ORDER BY name;")
+		rows = cursor.fetchall()  # Fetch all rows from the query result
+		columns = [description[0] for description in cursor.description]  # Get column names
 
+		# Return the fetched data as a string (for simplicity)
 
-	def update_appliance_canvas(self, simulation_id ,room_id, appliance_id, from_room, canvas_id):
-		try:
-			connection = sqlite3.connect('ecoenergy.db')
-			cursor = connection.cursor()
+		r = ""
 
-			restricted_appliance_id_1 = ['91', '92', '93', '94']
-			restricted_appliance_id_2 = ['77', '78', '79', '80']
+		simulations = ""
 
-			restricted_rooms_id_1 = [
-	            'bath1', 'bath2', 'bed2Right', 'bathright1', 'bathright2',
-	            'bed1right', 'bed1', 'bathLeft1', 'bathLeft2', 'bedroomLeft22',
-	            'bedroomRight11', 'bathRight1', 'bathRight2', 'bedroomRight22',
-	            'bedroomLeft1', 'bedroomLeft2', 'bathLeft', 'bedroomRight1',
-	            'bedroomRight2', 'bathRight', 'bathRight123', 'bedroom1T2',
-	            'bedroom3T2', 'bedroom4T2', 'bedroom6T2', 'bedroom7T2',
-	            'bedroom9T2', 'masterbed1T2', 'masterbed2T2', 'masterbed3T2',
-	            'bedroomLeft11', 'bed1dup1', 'bed2dup1', 'master1dup1', 'master2dup1', 'bed1B2', 'bed2B2','bed3B2',
-	            'masterbedB3', 'bedB3', 'bed2B3', 'bathB2', 'tb1tg', 'tb2tg', 'tb3tg',
-	            'bath1dup1', 'bath2dup1','bath3dup1','bath4dup1', 'masterbathB3','bathB3'
-	       		]
+		for row in rows:
+			row_data = {columns[i]: row[i] for i in range(len(row))}  # Create dict of column names and row values
+			simulations += f"""
+							<li><p onclick="setID('{row_data['name']}', '{row_data['id']}');" class="text-white" >{row_data['name']}</p></li>
+						"""
+		r += """
+				<div class="nav-item dropdown">
+						<a style="color:black!important" class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+							List of House
+						</a>
+						<ul class="dropdown-menu p-2 text-white" aria-labelledby="navbarDropdownMenuLink" style="background:gray;width:230px!important">
+						"""
+		r +=   simulations
 
-			restricted_rooms_id_2 = [
-	            'bath1', 'bath2', 'bathright1', 'bathright2',
-	            'bed1right', 'bathLeft1', 'bathLeft2','bathRight1', 'bathRight2', 'bathLeft',
-	            'bedroomRight2','bathB2', 'tb1tg', 'tb2tg', 'tb3tg',
-	            'bath1dup1', 'bath2dup1','bath3dup1','bath4dup1', 'masterbathB3','bathB3'
-	       		]	       		
+		r += """
+						</ul>
+					</div>
+		"""
+		return {'message': r}
 
-
-			if room_id in restricted_rooms_id_1 and appliance_id in restricted_appliance_id_1:
-				return {'error': 'Unable to transfer appliance to this room, for safety purposes.'}
-
-			if room_id in restricted_rooms_id_2 and appliance_id in restricted_appliance_id_2:
-				return {'error': 'Unable to transfer appliance to this room, for safety purposes.'}			
-
-			# Insert the appliance and image path into the database
-			query = "UPDATE canvas SET room_id = ? WHERE id = ?;"
-			cursor.execute(query, (room_id, canvas_id))
-			connection.commit()  # Commit the transaction
-					
-			return {'message': 'Transfered successfully.'}
-			
-		except sqlite3.Error as e:
-			return {'error': 'Error occured please try again'}
-			
-		finally:
-			if cursor:
-				cursor.close()
-			if connection:
-				connection.close()
-
-
-	def add_appliance_canvas(self, simulation_id, room_id, appliance_id):
-	    try:
-	    	# Connect to the SQLite database
-	        connection = sqlite3.connect('ecoenergy.db')
-	        cursor = connection.cursor()
-
-	        restricted_appliance_id_1 = ['91', '92', '93', '94']
-	        restricted_appliance_id_2 = ['77', '78', '79', '80']
-
-	        restricted_rooms_id_1 = [
-	            'bath1', 'bath2', 'bed2Right', 'bathright1', 'bathright2',
-	            'bed1right', 'bed1', 'bathLeft1', 'bathLeft2', 'bedroomLeft22',
-	            'bedroomRight11', 'bathRight1', 'bathRight2', 'bedroomRight22',
-	            'bedroomLeft1', 'bedroomLeft2', 'bathLeft', 'bedroomRight1',
-	            'bedroomRight2', 'bathRight', 'bathRight123', 'bedroom1T2',
-	            'bedroom3T2', 'bedroom4T2', 'bedroom6T2', 'bedroom7T2',
-	            'bedroom9T2', 'masterbed1T2', 'masterbed2T2', 'masterbed3T2',
-	            'bedroomLeft11', 'bed1dup1', 'bed2dup1', 'master1dup1', 'master2dup1', 'bed1B2', 'bed2B2','bed3B2',
-	            'masterbedB3', 'bedB3', 'bed2B3', 'bathB2', 'tb1tg', 'tb2tg', 'tb3tg',
-	            'bath1dup1', 'bath2dup1','bath3dup1','bath4dup1', 'masterbathB3','bathB3'
-	       		]
-	       	restricted_rooms_id_2 = [
-	            'bath1', 'bath2', 'bathright1', 'bathright2',
-	            'bed1right', 'bathLeft1', 'bathLeft2','bathRight1', 'bathRight2', 'bathLeft',
-	            'bedroomRight2','bathB2', 'tb1tg', 'tb2tg', 'tb3tg',
-	            'bath1dup1', 'bath2dup1','bath3dup1','bath4dup1', 'masterbathB3','bathB3'
-	       		]
-	       	if room_id in restricted_rooms_id_1 and appliance_id in restricted_appliance_id_1:
-	       		return {'error': 'Unable to transfer appliance to this room, for safety purposes.'}
-	       	if room_id in restricted_rooms_id_2 and appliance_id in restricted_appliance_id_2:
-	       		return {'error': 'Unable to transfer appliance to this room, for safety purposes.'}
-
-	        # Insert the appliance and image path into the database
-	        query = "INSERT INTO canvas(simulation_id, room_id, appliance_id) VALUES(?, ?, ?);"
-	        cursor.execute(query, (simulation_id, room_id, appliance_id))
-	        connection.commit()  # Commit the transaction
-
-	        return {'message': 'Appliance added to room.'}
-	    except sqlite3.Error as e:
-	    	return {'error': 'Error occurred, please try again'}
-	    finally:
-	    	if cursor:
-	    		cursor.close()
-	    	if connection:
-	    		connection.close()
-	    # except sqlite3.Error as e:
-	    # 	return {'error': 'Error occurred, please try again'}
-
-		# finally:
-		# 	if cursor:
-		# 		cursor.close()
-		# 	if connection:
-		# 		connection.close()
-
-
-	def create_room(self, room_name, simulation_id):
-		try:
-			# Connect to the SQLite database
-			connection = sqlite3.connect('ecoenergy.db')
-			cursor = connection.cursor()
-				
-			# Insert the appliance and image path into the database
-			query = "INSERT INTO room(name, simulation_id) VALUES(?, ?);"
-			cursor.execute(query, (room_name, simulation_id))
-			connection.commit()  # Commit the transaction
-				
-			return {'message': 'Room created successfully.'}
-			
-		except sqlite3.Error as e:
-			return {'error': 'Error occured please try again'}
-
-		finally:
-			if cursor:
-				cursor.close()
-			if connection:
-				connection.close()
-
-
-	def create_simulation(self, name):
-		try:
-			# Connect to the SQLite database
-			connection = sqlite3.connect('ecoenergy.db')
-			cursor = connection.cursor()
-				
-			# Insert the appliance and image path into the database
-			query = "INSERT INTO simulation(name) VALUES(?);"
-			cursor.execute(query, (name,))
-			connection.commit()  # Commit the transaction
-			session_id = cursor.lastrowid
-				
-			return {'message': 'Simulation created successfully.', 'session_id': session_id}
-			
-		except sqlite3.Error as e:
-			return {'error': 'Error occured please try again'}
-			
-		finally:
-			if cursor:
-				cursor.close()
-			if connection:
-				connection.close()
-
-	def upload_image(self, base64_image, appliance, name, watt):
-			try:
-				# Decode the base64 image
-				image_data = base64.b64decode(base64_image)
-				image_name = f"{str(uuid.uuid4())}.png"
-				
-				# Specify the upload folder path
-				upload_folder = os.path.join(os.getcwd(), 'assets/uploads')
-				
-				# Create the folder if it doesn't exist
-				if not os.path.exists(upload_folder):
-					os.makedirs(upload_folder)
-				
-				# Full file path for the image
-				file_path = os.path.join(upload_folder, image_name)
-				
-				# Write the image to the folder
-				with open(file_path, 'wb') as f:
-					f.write(image_data)
-				
-				# Connect to the SQLite database
-				connection = sqlite3.connect('ecoenergy.db')
-				cursor = connection.cursor()
-				
-				# Insert the appliance and image path into the database
-				query = "INSERT INTO sub_appliance(appliance_id, image, name, watt) VALUES(?, ?, ?, ?);"
-				cursor.execute(query, (appliance, image_name, name, watt))
-				connection.commit()  # Commit the transaction
-				
-				return f'file://{file_path}'
-			
-			except sqlite3.Error as e:
-				return f"Error: {e}"
-			
-			finally:
-				if cursor:
-					cursor.close()
-				if connection:
-					connection.close()
-
+	# list of appliances 
 	def appliance_list(self):
 		try:
 			# Connect to the SQLite database
@@ -284,153 +102,6 @@ class Api:
 				result += f"""</div>
 				"""
 			
-			return {'message': result}
-		
-		except sqlite3.Error as e:
-			return {'message': f"Error: {e}"}
-		finally:
-			cursor.close()
-			connection.close()
-
-	def navbar(self):
-
-		# Connect to the SQLite database (it will create the file if it doesn't exist)
-		connection = sqlite3.connect('ecoenergy.db')
-		cursor = connection.cursor()
-			
-		# Execute the query
-		cursor.execute("SELECT * FROM simulation ORDER BY name;")
-		rows = cursor.fetchall()  # Fetch all rows from the query result
-		columns = [description[0] for description in cursor.description]  # Get column names
-
-		# Return the fetched data as a string (for simplicity)
-
-		r = ""
-
-		simulations = ""
-
-		for row in rows:
-			row_data = {columns[i]: row[i] for i in range(len(row))}  # Create dict of column names and row values
-			simulations += f"""
-						 <li><p onclick="setID('{row_data['name']}', '{row_data['id']}');" class="text-white" >{row_data['name']}</p></li>
-						"""
-		r += """
-				<div class="nav-item dropdown">
-						<a style="color:black!important" class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-							List of House
-						</a>
-						<ul class="dropdown-menu p-2 text-white" aria-labelledby="navbarDropdownMenuLink" style="background:gray;width:230px!important">
-						"""
-		r +=   simulations
-
-		r += """
-						</ul>
-					</div>
-		"""
-
-
-		return {'message': r}
-	# def navbar(self):
-
-	# 	# Connect to the SQLite database (it will create the file if it doesn't exist)
-	# 	connection = sqlite3.connect('ecoenergy.db')
-	# 	cursor = connection.cursor()
-			
-	# 	# Execute the query
-	# 	cursor.execute("SELECT * FROM simulation ORDER BY name;")
-	# 	rows = cursor.fetchall()  # Fetch all rows from the query result
-	# 	columns = [description[0] for description in cursor.description]  # Get column names
-
-	# 	# Return the fetched data as a string (for simplicity)
-
-	# 	r = ""
-
-	# 	simulations = ""
-
-	# 	for row in rows:
-	# 		row_data = {columns[i]: row[i] for i in range(len(row))}  # Create dict of column names and row values
-	# 		simulations += f"""
-	# 					 <li><p onclick="setID('{row_data['name']}', '{row_data['id']}');" class="text-white" >{row_data['name']}</p></li>
-	# 					"""
-	# 	r += """<div class="container-fluid">
-			
-	# 		<div >
-	# 			<button class="navbar-toggler text-white" style="color:white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-	# 			<span class="navbar-toggler-icon text-white" style="color:white"></span>
-	# 			</button>
-
-	# 		</div>
-			
-	# 		<div class="collapse navbar-collapse" id="navbarNavDropdown">
-	# 			<ul class="navbar-nav text-white">
-	# 				<li class="nav-item">
-	# 					<a class="nav-link active" aria-current="page" href="index.html">Home</a>
-	# 				</li>
-
-				
-
-	# 				<li class="nav-item">
-	# 					<span class="nav-link" onclick="showComparative();" >Comparative Analysis</span>
-	# 				</li>
-
-	# 				<li class="nav-item">
-	# 					<span class="nav-link" onclick="showTarget();" >Target Consumption</span>
-	# 				</li>
-
-	# 				<li class="nav-item dropdown">
-	# 					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-	# 						List of House
-	# 					</a>
-	# 					<ul class="dropdown-menu p-2 text-white" aria-labelledby="navbarDropdownMenuLink" style="background:#CE3A00;width:230px!important">
-	# 					"""
-	# 	r +=   simulations
-
-	# 	r += """
-	# 					</ul>
-	# 				</li>
-	# 			</ul>
-	# 		</div>
-
-
-	# 		<div class="row">
-	# 		<div class="col-6">
-			
-	# 		</div>
-	# 		<div class="col-6">
-				
-	# 		</div>
-	# 		</div>
-			
-	# 		 <a class="navbar-brand text-white" href="index.html">Eco Energy Tracker</a>
-
-	# 	</div>"""
-
-
-	# 	return {'message': r}
-
-
-	def fetch_appliance(self):
-		try:
-			# Connect to the SQLite database (it will create the file if it doesn't exist)
-			connection = sqlite3.connect('ecoenergy.db')
-			cursor = connection.cursor()
-			
-			# Execute the query
-			cursor.execute("SELECT * FROM sub_appliance;")
-			rows = cursor.fetchall()  # Fetch all rows from the query result
-			columns = [description[0] for description in cursor.description]  # Get column names
-
-			# Return the fetched data as a string (for simplicity)
-			result = ""
-			for row in rows:
-				row_data = {columns[i]: row[i] for i in range(len(row))}  # Create dict of column names and row values
-				result += f"""<tr>
-								<td>{row_data['id']} - {row_data['appliance_id']}</td>
-								<td>{row_data['name']}</td>
-								<td>{row_data['watt']}</td>
-								<td> <img src="assets/uploads/{row_data['image']}" style="width:60px" />  </td>
-							</tr>"""
-	  
 			return {'message': result}
 		
 		except sqlite3.Error as e:
@@ -1554,195 +1225,125 @@ class Api:
 			if connection:
 				connection.close()
 
+	# canvas functions
+	def update_appliance_canvas(self, simulation_id ,room_id, appliance_id, from_room, canvas_id):
+		try:
+			connection = sqlite3.connect('ecoenergy.db')
+			cursor = connection.cursor()
 
-	# def fetch_room(self, simulation_id):
-	#     try:
-	#         # Connect to the SQLite database
-	#         connection = sqlite3.connect('ecoenergy.db')
-	#         cursor = connection.cursor()
+			restricted_appliance_id_1 = ['91', '92', '93', '94']
+			restricted_appliance_id_2 = ['77', '78', '79', '80']
+
+			restricted_rooms_id_1 = [
+	            'bath1', 'bath2', 'bed2Right', 'bathright1', 'bathright2',
+	            'bed1right', 'bed1', 'bathLeft1', 'bathLeft2', 'bedroomLeft22',
+	            'bedroomRight11', 'bathRight1', 'bathRight2', 'bedroomRight22',
+	            'bedroomLeft1', 'bedroomLeft2', 'bathLeft', 'bedroomRight1',
+	            'bedroomRight2', 'bathRight', 'bathRight123', 'bedroom1T2',
+	            'bedroom3T2', 'bedroom4T2', 'bedroom6T2', 'bedroom7T2',
+	            'bedroom9T2', 'masterbed1T2', 'masterbed2T2', 'masterbed3T2',
+	            'bedroomLeft11', 'bed1dup1', 'bed2dup1', 'master1dup1', 'master2dup1', 'bed1B2', 'bed2B2','bed3B2',
+	            'masterbedB3', 'bedB3', 'bed2B3', 'bathB2', 'tb1tg', 'tb2tg', 'tb3tg',
+	            'bath1dup1', 'bath2dup1','bath3dup1','bath4dup1', 'masterbathB3','bathB3'
+	       		]
+
+			restricted_rooms_id_2 = [
+	            'bath1', 'bath2', 'bathright1', 'bathright2',
+	            'bed1right', 'bathLeft1', 'bathLeft2','bathRight1', 'bathRight2', 'bathLeft',
+	            'bedroomRight2','bathB2', 'tb1tg', 'tb2tg', 'tb3tg',
+	            'bath1dup1', 'bath2dup1','bath3dup1','bath4dup1', 'masterbathB3','bathB3'
+	       		]	       		
+
+
+			if room_id in restricted_rooms_id_1 and appliance_id in restricted_appliance_id_1:
+				return {'error': 'Unable to transfer appliance to this room, for safety purposes.'}
+
+			if room_id in restricted_rooms_id_2 and appliance_id in restricted_appliance_id_2:
+				return {'error': 'Unable to transfer appliance to this room, for safety purposes.'}			
+
+			# Insert the appliance and image path into the database
+			query = "UPDATE canvas SET room_id = ? WHERE id = ?;"
+			cursor.execute(query, (room_id, canvas_id))
+			connection.commit()  # Commit the transaction
+					
+			return {'message': 'Transfered successfully.'}
 			
-	#         # Query to fetch room and canvas details
-	#         query = """SELECT room.id AS roomId, room.name AS roomName, sub_appliance.image AS applianceImage, 
-	#         sub_appliance.id AS applianceImageId, simulation.*, canvas.id AS canvasRow
-	#         FROM canvas 
-	#         INNER JOIN room ON room.id = canvas.room_id
-	#         INNER JOIN sub_appliance ON sub_appliance.id = canvas.appliance_id
-	#         INNER JOIN simulation ON simulation.id = canvas.simulation_id 
-	#         WHERE canvas.simulation_id = ?;"""
-	#         cursor.execute(query, (simulation_id,))
-	#         rows = cursor.fetchall()  # Fetch all rows from the query result
+		except sqlite3.Error as e:
+			return {'error': 'Error occured please try again'}
+			
+		finally:
+			if cursor:
+				cursor.close()
+			if connection:
+				connection.close()
 
-	#         columns = [description[0] for description in cursor.description]  # Get column names
-
-	#         # Fetch all rooms
-	#         query_rooms = """SELECT room.id AS roomId, room.name AS roomName FROM room
-	#                          WHERE room.simulation_id = ?;"""
-	#         cursor.execute(query_rooms, (simulation_id,))
-	#         rooms = cursor.fetchall()
-
-	#         # Group images by roomId
-	#         grouped_data = {}
-	#         for row in rows:
-	#             row_data = {columns[i]: row[i] for i in range(len(row))}
-	#             room_id = row_data['roomId']
-	#             canvas_id = row_data['canvasRow']  # Fetch the canvas.id
-				
-	#             if room_id not in grouped_data:
-	#                 grouped_data[room_id] = {
-	#                     'roomName': row_data['roomName'],
-	#                     'canvasRow': canvas_id,
-	#                     'images': []
-	#                 }
-	#             # Append image, image_id, and canvas_id to the list of images
-	#             grouped_data[room_id]['images'].append((row_data['applianceImage'], row_data['applianceImageId'], canvas_id))
-
-	#         # Generate HTML
-	#         result = ""
-	#         for room in rooms:
-	#             room_id = room[0]
-	#             room_name = room[1]
-	#             images_html = ""
-	#             if room_id in grouped_data:
-	#                 images_html = "".join(
-	#                     f'<img draggable="true" data-is-update="1" data-canvas-id="{canvas_id}" data-custom-id="{room_id}" id="{image_id}" src="assets/uploads/{image}" style="width:60px; height:60px;" />' 
-	#                     for image, image_id, canvas_id in grouped_data[room_id]['images']
-	#                 )
-	#             result += f"""<div class="col-3">
-	#                             {room_name}
-	#                             <div class="droptarget" id="{room_id}">
-	#                                 {images_html}
-	#                             </div>
-	#                         </div>"""
-
-	#         return {'message': result}
-		
-	#     except sqlite3.Error as e:
-	#         return {'error': f"Error: {e}"}
-	#     finally:
-	#         cursor.close()
-	#         connection.close()
-
-
-	def get_suggestions(self, target_bill, target_hours, rate_per_hr, simulation_id):
+	def add_appliance_canvas(self, simulation_id, room_id, appliance_id):
 	    try:
-	        # Connect to the SQLite database
+	    	# Connect to the SQLite database
 	        connection = sqlite3.connect('ecoenergy.db')
 	        cursor = connection.cursor()
 
-	        # Calculate target watt-hours based on the bill
-	        rate_per_kwh =  float(rate_per_hr)  # PESO per kilowatt-hour
-	        target_wh = (float(target_bill) / rate_per_kwh) * 1000  # Convert bill to watt-hours
+	        restricted_appliance_id_1 = ['91', '92', '93', '94']
+	        restricted_appliance_id_2 = ['77', '78', '79', '80']
 
-	        # Query to get appliance data filtered by simulation_id
-	        query = '''
-	            SELECT canvas.id, canvas.room_id, canvas.appliance_id, sub_appliance.watt, sub_appliance.name 
-	            FROM canvas
-	            JOIN sub_appliance ON canvas.appliance_id = sub_appliance.id
-	            WHERE canvas.simulation_id = ?
-	        '''
-	        cursor.execute(query, (simulation_id,))
-	        rows = cursor.fetchall()
-	        
-	        # Start building the HTML output for the scrollable column
-	        html_output = '''
-	            <div class="container">
-	                <div class="row">
-	        '''
+	        restricted_rooms_id_1 = [
+	            'bath1', 'bath2', 'bed2Right', 'bathright1', 'bathright2',
+	            'bed1right', 'bed1', 'bathLeft1', 'bathLeft2', 'bedroomLeft22',
+	            'bedroomRight11', 'bathRight1', 'bathRight2', 'bedroomRight22',
+	            'bedroomLeft1', 'bedroomLeft2', 'bathLeft', 'bedroomRight1',
+	            'bedroomRight2', 'bathRight', 'bathRight123', 'bedroom1T2',
+	            'bedroom3T2', 'bedroom4T2', 'bedroom6T2', 'bedroom7T2',
+	            'bedroom9T2', 'masterbed1T2', 'masterbed2T2', 'masterbed3T2',
+	            'bedroomLeft11', 'bed1dup1', 'bed2dup1', 'master1dup1', 'master2dup1', 'bed1B2', 'bed2B2','bed3B2',
+	            'masterbedB3', 'bedB3', 'bed2B3', 'bathB2', 'tb1tg', 'tb2tg', 'tb3tg',
+	            'bath1dup1', 'bath2dup1','bath3dup1','bath4dup1', 'masterbathB3','bathB3'
+	       		]
+	       	restricted_rooms_id_2 = [
+	            'bath1', 'bath2', 'bathright1', 'bathright2',
+	            'bed1right', 'bathLeft1', 'bathLeft2','bathRight1', 'bathRight2', 'bathLeft',
+	            'bedroomRight2','bathB2', 'tb1tg', 'tb2tg', 'tb3tg',
+	            'bath1dup1', 'bath2dup1','bath3dup1','bath4dup1', 'masterbathB3','bathB3'
+	       		]
+	       	if room_id in restricted_rooms_id_1 and appliance_id in restricted_appliance_id_1:
+	       		return {'error': 'Unable to transfer appliance to this room, for safety purposes.'}
+	       	if room_id in restricted_rooms_id_2 and appliance_id in restricted_appliance_id_2:
+	       		return {'error': 'Unable to transfer appliance to this room, for safety purposes.'}
 
-	        current_room_id = None
-	        total_wh_consumption = 0
-	        room_wh_consumption = 0
-	        room_bill = 0
+	        # Insert the appliance and image path into the database
+	        query = "INSERT INTO canvas(simulation_id, room_id, appliance_id) VALUES(?, ?, ?);"
+	        cursor.execute(query, (simulation_id, room_id, appliance_id))
+	        connection.commit()  # Commit the transaction
 
-	        room_data = {}
-
-	        # Calculate the total watts for all appliances
-	        total_wattage = sum(float(row[3]) for row in rows if row[3])
-
-	        for row in rows:
-	            room_id, appliance_id, watt, appliance_name = row[1], row[2], row[3], row[4]
-	            watt = float(watt) if watt else 0
-
-	            # Calculate suggested hours based on the total wattage
-	            if total_wattage > 0:
-	                suggested_hours = (target_wh / total_wattage)
-	            else:
-	                suggested_hours = 0
-
-	            # Calculate watt-hours and bill for the appliance
-	            appliance_wh = watt * suggested_hours
-	            appliance_bill = (appliance_wh / 1000) * rate_per_kwh
-
-	            # Accumulate total consumption and bill
-	            total_wh_consumption += appliance_wh
-
-	            if room_id not in room_data:
-	                room_query = 'SELECT name FROM room WHERE id = ?'
-	                cursor.execute(room_query, (room_id,))
-	                room_name = cursor.fetchone()
-	                room_name = room_name[0] if room_name else "Unknown Room"
-	                room_data[room_id] = {
-	                    'room_name': room_name,
-	                    'appliances': [],
-	                    'room_wh_consumption': 0,
-	                    'room_bill': 0
-	                }
-
-	            room_data[room_id]['appliances'].append({
-	                'appliance_name': appliance_name,
-	                'suggested_hours': suggested_hours,
-	                'appliance_bill': appliance_bill
-	            })
-	            room_data[room_id]['room_wh_consumption'] += appliance_wh
-	            room_data[room_id]['room_bill'] += appliance_bill
-
-	        for room_id, room in room_data.items():
-	            html_output += f'''
-	                <div class="col-md-12 border room-section mb-3" style="height:auto">
-	                    <p class="text-primary">{room['room_name']}</p>
-	                    <div class="appliance-list" style="height:auto">
-	            '''
-	            for appliance in room['appliances']:
-	                html_output += f'''
-	                    <div class="appliance" style="height:auto">
-	                        <span>Appliance: {appliance['appliance_name']}</span><br>
-	                        <span>Suggested Usage: {appliance['suggested_hours']:.2f} hours</span><br>
-	                        <span>Appliance Bill: {appliance['appliance_bill']:.2f} PESO</span>
-	                        <hr style="width:auto">
-	                    </div>
-	                '''
-	            html_output += f'''
-	                    </div>
-	                    <div class="room-total-bill">
-	                        <p>Total Room Bill: {room['room_bill']:.2f} PESO</p>
-	                    </div>
-	                </div>
-	            '''
-
-	        # Calculate the total bill based on the total watt-hours consumed
-	        total_bill = (total_wh_consumption / 1000) * rate_per_kwh
-
-	        # Append the total bill to the HTML output
-	        html_output += f'''
-	            <div class="col-12 total-bill">
-	                <p>Total Estimated Bill: {total_bill:.2f} PESO</p>
-	            </div>
-	        '''
-
-	        # Close the main row and container divs
-	        html_output += '</div></div>'
-
-	        return {'message': html_output}
-
-	    except Exception as e:
-	        print(f"Error occurred: {e}")
-	        return {'message': '<p>An error occurred while fetching suggestions.</p>'}
-
+	        return {'message': 'Appliance added to room.'}
+	    except sqlite3.Error as e:
+	    	return {'error': 'Error occurred, please try again'}
 	    finally:
-	        cursor.close()
-	        connection.close()
+	    	if cursor:
+	    		cursor.close()
+	    	if connection:
+	    		connection.close()
 
-
+	def delete_appliance_canvas(self, canvas_id):
+		try:
+			# Connect to the SQLite database
+			connection = sqlite3.connect('ecoenergy.db')
+			cursor = connection.cursor()
+				
+			# Insert the appliance and image path into the database
+			query = "DELETE FROM canvas WHERE id = ?;"
+			cursor.execute(query, (canvas_id,))
+			connection.commit()  # Commit the transaction
+				
+			return {'message': 'Removed successfully.'}
+			
+		except sqlite3.Error as e:
+			return {'error': 'Error occured please try again'}
+			
+		finally:
+			if cursor:
+				cursor.close()
+			if connection:
+				connection.close()
 
 	def get_suggestions_energy(self, target_kwh, rate_per_hr, simulation_id):
 	    try:
@@ -1863,86 +1464,128 @@ class Api:
 	        cursor.close()
 	        connection.close()
 
+	def get_suggestions(self, target_bill, target_hours, rate_per_hr, simulation_id):
+	    try:
+	        # Connect to the SQLite database
+	        connection = sqlite3.connect('ecoenergy.db')
+	        cursor = connection.cursor()
 
+	        # Calculate target watt-hours based on the bill
+	        rate_per_kwh =  float(rate_per_hr)  # PESO per kilowatt-hour
+	        target_wh = (float(target_bill) / rate_per_kwh) * 1000  # Convert bill to watt-hours
 
+	        # Query to get appliance data filtered by simulation_id
+	        query = '''
+	            SELECT canvas.id, canvas.room_id, canvas.appliance_id, sub_appliance.watt, sub_appliance.name 
+	            FROM canvas
+	            JOIN sub_appliance ON canvas.appliance_id = sub_appliance.id
+	            WHERE canvas.simulation_id = ?
+	        '''
+	        cursor.execute(query, (simulation_id,))
+	        rows = cursor.fetchall()
+	        
+	        # Start building the HTML output for the scrollable column
+	        html_output = '''
+	            <div class="container">
+	                <div class="row">
+	        '''
 
+	        current_room_id = None
+	        total_wh_consumption = 0
+	        room_wh_consumption = 0
+	        room_bill = 0
 
+	        room_data = {}
 
+	        # Calculate the total watts for all appliances
+	        total_wattage = sum(float(row[3]) for row in rows if row[3])
+
+	        for row in rows:
+	            room_id, appliance_id, watt, appliance_name = row[1], row[2], row[3], row[4]
+	            watt = float(watt) if watt else 0
+
+	            # Calculate suggested hours based on the total wattage
+	            if total_wattage > 0:
+	                suggested_hours = (target_wh / total_wattage)
+	            else:
+	                suggested_hours = 0
+
+	            # Calculate watt-hours and bill for the appliance
+	            appliance_wh = watt * suggested_hours
+	            appliance_bill = (appliance_wh / 1000) * rate_per_kwh
+
+	            # Accumulate total consumption and bill
+	            total_wh_consumption += appliance_wh
+
+	            if room_id not in room_data:
+	                room_query = 'SELECT name FROM room WHERE id = ?'
+	                cursor.execute(room_query, (room_id,))
+	                room_name = cursor.fetchone()
+	                room_name = room_name[0] if room_name else "Unknown Room"
+	                room_data[room_id] = {
+	                    'room_name': room_name,
+	                    'appliances': [],
+	                    'room_wh_consumption': 0,
+	                    'room_bill': 0
+	                }
+
+	            room_data[room_id]['appliances'].append({
+	                'appliance_name': appliance_name,
+	                'suggested_hours': suggested_hours,
+	                'appliance_bill': appliance_bill
+	            })
+	            room_data[room_id]['room_wh_consumption'] += appliance_wh
+	            room_data[room_id]['room_bill'] += appliance_bill
+
+	        for room_id, room in room_data.items():
+	            html_output += f'''
+	                <div class="col-md-12 border room-section mb-3" style="height:auto">
+	                    <p class="text-primary">{room['room_name']}</p>
+	                    <div class="appliance-list" style="height:auto">
+	            '''
+	            for appliance in room['appliances']:
+	                html_output += f'''
+	                    <div class="appliance" style="height:auto">
+	                        <span>Appliance: {appliance['appliance_name']}</span><br>
+	                        <span>Suggested Usage: {appliance['suggested_hours']:.2f} hours</span><br>
+	                        <span>Appliance Bill: {appliance['appliance_bill']:.2f} PESO</span>
+	                        <hr style="width:auto">
+	                    </div>
+	                '''
+	            html_output += f'''
+	                    </div>
+	                    <div class="room-total-bill">
+	                        <p>Total Room Bill: {room['room_bill']:.2f} PESO</p>
+	                    </div>
+	                </div>
+	            '''
+
+	        # Calculate the total bill based on the total watt-hours consumed
+	        total_bill = (total_wh_consumption / 1000) * rate_per_kwh
+
+	        # Append the total bill to the HTML output
+	        html_output += f'''
+	            <div class="col-12 total-bill">
+	                <p>Total Estimated Bill: {total_bill:.2f} PESO</p>
+	            </div>
+	        '''
+
+	        # Close the main row and container divs
+	        html_output += '</div></div>'
+
+	        return {'message': html_output}
+
+	    except Exception as e:
+	        print(f"Error occurred: {e}")
+	        return {'message': '<p>An error occurred while fetching suggestions.</p>'}
+
+	    finally:
+	        cursor.close()
+	        connection.close()
 	
-	def fetch_data(self):
-		try:
-			# Connect to the SQLite database (it will create the file if it doesn't exist)
-			connection = sqlite3.connect('ecoenergy.db')
-			cursor = connection.cursor()
-			
-			# Execute the query
-			cursor.execute("SELECT * FROM users;")
-			rows = cursor.fetchall()  # Fetch all rows from the query result
-			columns = [description[0] for description in cursor.description]  # Get column names
-
-			# Return the fetched data as a string (for simplicity)
-			result = ""
-			for row in rows:
-				row_data = {columns[i]: row[i] for i in range(len(row))}  # Create dict of column names and row values
-				result += f"""<tr>
-								<td>{row_data['id']}</td>
-								<td>{row_data['firstname']}</td>
-								<td>{row_data['lastname']}</td>
-							</tr>"""
-	  
-			return {'message': result}
-		
-		except sqlite3.Error as e:
-			return {'message': f"Error: {e}"}
-		finally:
-			cursor.close()
-			connection.close()
-
-	def search_data(self, searchByName):
-		try:
-			# Connect to the SQLite database
-			connection = sqlite3.connect('ecoenergy.db')
-			cursor = connection.cursor()
-
-			# Query to search name
-			query = "SELECT * FROM users WHERE firstname LIKE ? OR lastname LIKE ?;"
-			search_pattern = f"%{searchByName}%"  # Add wildcard characters before and after the search term
-			cursor.execute(query, (search_pattern, search_pattern))
-
-			rows = cursor.fetchall()  # Fetch all rows from the query result
-			columns = [description[0] for description in cursor.description]  # Get column names
-			result = ""
-			if not rows:
-				result += f"""<tr>
-								<td style="text-align:center" colspan="3">No data found</td>
-							  </tr>"""
-			else:
-				# Return the fetched data as a string (for simplicity)
-				for row in rows:
-					row_data = {columns[i]: row[i] for i in range(len(row))}  # Create dict of column names and row values
-					result += f"""<tr>
-									<td>{row_data['id']}</td>
-									<td>{row_data['firstname']}</td>
-									<td>{row_data['lastname']}</td>
-								</tr>"""
-			
-			return {'message': result}
-		
-		except sqlite3.Error as e:
-			return {'message': f"Error: {e}"}
-		finally:
-			cursor.close()
-			connection.close()
-
-
-def on_loaded():
-	window.toggle_fullscreen()
 
 api = Api()
 
-# To browser
-
-# For navbar (list of house)
 @app.route('/api/navbar')
 def navbar():
     return jsonify(api.navbar())
@@ -2047,14 +1690,3 @@ if __name__ == '__main__':
     window = webview.create_window('ECO ENERGY', 'http://127.0.0.1:5000', js_api=api)
     webview.start()
 
-
-# if __name__ == '__main__':
-# 	api = Api()
-	
-# 	# Get the path to the HTML file
-# 	current_dir = os.path.dirname(os.path.realpath(__file__))
-# 	html_path = os.path.join(current_dir, 'index.html')
-
-# 	# Create the window using the external HTML file
-# 	window = webview.create_window('ECO ENEGERY', html_path, js_api=api, width=1000, height=700,)
-# 	webview.start()
