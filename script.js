@@ -593,3 +593,54 @@ function getSuggestion(response) {
 }
 
 // dragging
+document.addEventListener('DOMContentLoaded', function() {
+    const container = document.querySelector('.layout-container');
+    let isDragging = false;
+    let currentX;
+    let currentY;
+    let initialX;
+    let initialY;
+    let xOffset = 0;
+    let yOffset = 0;
+
+    // Add mousedown event to the container itself
+    container.addEventListener('mousedown', dragStart);
+    document.addEventListener('mousemove', drag);
+    document.addEventListener('mouseup', dragEnd);
+
+    function dragStart(e) {
+        // Don't start dragging if we're interacting with an appliance
+        if (e.target.closest('.appliance-item') || e.target.closest('.droptarget')) {
+            return;
+        }
+    
+        // Only allow dragging when clicking directly on the container or its background
+        if (!container.contains(e.target)) {
+            return;
+        }
+    
+        isDragging = true;
+        initialX = e.clientX - xOffset;
+        initialY = e.clientY - yOffset;
+        e.preventDefault();
+    }
+
+    function drag(e) {
+        if (isDragging) {
+            e.preventDefault();
+            currentX = e.clientX - initialX;
+            currentY = e.clientY - initialY;
+            xOffset = currentX;
+            yOffset = currentY;
+            setTranslate(currentX, currentY, container);
+        }
+    }
+
+    function dragEnd() {
+        isDragging = false;
+    }
+
+    function setTranslate(xPos, yPos, el) {
+        el.style.transform = `translate(${xPos}px, ${yPos}px)`;
+    }
+});
