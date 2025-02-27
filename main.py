@@ -15,7 +15,6 @@ class Api:
 
 	# list of house
 	def navbar(self):
-
 		# Connect to the SQLite database (it will create the file if it doesn't exist)
 		connection = sqlite3.connect('ecoenergy.db')
 		cursor = connection.cursor()
@@ -26,29 +25,40 @@ class Api:
 		columns = [description[0] for description in cursor.description]  # Get column names
 
 		# Return the fetched data as a string (for simplicity)
-
-		r = ""
-
 		simulations = ""
 
 		for row in rows:
 			row_data = {columns[i]: row[i] for i in range(len(row))}  # Create dict of column names and row values
 			simulations += f"""
-							<li><p onclick="setID('{row_data['name']}', '{row_data['id']}');" class="text-white" >{row_data['name']}</p></li>
-						"""
-		r += """
-				<div class="nav-item dropdown">
-						<a style="color:black!important" class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-							List of House
-						</a>
-						<ul class="dropdown-menu p-2 text-white" aria-labelledby="navbarDropdownMenuLink" style="background:gray;width:230px!important">
-						"""
-		r +=   simulations
+				<li>
+					<a href="#" 
+					onclick="setID('{row_data['name']}', '{row_data['id']}');" 
+					class="dropdown-item d-flex align-items-center py-2 px-3 hover-bg-gray-100">
+						<i class="fas fa-home me-2"></i>
+						<span class="text-dark">{row_data['name']}</span>
+					</a>
+				</li>
+			"""
 
-		r += """
-						</ul>
-					</div>
+		r = f"""
+			<div class="house-selector">
+				<div class="dropdown">
+					<button class="btn btn-outline-primary dropdown-toggle w-100" 
+							type="button" 
+							id="navbarDropdownMenuLink" 
+							data-bs-toggle="dropdown" 
+							aria-expanded="false">
+						<i class="fas fa-home me-2"></i>
+						Select House Layout
+					</button>
+					<ul class="dropdown-menu w-100 shadow-sm border-0" 
+						aria-labelledby="navbarDropdownMenuLink">
+						{simulations}
+					</ul>
+				</div>
+			</div>
 		"""
+		
 		return {'message': r}
 
 	# list of appliances 

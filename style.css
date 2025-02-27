@@ -461,3 +461,24 @@ button {
   pointer-events: auto !important;
   z-index: 1001;
 }
+
+/* navbar */
+.house-selector .dropdown-menu {
+  max-height: 300px;
+  overflow-y: auto;
+}
+.house-selector .dropdown-item:hover {
+  background-color: #f8f9fa;
+}
+.house-selector .dropdown-item:active {
+  background-color: #e9ecef;
+}
+.house-selector .btn-outline-primary {
+  border-color: #dee2e6;
+  color: #212529;
+}
+.house-selector .btn-outline-primary:hover {
+  background-color: #f8f9fa;
+  border-color: #dee2e6;
+  color: #212529;
+}
