@@ -19,98 +19,50 @@
           <!-- try not to nest too hard, make left and right section fixed while have middle flexible -->
           <div class="row">
             <div class="col-md-12 p-2" style="height: 70vh">
-              <div class="bg-light pt-2" style="height: 100%; width: 100%">
-                <h5 style="text-align: center">Eco Energy Tracker</h5>
-                <!-- rename navbar to house list -->
-                <div id="navBar"></div>
-
-                <!-- input hours -->
-                <div class="row mt-3" style="width: auto; margin: auto">
-                  <div class="col-12"></div>
-                  <div class="col-12">
-                    <!--             <button type="button" style="width: 100%;background:#CE3A00; border:none;"  class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#receiptModal">
-                      View Receipt
-                    </button>  -->
+              <div class="input-panel bg-light pt-3">
+                <h4 class="app-title mb-4">Eco Energy Tracker</h4>
+                
+                <!-- House list -->
+                <div id="navBar" class="mb-4"></div>
+        
+                <!-- Input form -->
+                <div class="input-form">
+                  <div class="form-group mb-3">
+                    <label for="hours">Input Hours</label>
+                    <input id="hours" class="form-control form-control-lg" type="number" min="0" />
                   </div>
-                  <div class="col-12">
-                    Input Hours:
-                    <!--                             <select name="" id="speed" class="form-control"> 
-                                <option value="5000">5 seconds as 1 hour</option> 
-                                <option value="10000">10 seconds as 1 hour</option>
-                                <option value="15000">15 seconds as 1 hour</option>
-                            </select>  -->
-                    <!--                             <select name="" id="speed" class="form-control"> 
-                                <option value="5000">30 Days</option> 
-                                <option value="10000">24 Hours</option>
-                                <option value="15000">1 Hour</option>
-                                 <option value="15000">Custom number of hours</option>
-                            </select>  -->
-                    <input id="hours" class="form-control" />
+        
+                  <div class="form-group mb-3">
+                    <label for="ratePerHour">Rate per kWh (₱)</label>
+                    <input type="number" min="1" id="ratePerHour" class="form-control form-control-lg" />
                   </div>
-
-                  <!-- input rate, run, and targets -->
-                  <div class="col-12"></div>
-                  <div class="col-12" style="margin: auto !important">
-                    ₱ / Rate per kWh:
-                    <input
-                      type="number"
-                      min="1"
-                      id="ratePerHour"
-                      class="form-control"
-                    />
-
-                    <button
-                      type="button"
-                      id="compute"
-                      class="btn text-white mt-2"
-                      style="background: #ce3a00; width: 100%; margin: auto"
-                    >
-                      Run
-                    </button>
-
-                    <div class="col-12">
-                      Target kWh:
-                      <input
-                        type="number"
-                        id="targetKwh"
-                        class="form-control"
-                      />
-                    </div>
-                    <div class="col-12">
-                      Target Bill:
-                      <input
-                        type="number"
-                        id="targetBill"
-                        class="form-control"
-                      />
-                    </div>
-
-                    <!-- <button
-                      type="button"
-                      id="stop"
-                      class="btn text-white mt-2"
-                      style="
-                        background: #ce3a00;
-                        width: 100%;
-                        display: none;
-                        margin: auto;
-                      "
-                    ></button> -->
+        
+                  <button type="button" id="compute" class="btn btn-primary btn-lg w-100 mb-4">
+                    Calculate
+                  </button>
+        
+                  <div class="form-group mb-3">
+                    <label for="targetKwh">Target kWh</label>
+                    <input type="number" id="targetKwh" class="form-control" />
                   </div>
-                  <div class="col-12 bg-success" style="margin: auto">
-                    <center></center>
+        
+                  <div class="form-group mb-3">
+                    <label for="targetBill">Target Bill</label>
+                    <input type="number" id="targetBill" class="form-control" />
                   </div>
                 </div>
               </div>
             </div>
-
             <!-- perspective -->
             <div class="col-md-12 p-2" style="height: 30vh">
-              <div
-                class="bg-light"
-                style="height: 100%; width: 100%"
-                id="persepective"
-              ></div>
+              <div class="perspective-panel">
+                <div class="perspective-header">
+                  <h6 class="perspective-title">Energy Usage Perspective</h6>
+                </div>
+                <div class="perspective-content" id="persepective">
+                  <!-- Content will be dynamically populated -->
+                </div>
+              </div>
             </div>
           </div>
         </div>
