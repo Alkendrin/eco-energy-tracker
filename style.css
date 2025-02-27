@@ -141,10 +141,6 @@ button {
   background-color: #fff;
 }
 
-.col-md-6 {
-  margin-left: 16.666667%;
-}
-
 .input-panel {
   height: 100%;
   width: 100%;
@@ -374,4 +370,53 @@ button {
   border-radius: 8px;
   border: 1px solid #e2e8f0;
   max-height: calc(100vh - 25vh); /* Limit height to prevent overflow */
+}
+
+/* top secdtion ++++++++++++++++++++++++++++++++ */
+
+.top-bar {
+  position: fixed;
+  top: 0;
+  left: 16.666667%;
+  right: 33.333333%;
+  height: 60px;
+  background: #fff;
+  z-index: 1000;
+  padding: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+}
+
+.room-title {
+  color: #2c3e50;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* .droptarget {
+  width: 45px;
+  height: 45px;
+  padding: 8px;
+  border-radius: 8px;
+  background-color: #f8f9fa;
+  transition: all 0.2s ease;
+}
+
+.droptarget:hover {
+  background-color: #e9ecef;
+  transform: scale(1.05);
+} */
+
+/* Adjust main content to account for fixed top bar */
+.col-md-6 > .row > .col-md-12:first-child {
+  margin-top: 60px;
+  height: calc(83vh - 13vh - 60px) !important;
+}
+
+/* main +++++++++++++++++++++++++++++++++++++++++ */
+.layout-container {
+  margin-left: 26.666667%;
+  margin-right: 33.333333%;
+  margin-top: 5%;
 }

@@ -591,3 +591,5 @@ function getSuggestion(response) {
     const suggestionsDiv = document.getElementById("suggestions");
     suggestions.innerHTML = response.message;
 }
+
+// dragging

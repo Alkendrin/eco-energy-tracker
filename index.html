@@ -13,7 +13,31 @@
     </div> -->
 
     <main id="body">
-      <div class="col-md-2 left-sidebar">
+      <!-- name and trash -->
+      <div class="top-bar">
+        <div class="row w-100 align-items-center">
+          <div class="col-4">
+            <h6 class="room-title mb-0">
+              <span id="stitle"></span>
+            </h6>
+          </div>
+          <div class="col-4 text-center">
+            <img
+              src="delete.png"
+              class="droptarget"
+              id="delete"
+              alt="Delete Zone"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- containter inside -->
+      <!-- the room container itself -->
+      <div class="layout-container" id="roomContainer"></div>
+
+      <!-- left side -->
+      <div class="left-sidebar">
         <!-- try not to nest too hard, make left and right section fixed while have middle flexible -->
         <div class="row h-100">
           <div class="col-md-12 p-2" style="height: 70vh">
@@ -79,6 +103,7 @@
         </div>
       </div>
 
+      <!-- bottom -->
       <div class="appliance-list-container">
         <div
           id="applianceList"
@@ -94,6 +119,7 @@
         ></div>
       </div>
 
+      <!-- right -->
       <div class="summary-section">
         <div class="summary-content">
           <h5 class="summary-title text-center">Consumption Summary</h5>
@@ -102,59 +128,6 @@
         </div>
       </div>
 
-      <div class="row" style="height: 100vh !important">
-        <!-- input data section -->
-
-        <!-- layout/appliance section -->
-        <div class="col-md-6">
-          <div class="row">
-            <div
-              class="col-md-12 p-2"
-              style="height: 83vh; position: relative; overflow: auto"
-            >
-              <div
-                class="bg-light"
-                style="height: 100%; width: 100%; overflow: auto"
-              >
-                <br />
-                <br />
-                <div class="row px-2" style="margin: auto">
-                  <div class="col-4 my-auto">
-                    <h6 style="text-align: center">
-                      <!-- current room name -->
-                      <span id="stitle"> </span>
-                    </h6>
-                  </div>
-                  <div class="col-4 my-auto mx-auto">
-                    <img
-                      src="delete.png"
-                      style="margin: auto"
-                      class="droptarget"
-                      id="delete"
-                      style="width: 45px; height: 45px; border: none !important"
-                    />
-                  </div>
-                </div>
-
-                <!-- the room container itself -->
-                <div
-                  class="row m-4"
-                  id="roomContainer"
-                  style="overflow: auto"
-                ></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- appliance list container -->
-
-        <!-- the summary sections -->
-
-        <!-- <p id="demo"></p> -->
-
-        <!-- appliance toggle modal -->
-      </div>
       <div
         class="modal fade"
         id="appModal"
