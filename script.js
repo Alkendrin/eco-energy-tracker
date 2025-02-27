@@ -411,95 +411,95 @@ function computeEnergy(hoursTracker, ratePerHour, totalHours) {
 console.log(myArray);
 }
 
+// Update the table generation in stopAndCompute function
 function stopAndCompute() {
     document.getElementById("results").style.display = "block";
-
-    // Clear the previous content
     const resultsDiv = document.getElementById("results");
     resultsDiv.innerHTML = "";
 
-    let totalEnergy = 0; // Variable to store total energy consumption
-    let totalCost = 0; // Variable to store total cost
+    let totalEnergy = 0;
+    let totalCost = 0;
 
-    // Create the table and add headers
+    // Create table with enhanced styling
     let table = document.createElement("table");
-    table.className = "table table-striped"; // Add classes for styling
+    table.className = "table";
     table.innerHTML = `
-    <thead>
-        <tr>
-            <th>Room</th>
-            <th>Appliance</th>
-            <th>Wattage</th>
-            <th>Usage</th>
-            <th>kWh</th>
-            <th>Budget (₱)</th>
-        </tr>
-    </thead>
-    <tbody>
-    </tbody>
+        <thead>
+            <tr>
+                <th>Room</th>
+                <th>Appliance</th>
+                <th>Wattage</th>
+                <th>Usage (h)</th>
+                <th>kWh</th>
+                <th>Cost</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
     `;
     let tableBody = table.querySelector("tbody");
 
-    // Loop through each room and its appliances
+    // Add room data
     Object.keys(myArray).forEach((roomName) => {
-        // Loop through each appliance in the room
         myArray[roomName].forEach((item) => {
-        // Create a row for each appliance
-        let row = document.createElement("tr");
+            let row = document.createElement("tr");
+            row.innerHTML = `
+                <td><strong>${roomName}</strong></td>
+                <td>${item.applianceName}</td>
+                <td>${item.wattage} W</td>
+                <td>${item.hours_used.toFixed(1)}</td>
+                <td class="kwh-value">${item.energy.toFixed(2)}</td>
+                <td class="cost-value">₱${item.amount.toFixed(2)}</td>
+            `;
+            tableBody.appendChild(row);
 
-        // Add the room name and appliance details to the row
-        row.innerHTML = `
-            <td>${roomName}</td>
-            <td>${item.applianceName}</td>
-            <td>${item.wattage} W</td>
-            <td>${item.hours_used}</td>
-            <td>${item.energy}</td>
-            <td>₱${item.amount.toFixed(2)}</td>
-        `;
-        tableBody.appendChild(row);
-
-        // Accumulate total energy and cost
-        totalEnergy += item.energy;
-        totalCost += item.amount;
+            totalEnergy += item.energy;
+            totalCost += item.amount;
         });
     });
 
-    // Create a row for total energy and cost
+    // Add total row with enhanced styling
     let totalRow = document.createElement("tr");
+    totalRow.className = "total-row";
     totalRow.innerHTML = `
-    <td colspan="4" class="text-center"><strong>Total</strong></td>
-    <td><strong>${totalEnergy.toFixed(2)} kWh</strong></td>
-    <td><strong>₱${totalCost.toFixed(2)}</strong></td>
+        <td colspan="4"><strong>Total Consumption</strong></td>
+        <td class="kwh-value"><strong>${totalEnergy.toFixed(2)} kWh</strong></td>
+        <td class="cost-value"><strong>₱${totalCost.toFixed(2)}</strong></td>
     `;
     tableBody.appendChild(totalRow);
 
+    // Add target and difference rows if values exist
     var targetKwh = document.getElementById("targetKwh").value;
     var targetBill = document.getElementById("targetBill").value;
 
-    // Check if target kWh or target Bill has input and append an extra row
+
     if (targetKwh || targetBill) {
         let targetRow = document.createElement("tr");
+        targetRow.className = "target-row";
         targetRow.innerHTML = `
-        <td colspan="4" class="text-center"><strong>Target</strong></td>
-        <td><strong>${targetKwh ? targetKwh + " kWh" : ""}</strong></td>
-        <td><strong>₱${targetBill ? targetBill : ""}</strong></td>
+            <td colspan="4"><strong>Target</strong></td>
+            <td class="kwh-value"><strong>${targetKwh ? targetKwh + " kWh" : "-"}</strong></td>
+            <td class="cost-value"><strong>${targetBill ? "₱" + targetBill : "-"}</strong></td>
         `;
         tableBody.appendChild(targetRow);
 
         let differenceRow = document.createElement("tr");
+        differenceRow.className = "difference-row";
+        let kwhDiff = targetKwh ? (targetKwh - totalEnergy).toFixed(2) : "-";
+        let billDiff = targetBill ? (targetBill - totalCost).toFixed(2) : "-";
+        
+        // Add color classes based on difference values
+        const kwhColorClass = kwhDiff !== "-" ? (parseFloat(kwhDiff) >= 0 ? "text-success" : "text-danger") : "";
+        const billColorClass = billDiff !== "-" ? (parseFloat(billDiff) >= 0 ? "text-success" : "text-danger") : "";
+        
         differenceRow.innerHTML = `
-        <td colspan="4" class="text-center"><strong>Difference</strong></td>
-        <td><strong>${
-            targetKwh ? (targetKwh - totalEnergy).toFixed(2) + " kWh" : ""
-        }</strong></td>
-        <td><strong>₱${
-            targetBill ? (targetBill - totalCost).toFixed(2) : ""
-        }</strong></td>
+            <td colspan="4"><strong>Difference</strong></td>
+            <td class="kwh-value ${kwhColorClass}"><strong>${kwhDiff} ${kwhDiff !== "-" ? "kWh" : ""}</strong></td>
+            <td class="cost-value ${billColorClass}"><strong>${billDiff !== "-" ? "₱" + billDiff : "-"}</strong></td>
         `;
         tableBody.appendChild(differenceRow);
     }
 
-    // Append the table to the results
     resultsDiv.appendChild(table);
 }
 

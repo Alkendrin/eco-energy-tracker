@@ -132,10 +132,10 @@ button {
 /* the left section ++++++++++++++++++++++++++++++++++++++++++*/
 .left-sidebar {
   position: fixed;
-  left: 0;
+  left: 0.5%;
   top: 0;
   bottom: 0;
-  width: 16.666667%; /* Equivalent to col-md-2 */
+  width: 13.666667%; /* Equivalent to col-md-2 */
   z-index: 1000;
   padding: 0;
   background-color: #fff;
@@ -290,7 +290,7 @@ button {
 .appliance-list-container {
   position: fixed;
   bottom: 0;
-  left: 18%;
+  left: 15%;
   right: 32%;
   padding: 1rem;
   background: #f8f9fa;
@@ -336,89 +336,149 @@ button {
 }
 
 /* the right part ++++++++++++++++++++++++++++++++ */
-
+/* Summary Section Styling */
 .summary-section {
   position: fixed;
   right: 0;
   top: 0;
-  width: 33.333333%;
+  width: 32.333333%;
+  height: calc(100vh - 12vh - 2rem);
   padding: 1rem;
   z-index: 1000;
-  height: calc(
-    100vh - 15vh - 2rem
-  ); /* Account for appliance list height and padding */
-  overflow: hidden; /* Prevent scrolling on the section itself */
 }
 
 .summary-content {
-  background: #f8f9fa;
   height: 100%;
+  background: white;
   border-radius: 12px;
   padding: 1.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 
+.summary-title {
+  color: #2c3e50;
+  font-weight: 600;
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+#simulation_title {
+  color: #3498db;
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
 .result-container {
   flex: 1;
   overflow-y: auto;
-  padding: 1rem;
-  background: white;
+  padding: 0.5rem;
+  background: #ffffff;
   border-radius: 8px;
-  border: 1px solid #e2e8f0;
-  max-height: calc(100vh - 25vh); /* Limit height to prevent overflow */
+  border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-/* top secdtion ++++++++++++++++++++++++++++++++ */
+/* Table Styling */
+.result-container table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-bottom: 1rem;
+}
 
-.top-bar {
-  position: fixed;
+.result-container thead {
+  position: sticky;
   top: 0;
-  left: 16.666667%;
-  right: 33.333333%;
-  height: 60px;
-  background: #fff;
-  z-index: 1000;
-  padding: 0.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background: #f8f9fa;
+  z-index: 1;
+}
+
+.result-container th {
+  padding: 0.75rem;
+  font-weight: 600;
+  color: #2c3e50;
+  border-bottom: 2px solid #e9ecef;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+.result-container td {
+  padding: 0.75rem;
+  border-bottom: 1px solid #f1f1f1;
+  color: #4a5568;
+  font-size: 0.9rem;
+}
+
+/* Total and Target Rows */
+.result-container tr.total-row td,
+.result-container tr.target-row td,
+.result-container tr.difference-row td {
+  font-weight: 600;
+  background: #f8f9fa;
+}
+
+.result-container tr.total-row {
+  border-top: 2px solid #e9ecef;
+}
+
+/* Scrollbar Styling */
+.result-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.result-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.result-container::-webkit-scrollbar-thumb {
+  background: rgba(52, 152, 219, 0.3);
+  border-radius: 4px;
+}
+
+.result-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(52, 152, 219, 0.5);
+}
+
+/* Value Formatting */
+.kwh-value {
+  color: #2980b9;
+  font-weight: 500;
+}
+
+.cost-value {
+  color: #27ae60;
+  font-weight: 500;
+}
+
+/* Empty State */
+.result-container:empty {
   display: flex;
   align-items: center;
+  justify-content: center;
+  color: #a0aec0;
+  font-size: 0.9rem;
+  font-style: italic;
 }
 
-.room-title {
-  color: #2c3e50;
-  font-weight: 600;
-  margin: 0;
-}
-
-/* .droptarget {
-  width: 45px;
-  height: 45px;
-  padding: 8px;
-  border-radius: 8px;
-  background-color: #f8f9fa;
-  transition: all 0.2s ease;
-}
-
-.droptarget:hover {
-  background-color: #e9ecef;
-  transform: scale(1.05);
-} */
-
-/* Adjust main content to account for fixed top bar */
-.col-md-6 > .row > .col-md-12:first-child {
-  margin-top: 60px;
-  height: calc(83vh - 13vh - 60px) !important;
+/* Responsive Text */
+@media (max-width: 1400px) {
+  .result-container th,
+  .result-container td {
+    font-size: 0.8rem;
+    padding: 0.5rem;
+  }
 }
 
 /* main +++++++++++++++++++++++++++++++++++++++++ */
 .draggable-area {
   position: fixed;
-  left: 16.666667%;
-  right: 33.333333%;
-  top: 60px;
+  left: 0;
+  right: 0;
+  top: 0px;
   bottom: 15vh;
   overflow: auto;
   background: #f5f5f5;
@@ -480,4 +540,46 @@ button {
   background-color: #f8f9fa;
   border-color: #dee2e6;
   color: #212529;
+}
+
+/* top */
+
+.top-bar {
+  position: fixed;
+  top: 0;
+  left: 15.666667%;
+  right: 33.333333%;
+  height: 60px;
+  background: linear-gradient(to right, #ffffff, #f8f9fa);
+  z-index: 1001;
+  padding: 0 1.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(8px);
+}
+
+.top-bar .room-title {
+  color: #2c3e50;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.top-bar #stitle {
+  color: #3498db;
+}
+
+.trash {
+  padding-top: 10px;
+}
+
+.text-success {
+  color: #28a745 !important;
+}
+
+.text-danger {
+  color: #dc3545 !important;
 }
