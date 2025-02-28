@@ -1112,100 +1112,56 @@ class Api:
 
 				}
 				result = """
-				<div class="row mt-3" style="max-width:1000px;margin:auto">
-						<div class="col-12">
-
-								<div class="row">
-	
-										<div class="col-4 room yellow-door-color">Master Bedroom
-									      	<div id="masterbedB3" class="droptarget">{masterbedB3}</div>
-									      	<div class="sleeping-door yellow-door-color" style="bottom:0px;right:0px"></div>
-									      	
-									    </div>
-
-									    <div class="col-2 room blue-door-color">Master Bath
-									      	<div id="masterbathB3" class="droptarget">{masterbathB3}</div>
-									      	<div class="standing-door blue-door-color" style="bottom:0px;left:0px"></div>
-
-									    </div>
-
-									    <div class="col-2 room blue-door-color">Bath
-									      	<div id="bathB3" class="droptarget">{bathB3}</div>
-									     <div class="standing-door blue-door-color" style="bottom:0px;right:0px"></div>
-									    </div>
-
-
-										<div class="col-4 room yellow-door-color">Bedroom 1
-									      	<div id="bedB3" class="droptarget">{bedB3}</div>
-									      	<div class="sleeping-door yellow-door-color" style="bottom:0px;left:0px"></div>
-									      	
-									    </div>
-
-							        </div>
-
-
-							    <div class="row">
-
-								    <div class="col-3 room yellow-door-color">Walk-in Closet
-								      	<div id="closetB3" class="droptarget">{closetB3}</div>
-								      	<div class="sleeping-door yellow-door-colo"  style="top:0px;right:0px"></div>
-
-								    </div>
-
-								    <div class="col-3 room blue-door-color">Laundry
-								      	<div id="laundryB3" class="droptarget">{laundryB3}</div>
-								      	<div class="sleeping-door blue-door-color" style="bottom:0px;right:0px"></div>
-								    </div>
-								    <div class="col-2">
-								      
-								    </div>
-
-								    <div class="col-4 room yellow-door-color">Bedroom 2
-								      	<div id="bed2B3" class="droptarget">{bed2B3}</div>
-								      	<div class="standing-door yellow-door-color" style="bottom:0px;left:0px"></div>
-								    </div>
-
-							    </div>
-
-							    <div class="row">
-
-								    <div class="col-2 room orange-door-color">Deck
-								      	<div id="deckB3" class="droptarget">{deckB3}</div>
-								      
-								    </div>
-
-								    <div class="col-5 red yellow-door-color">Dining Room
-								      	<div id="diningB3" class="droptarget">{diningB3}</div>
-								      
-								    </div>
-
-								    <div class="col-5 room orange-door-color">Living Room
-								      	<div id="livingB3" class="droptarget">{livingB3}</div>
-								      	<div class="sleeping-door orange-door-color" style="bottom:0px;left:0px"></div>
-								    </div>
-
-							    </div>
-
-
-							<div class="row">
-								     <div class="col-2">
-								      
-								    </div>
-
-								     <div class="col-5 room red-door-color">Kitchen
-								      	<div id="kitchenB3" class="droptarget">{kitchenB3}</div>
-								    </div>
-
-								    <div class="col-5 room orange-door-color">Covered Porch
-								      	<div id="coverporchB3" class="droptarget">{coverporchB3}</div>
-								      		<div class="sleeping-door orange-door-color" style="bottom:0px;left:0px"></div>
-								    </div>
-							</div>
-
-
-
+					<div class="floor-plan" style="position: relative; width: 1000px; height: 800px; margin: auto;">
+						<!-- Master Bedroom -->
+						<div class="room yellow-door-color" style="position: absolute; top: 50px; left: 50px; width: 280px; height: 200px;">
+							<span class="room-name">Master Bedroom</span>
+							<div id="masterbedB3" class="droptarget">{masterbedB3}</div>
+							<div class="sleeping-door yellow-door-color" style="bottom: 0; right: 0;"></div>
 						</div>
-				  </div>
+
+						<!-- Master Bath -->
+						<div class="room blue-door-color" style="position: absolute; top: 50px; left: 350px; width: 140px; height: 200px;">
+							<span class="room-name">Master Bath</span>
+							<div id="masterbathB3" class="droptarget">{masterbathB3}</div>
+							<div class="sleeping-door blue-door-color" style="bottom: 0; left: 0;"></div>
+						</div>
+
+						<!-- Bath -->
+						<div class="room blue-door-color" style="position: absolute; top: 50px; left: 510px; width: 140px; height: 200px;">
+							<span class="room-name">Bath</span>
+							<div id="bathB3" class="droptarget">{bathB3}</div>
+							<div class="sleeping-door blue-door-color" style="bottom: 0; left: 0;"></div>
+						</div>
+
+						<!-- Bedroom -->
+						<div class="room yellow-door-color" style="position: absolute; top: 50px; right: 50px; width: 280px; height: 200px;">
+							<span class="room-name">Bedroom</span>
+							<div id="bedB3" class="droptarget">{bedB3}</div>
+							<div class="sleeping-door yellow-door-color" style="bottom: 0; left: 0;"></div>
+						</div>
+
+						<!-- Closet and Laundry Section -->
+						<div class="room yellow-door-color" style="position: absolute; top: 270px; left: 50px; width: 210px; height: 160px;">
+							<span class="room-name">Closet</span>
+							<div id="closetB3" class="droptarget">{closetB3}</div>
+						</div>
+
+						<div class="room blue-door-color" style="position: absolute; top: 270px; left: 280px; width: 210px; height: 160px;">
+							<span class="room-name">Laundry</span>
+							<div id="laundryB3" class="droptarget">{laundryB3}</div>
+							<div class="standing-door blue-door-color" style="top: 60px; right: 0;"></div>
+						</div>
+
+						<!-- Bedroom 2 -->
+						<div class="room yellow-door-color" style="position: absolute; top: 270px; right: 50px; width: 280px; height: 160px;">
+							<span class="room-name">Bedroom 2</span>
+							<div id="bed2B3" class="droptarget">{bed2B3}</div>
+							<div class="sleeping-door yellow-door-color" style="bottom: 0; left: 0;"></div>
+						</div>
+
+					
+					</div>
 				"""
 
 			# Fill in the placeholders with images

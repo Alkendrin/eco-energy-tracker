@@ -496,11 +496,15 @@ button {
   left: 100px;
   width: 40%;
   min-height: 400px;
+  width: 80%; /* Increased from 40% */
+  min-height: 800px;
   cursor: move;
   user-select: none;
   z-index: 1;
   padding: 20px;
   background: rgba(255, 255, 255, 0.8);
+  background: url("assets/blueprint/Bungalow_1.jpg") no-repeat center center;
+  background-size: contain;
 }
 
 .appliance-item {
