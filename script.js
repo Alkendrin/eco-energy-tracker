@@ -175,37 +175,48 @@ document.addEventListener("dragleave", function (event) {
 
 // Handle drop event
 document.addEventListener("drop", function (event) {
-event.preventDefault();
+    event.preventDefault();
 
-const roomId = event.target.id;
+    const roomId = event.target.id;
 
-// Only proceed if the drop target has the class 'droptarget'
-if (event.target.className == "droptarget") {
-    // document.getElementById("demo").style.color = "";
-    event.target.style.border = "";
+    // Only proceed if the drop target has the class 'droptarget'
+    if (event.target.className == "droptarget") {
+        event.target.style.border = "";
 
-    const imageId = event.dataTransfer.getData("Text");
-    const fromRoom = event.dataTransfer.getData("custom_id");
-    const isUpdate = event.dataTransfer.getData("is_update");
-    const canvasId = event.dataTransfer.getData("canvas_id");
+        const imageId = event.dataTransfer.getData("Text");
+        const fromRoom = event.dataTransfer.getData("custom_id");
+        const isUpdate = event.dataTransfer.getData("is_update");
+        const canvasId = event.dataTransfer.getData("canvas_id");
 
-    var sessionName = localStorage.getItem("sessionName");
-    var sessionId = localStorage.getItem("sessionId");
+        var sessionName = localStorage.getItem("sessionName");
+        var sessionId = localStorage.getItem("sessionId");
 
-    //dont accept drag drop if same room, and logic for updating or adding
-
-    if (roomId != "delete") {
-        if (fromRoom !== roomId) {
-            if (isUpdate == "1") {
-            updateCanvas(sessionId, roomId, imageId, fromRoom, canvasId);
-            } else {
-            addToCanvas(sessionId, roomId, imageId);
-            }
+        // Create a clone of the dragged element if it's a new addition
+        if (isUpdate !== "1") {
+            // Clone the original element
+            const clone = draggedElement.cloneNode(true);
+            
+            // Update the clone's attributes as needed
+            clone.setAttribute('data-is-update', '1');
+            
+            // Append the clone instead of the original
+            event.target.appendChild(clone);
+        } else {
+            // If updating position, move the original element
+            event.target.appendChild(draggedElement);
         }
-    } else {
-        removeFromCanvas(canvasId);
-    }
-    event.target.appendChild(draggedElement);
+
+        if (roomId != "delete") {
+            if (fromRoom !== roomId) {
+                if (isUpdate == "1") {
+                    updateCanvas(sessionId, roomId, imageId, fromRoom, canvasId);
+                } else {
+                    addToCanvas(sessionId, roomId, imageId);
+                }
+            }
+        } else {
+            removeFromCanvas(canvasId);
+        }
     }
 });
 
