@@ -1114,50 +1114,44 @@ class Api:
 				result = """
 					<div class="floor-plan" style="position: relative; width: 1000px; height: 800px; margin: auto;">
 						<!-- Master Bedroom -->
-						<div class="room yellow-door-color" style="position: absolute; top: 50px; left: 50px; width: 280px; height: 200px;">
-							<span class="room-name">Master Bedroom</span>
+						<div class="room yellow-door-color" style="position: absolute; top: 212px; left: 320px; width: 160px; height: 40px;">
+							<span class="room-name"></span>
 							<div id="masterbedB3" class="droptarget">{masterbedB3}</div>
-							<div class="sleeping-door yellow-door-color" style="bottom: 0; right: 0;"></div>
 						</div>
 
 						<!-- Master Bath -->
-						<div class="room blue-door-color" style="position: absolute; top: 50px; left: 350px; width: 140px; height: 200px;">
-							<span class="room-name">Master Bath</span>
+						<div class="room blue-door-color" style="position: absolute; top: 200px; left: 566px; width: 160px; height: 40px;">
+							<span class="room-name"></span>
 							<div id="masterbathB3" class="droptarget">{masterbathB3}</div>
-							<div class="sleeping-door blue-door-color" style="bottom: 0; left: 0;"></div>
 						</div>
 
 						<!-- Bath -->
-						<div class="room blue-door-color" style="position: absolute; top: 50px; left: 510px; width: 140px; height: 200px;">
-							<span class="room-name">Bath</span>
+						<div class="room blue-door-color" style="position: absolute; top: 347px; left: 552px; width: 160px; height: 40px;">
+							<span class="room-name"></span>
 							<div id="bathB3" class="droptarget">{bathB3}</div>
-							<div class="sleeping-door blue-door-color" style="bottom: 0; left: 0;"></div>
 						</div>
 
 						<!-- Bedroom -->
-						<div class="room yellow-door-color" style="position: absolute; top: 50px; right: 50px; width: 280px; height: 200px;">
-							<span class="room-name">Bedroom</span>
+						<div class="room yellow-door-color" style="position: absolute; top: 385px; right: 576px; width: 160px; height: 40px;">
+							<span class="room-name"></span>
 							<div id="bedB3" class="droptarget">{bedB3}</div>
-							<div class="sleeping-door yellow-door-color" style="bottom: 0; left: 0;"></div>
 						</div>
 
 						<!-- Closet and Laundry Section -->
-						<div class="room yellow-door-color" style="position: absolute; top: 270px; left: 50px; width: 210px; height: 160px;">
-							<span class="room-name">Closet</span>
+						<div class="room yellow-door-color" style="position: absolute; top: 506px; right: 286px; width: 160px; height: 40px;">
+							<span class="room-name"></span>
 							<div id="closetB3" class="droptarget">{closetB3}</div>
 						</div>
 
-						<div class="room blue-door-color" style="position: absolute; top: 270px; left: 280px; width: 210px; height: 160px;">
-							<span class="room-name">Laundry</span>
+						<div class="room blue-door-color" style="position: absolute; top: 547px; left: 320px; width: 160px; height: 40px;">
+							<span class="room-name"></span>
 							<div id="laundryB3" class="droptarget">{laundryB3}</div>
-							<div class="standing-door blue-door-color" style="top: 60px; right: 0;"></div>
 						</div>
 
 						<!-- Bedroom 2 -->
-						<div class="room yellow-door-color" style="position: absolute; top: 270px; right: 50px; width: 280px; height: 160px;">
-							<span class="room-name">Bedroom 2</span>
+						<div class="room yellow-door-color" style="position: absolute; top: 710px; right: 288px; width: 160px; height: 40px;">
+							<span class="room-name"></span>
 							<div id="bed2B3" class="droptarget">{bed2B3}</div>
-							<div class="sleeping-door yellow-door-color" style="bottom: 0; left: 0;"></div>
 						</div>
 
 					
