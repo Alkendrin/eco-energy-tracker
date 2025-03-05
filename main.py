@@ -159,7 +159,7 @@ class Api:
 				# Append image, image_id, and canvas_id to the list of images
 				grouped_data[room_id]['images'].append((row_data['applianceImage'], row_data['applianceImageId'], canvas_id, watt, row_data['applianceName']))
 
-			if(simulation_id == '92'):
+			if(simulation_id == '93'):
 				# Map HTML IDs to room IDs Bungalow 1
 				room_id_map = {
 					'B1_bedTop': 'B1_bedTop',
@@ -216,6 +216,158 @@ class Api:
 						</div>
 
 					
+					</div>
+				"""
+			
+			if(simulation_id == '94'):
+				# Map HTML IDs to room IDs Bungalow 1
+				room_id_map = {
+					'B2_dining/kitchen': 'B2_dining/kitchen',
+					'B2_bedTopLeft': 'B2_bedTopLeft',
+					'B2_bedTopRight': 'B2_bedTopRight',
+					'B2_livingRoom': 'B2_livingRoom',
+					'B2_bathTop': 'B2_bathTop',
+					'B2_bathBot': 'B2_bathBot',
+					'B2_garage': 'B2_garage',
+					'B2_porch': 'B2_porch',
+					'B2_bedBot': 'B2_bedBot',
+				}
+				result = """
+					<div class="floor-plan" style="position: relative; width: 1000px; height: 800px; margin: auto;">
+
+						<!-- Kitchen -->
+						<div class="room" style="position: absolute; top: 244px; left: 157px; width: 160px; height: 40px;">
+							<span class="room-name"></span>
+							<div id="B2_dining/kitchen" class="droptarget">{B2_dining/kitchen}</div>
+						</div>
+
+						<!-- Bedroom Top Left -->
+						<div class="room" style="position: absolute; top: 188px; left: 367px; width: 160px; height: 40px;">
+							<span class="room-name"></span>
+							<div id="B2_bedTopLeft" class="droptarget">{B2_bedTopLeft}</div>
+						</div>
+
+						<!-- Bedroom Top Right -->
+						<div class="room" style="position: absolute; top: 188px; left: 574px; width: 160px; height: 40px;">
+							<span class="room-name"></span>
+							<div id="B2_bedTopRight" class="droptarget">{B2_bedTopRight}</div>
+						</div>
+
+						<!-- Living Room -->
+						<div class="room" style="position: absolute; top: 378px; left: 368px; width: 160px; height: 40px;">
+							<span class="room-name"></span>
+							<div id="B2_livingRoom" class="droptarget">{B2_livingRoom}</div>
+						</div>
+
+						<!-- Bath Top -->
+						<div class="room" style="position: absolute; top: 338px; left: 644px; width: 160px; height: 40px;">
+							<span class="room-name"></span>
+							<div id="B2_bathTop" class="droptarget">{B2_bathTop}</div>
+						</div>
+
+						<!-- Bath Bottom -->
+						<div class="room" style="position: absolute; top: 441px; left: 644px; width: 160px; height: 40px;">
+							<span class="room-name"></span>
+							<div id="B2_bathBot" class="droptarget">{B2_bathBot}</div>
+						</div>
+
+						<!-- Garage -->
+						<div class="room" style="position: absolute; top: 523px; left: 151px; width: 160px; height: 40px;">
+							<span class="room-name"></span>
+							<div id="B2_garage" class="droptarget">{B2_garage}</div>
+						</div>
+
+						<!-- Porch -->
+						<div class="room" style="position: absolute; top: 576px; left: 576px; width: 160px; height: 40px;">
+							<span class="room-name"></span>
+							<div id="B2_porch" class="droptarget">{B2_porch}</div>
+						</div>
+
+						<!-- Bedroom Bottom -->
+						<div class="room" style="position: absolute; top: 630px; left: 364px; width: 160px; height: 40px;">
+							<span class="room-name"></span>
+							<div id="B2_bedBot" class="droptarget">{B2_bedBot}</div>
+						</div>
+					</div>
+				"""
+			
+			if(simulation_id == '95'):
+				# Map HTML IDs to room IDs Bungalow 1
+				room_id_map = {
+					'B3_kitchen': 'B3_kitchen',
+					'B3_walkInCloset': 'B3_walkInCloset',
+					'B3_dining': 'B3_dining',
+					'B3_bedTop': 'B3_bedTop',
+					'B3_garage': 'B3_garage',
+					'B3_masterBedroom': 'B3_masterBedroom',
+					'B3_livingRoom': 'B3_livingRoom',
+					'B3_bathroom': 'B3_bathroom',
+					'B3_porch': 'B3_porch',
+					'B3_bedBot': 'B3_bedBot',
+
+				}
+				result = """
+					<div class="floor-plan" style="position: relative; width: 1000px; height: 800px; margin: auto;">
+
+						<!-- Kitchen -->
+						<div class="room" style="position: absolute; top: 206px; left: 290px; width: 160px; height: 40px;">
+							<span class="room-name"></span>
+							<div id="B3_kitchen" class="droptarget">{B3_kitchen}</div>
+						</div>
+
+						<!-- Walk-in Closet -->
+						<div class="room" style="position: absolute; top: 293px; left: 379px; width: 80px; height: 40px;">
+							<span class="room-name"></span>
+							<div id="B3_walkInCloset" class="droptarget">{B3_walkInCloset}</div>
+						</div>
+
+						<!-- Dining -->
+						<div class="room" style="position: absolute; top: 281px; left: 499px; width: 160px; height: 40px;">
+							<span class="room-name"></span>
+							<div id="B3_dining" class="droptarget">{B3_dining}</div>
+						</div>
+
+						<!-- Bedroom Top -->
+						<div class="room" style="position: absolute; top: 269px; left: 701px; width: 160px; height: 40px;">
+							<span class="room-name"></span>
+							<div id="B3_bedTop" class="droptarget">{B3_bedTop}</div>
+						</div>
+
+						<!-- Garage -->
+						<div class="room" style="position: absolute; top: 503px; left: 42px; width: 160px; height: 40px;">
+							<span class="room-name"></span>
+							<div id="B3_garage" class="droptarget">{B3_garage}</div>
+						</div>
+
+						<!-- Master Bedroom -->
+						<div class="room" style="position: absolute; top: 514px; left: 280px; width: 160px; height: 40px;">
+							<span class="room-name"></span>
+							<div id="B3_masterBedroom" class="droptarget">{B3_masterBedroom}</div>
+						</div>
+
+						<!-- Living Room -->
+						<div class="room" style="position: absolute; top: 463px; left: 499px; width: 160px; height: 40px;">
+							<span class="room-name"></span>
+							<div id="B3_livingRoom" class="droptarget">{B3_livingRoom}</div>
+						</div>
+
+						<!-- Bathroom -->
+						<div class="room" style="position: absolute; top: 430px; left: 747px; width: 160px; height: 40px;">
+							<span class="room-name"></span>
+							<div id="B3_bathroom" class="droptarget">{B3_bathroom}</div>
+						</div>
+
+						<!-- Porch -->
+						<div class="room" style="position: absolute; top: 657px; left: 493px; width: 160px; height: 40px;">
+							<span class="room-name"></span>
+							<div id="B3_porch" class="droptarget">{B3_porch}</div>
+						</div>
+
+						<!-- Bedroom Bottom -->
+						<div class="room" style="position: absolute; top: 580px; left: 704px; width: 160px; height: 40px;">
+							<span class="room-name"></span>
+							<div id="B3_bedBot" class="droptarget">{B3_bedBot}</div>
+						</div>
 					</div>
 				"""
 

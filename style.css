@@ -503,7 +503,6 @@ button {
   z-index: 1;
   padding: 20px;
   background: rgba(255, 255, 255, 0.8);
-  background: url("assets/blueprint/Bungalow_1.jpg") no-repeat center center;
   background-size: contain;
 }
 

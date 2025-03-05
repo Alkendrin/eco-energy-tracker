@@ -11,9 +11,9 @@
 window.addEventListener("DOMContentLoaded", function () {
     showNavbar();
     showAppliance();
-    
+
     var sessionName = localStorage.getItem("sessionName");
-    
+
     document.getElementById("stitle").innerHTML = sessionName;
     document.getElementById("simulation_title").innerHTML = sessionName;
     if (sessionName) {
@@ -30,10 +30,10 @@ async function showNavbar() {
         .then((response) => response.json())
         .then((data) => getNavbar(data))
         .catch((error) =>
-        console.error("Error fetching navbar list:", error)
+            console.error("Error fetching navbar list:", error)
         );
-    }
-    
+}
+
 function getNavbar(response) {
     const a = document.getElementById("navBar");
     a.innerHTML = response.message;
@@ -45,10 +45,10 @@ function showAppliance() {
         .then((response) => response.json())
         .then((data) => outputApplianceList(data))
         .catch((error) =>
-        console.error("Error fetching appliance list:", error)
+            console.error("Error fetching appliance list:", error)
         );
-    }
-    
+}
+
 function outputApplianceList(response) {
     const a = document.getElementById("applianceList");
     a.innerHTML = response.message;
@@ -62,6 +62,16 @@ function setID(name, simulationId) {
     var sessionId = localStorage.getItem("sessionId");
     document.getElementById("stitle").innerHTML = sessionName;
     document.getElementById("simulation_title").innerHTML = sessionName;
+
+    const layoutContainer = document.querySelector('.layout-container');
+    if (simulationId == 93) {
+        layoutContainer.style.background = 'url("assets/blueprint/Bungalow_1.jpg") no-repeat center center';
+    } else if (simulationId == 94) {
+        layoutContainer.style.background = 'url("assets/blueprint/Bungalow_2.jpg") no-repeat center center';
+    } else if (simulationId == 95) {
+        layoutContainer.style.background = 'url("assets/blueprint/Bungalow_3.jpg") no-repeat center center';
+    }
+    layoutContainer.style.backgroundSize = 'contain';
 
     showHouse();
 
@@ -152,9 +162,9 @@ document.addEventListener("dragstart", function (event) {
     event.dataTransfer.setData("custom_id", event.target.dataset.customId);
     event.dataTransfer.setData("is_update", event.target.dataset.isUpdate);
     event.dataTransfer.setData("canvas_id", event.target.dataset.canvasId);
-    });
+});
 
-    // Handle drag enter event (change border of the drop target)
+// Handle drag enter event (change border of the drop target)
 document.addEventListener("dragenter", function (event) {
     if (event.target.className == "droptarget") {
         event.target.style.border = "3px dotted red";
@@ -170,7 +180,7 @@ document.addEventListener("dragover", function (event) {
 document.addEventListener("dragleave", function (event) {
     if (event.target.className == "droptarget") {
         event.target.style.border = "";
-        }
+    }
 });
 
 // Handle drop event
@@ -195,10 +205,10 @@ document.addEventListener("drop", function (event) {
         if (isUpdate !== "1") {
             // Clone the original element
             const clone = draggedElement.cloneNode(true);
-            
+
             // Update the clone's attributes as needed
             clone.setAttribute('data-is-update', '1');
-            
+
             // Append the clone instead of the original
             event.target.appendChild(clone);
         } else {
@@ -225,25 +235,25 @@ function updateCanvas(sessionId, roomId, imageId, fromRoom, canvasId) {
     fetch("http://127.0.0.1:5000/api/update_appliance_canvas", {
         method: "POST",
         headers: {
-        "Content-Type": "application/json",
+            "Content-Type": "application/json",
         },
         body: JSON.stringify({
-        session_id: sessionId,
-        room_id: roomId,
-        image_id: imageId,
-        from_room: fromRoom,
-        canvas_id: canvasId,
+            session_id: sessionId,
+            room_id: roomId,
+            image_id: imageId,
+            from_room: fromRoom,
+            canvas_id: canvasId,
         }),
     })
         .then((response) => response.json())
         .then((data) => canvasShowMessage(data))
         .catch((error) => {
-        console.error("Error updating appliance canvas:", error);
-        Swal.fire({
-            icon: "error",
-            title: "Error",
-            text: "Failed to update appliance position",
-        });
+            console.error("Error updating appliance canvas:", error);
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "Failed to update appliance position",
+            });
         });
 }
 
@@ -251,18 +261,18 @@ function addToCanvas(sessionId, roomId, imageId) {
     fetch("http://127.0.0.1:5000/api/add_appliance_canvas", {
         method: "POST",
         headers: {
-        "Content-Type": "application/json",
+            "Content-Type": "application/json",
         },
         body: JSON.stringify({
-        sessionId: sessionId,
-        roomId: roomId,
-        imageId: imageId,
+            sessionId: sessionId,
+            roomId: roomId,
+            imageId: imageId,
         }),
     })
         .then((response) => response.json())
         .then((data) => canvasShowMessage(data))
         .catch((error) =>
-        console.error("Error adding appliance to canvas:", error)
+            console.error("Error adding appliance to canvas:", error)
         );
 }
 
@@ -270,21 +280,21 @@ function removeFromCanvas(canvasId) {
     fetch("http://127.0.0.1:5000/api/delete_appliance_canvas", {
         method: "POST",
         headers: {
-        "Content-Type": "application/json",
+            "Content-Type": "application/json",
         },
         body: JSON.stringify({
-        canvas_id: canvasId,
+            canvas_id: canvasId,
         }),
     })
         .then((response) => response.json())
         .then((data) => canvasShowMessage(data))
         .catch((error) => {
-        console.error("Error removing from canvas:", error);
-        Swal.fire({
-            icon: "error",
-            title: "Error",
-            text: "Failed to remove appliance",
-        });
+            console.error("Error removing from canvas:", error);
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "Failed to remove appliance",
+            });
         });
 }
 
@@ -373,9 +383,9 @@ async function startSimulation(hours, ratePerHour) {
         let inputId = input.id;
 
         if (hoursTracker[inputId]) {
-        hoursTracker[inputId] += inputValue;
+            hoursTracker[inputId] += inputValue;
         } else {
-        hoursTracker[inputId] = inputValue;
+            hoursTracker[inputId] = inputValue;
         }
     });
 
@@ -397,29 +407,29 @@ function computeEnergy(hoursTracker, ratePerHour, totalHours) {
         var roomName = parts[3]; // Get the room name
 
         if (!isNaN(watts)) {
-        var hours_used = hoursTracker[id] * totalHours; // Multiply by total hours to get the usage over the specified period
-        var energy = (watts * hours_used) / 1000; // kWh
-        var amount = ratePerHour * energy;
+            var hours_used = hoursTracker[id] * totalHours; // Multiply by total hours to get the usage over the specified period
+            var energy = (watts * hours_used) / 1000; // kWh
+            var amount = ratePerHour * energy;
 
-        // Check if the roomName group exists, if not, create it
-        if (!myArray[roomName]) {
-            myArray[roomName] = [];
+            // Check if the roomName group exists, if not, create it
+            if (!myArray[roomName]) {
+                myArray[roomName] = [];
+            }
+
+            // Push the result under the appropriate roomName group
+            myArray[roomName].push({
+                id: canvas_id,
+                hours_used: hours_used,
+                energy: energy,
+                amount: amount,
+                applianceName: applianceName,
+                wattage: watts,
+            });
         }
+    });
 
-        // Push the result under the appropriate roomName group
-        myArray[roomName].push({
-            id: canvas_id,
-            hours_used: hours_used,
-            energy: energy,
-            amount: amount,
-            applianceName: applianceName,
-            wattage: watts,
-        });
-        }
-});
-
-// Optionally, display the results (e.g., on the page or in the console)
-console.log(myArray);
+    // Optionally, display the results (e.g., on the page or in the console)
+    console.log(myArray);
 }
 
 // Update the table generation in stopAndCompute function
@@ -498,11 +508,11 @@ function stopAndCompute() {
         differenceRow.className = "difference-row";
         let kwhDiff = targetKwh ? (targetKwh - totalEnergy).toFixed(2) : "-";
         let billDiff = targetBill ? (targetBill - totalCost).toFixed(2) : "-";
-        
+
         // Add color classes based on difference values
         const kwhColorClass = kwhDiff !== "-" ? (parseFloat(kwhDiff) >= 0 ? "text-success" : "text-danger") : "";
         const billColorClass = billDiff !== "-" ? (parseFloat(billDiff) >= 0 ? "text-success" : "text-danger") : "";
-        
+
         differenceRow.innerHTML = `
             <td colspan="4"><strong>Difference</strong></td>
             <td class="kwh-value ${kwhColorClass}"><strong>${kwhDiff} ${kwhDiff !== "-" ? "kWh" : ""}</strong></td>
@@ -534,22 +544,22 @@ function calculateSuggestionsEnergy() {
 
     if (target_kwh && ratePerHour) {
         fetch("http://127.0.0.1:5000/api/get_suggestions_energy", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            target_kwh: target_kwh,
-            rate_per_hour: ratePerHour,
-            session_id: sessionId,
-        }),
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                target_kwh: target_kwh,
+                rate_per_hour: ratePerHour,
+                session_id: sessionId,
+            }),
         })
-        .then((response) => response.json())
-        .then((data) => getSuggestionEnergy(data))
-        .catch((error) => {
-            console.error("Error calculating suggestions:", error);
-            alert("Error calculating suggestions. Please try again.");
-        });
+            .then((response) => response.json())
+            .then((data) => getSuggestionEnergy(data))
+            .catch((error) => {
+                console.error("Error calculating suggestions:", error);
+                alert("Error calculating suggestions. Please try again.");
+            });
     } else {
         alert("Please enter valid kWh and rate per hour.");
     }
@@ -574,23 +584,23 @@ function calculateSuggestions() {
 
     if (targetAmount && targetHours && ratePerHour) {
         fetch("http://127.0.0.1:5000/api/get_suggestions", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            target_amount: parseFloat(targetAmount),
-            target_hours: targetHours,
-            rate_per_hour: ratePerHour,
-            session_id: sessionId,
-        }),
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                target_amount: parseFloat(targetAmount),
+                target_hours: targetHours,
+                rate_per_hour: ratePerHour,
+                session_id: sessionId,
+            }),
         })
-        .then((response) => response.json())
-        .then((data) => getSuggestion(data))
-        .catch((error) => {
-            console.error("Error calculating suggestions:", error);
-            alert("Error calculating suggestions. Please try again.");
-        });
+            .then((response) => response.json())
+            .then((data) => getSuggestion(data))
+            .catch((error) => {
+                console.error("Error calculating suggestions:", error);
+                alert("Error calculating suggestions. Please try again.");
+            });
 
         // Display suggestions
     } else {
@@ -604,7 +614,7 @@ function getSuggestion(response) {
 }
 
 // dragging
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const container = document.querySelector('.layout-container');
     let isDragging = false;
     let currentX;
@@ -624,12 +634,12 @@ document.addEventListener('DOMContentLoaded', function() {
         if (e.target.closest('.appliance-item') || e.target.closest('.droptarget')) {
             return;
         }
-    
+
         // Only allow dragging when clicking directly on the container or its background
         if (!container.contains(e.target)) {
             return;
         }
-    
+
         isDragging = true;
         initialX = e.clientX - xOffset;
         initialY = e.clientY - yOffset;
