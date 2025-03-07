@@ -290,7 +290,7 @@ class Api:
 						</div>
 					</div>
 				"""
-			-
+			
 			if(simulation_id == '95'):
 				# Map HTML IDs to room IDs Bungalow 1
 				room_id_map = {
