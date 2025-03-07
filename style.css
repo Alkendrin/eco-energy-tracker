@@ -6,47 +6,6 @@
   background-color: #ffffff;
 }
 
-/* hr {
-  width: 300px;
-  height: 2px;
-  margin: auto;
-  margin-bottom: 5px;
-} */
-/* .room-title {
-  padding-bottom: 20px;
-  border-bottom: 3px solid black;
-  width: 200px;
-  margin-bottom: 30px !important;
-  margin: auto;
-}
-nav {
-  margin: 0px;
-}
-
-#response-container {
-  display: none;
-  padding: 1rem;
-  margin: 3rem 5%;
-  font-size: 120%;
-  border: 5px dashed #ccc;
-  word-wrap: break-word;
-} */
-
-/* label {
-  margin-left: 0.3rem;
-  margin-right: 0.3rem;
-}
-
-button {
-  font-size: 100%;
-  padding: 0.5rem;
-  margin: 0.3rem;
-}
-
-.nav-link {
-  color: white !important;
-} */
-
 .droptarget {
   overflow-y: auto !important;
   display: grid;
@@ -71,30 +30,6 @@ button {
   height: 50px;
   background: gray;
   z-index: 100;
-}
-
-.red-door-color {
-  background: orange !important;
-}
-
-.orange-door-color {
-  background: orange !important;
-}
-
-.yellow-door-color {
-  background: orange !important;
-}
-
-.green-door-color {
-  background: orange !important;
-}
-
-.blue-door-color {
-  background: orange !important;
-}
-
-.violet-door-color {
-  background: orange !important;
 }
 
 .droptargets {
@@ -132,52 +67,76 @@ button {
 /* the left section ++++++++++++++++++++++++++++++++++++++++++*/
 .left-sidebar {
   position: fixed;
-  left: 0.5%;
-  top: 0;
-  bottom: 0;
-  width: 13.666667%; /* Equivalent to col-md-2 */
+  left: 1%;
+  top: 1%;
+  width: 13.666667%;
   z-index: 1000;
   padding: 0;
   background-color: #fff;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+  max-height: 98vh; /* Adjust to prevent overflow */
+  min-height: 50vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  border-radius: 8px;
+}
+
+.sidebar-container {
+  padding: 0.5rem;
+  height: 100%;
 }
 
 .input-panel {
-  height: 100%;
   width: 100%;
-  padding: 1.5rem;
-  border-radius: 12px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 0.75rem; /* Reduce padding */
+  border-radius: 8px;
+  background-color: #f8f9fa;
+  margin-bottom: 0; /* Remove bottom margin */
 }
 
 .app-title {
   color: #2c3e50;
   font-weight: 600;
-  margin-bottom: 1.5rem;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  text-align: center;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #e9ecef;
 }
 
 .input-form {
-  padding: 0.5rem;
+  padding: 0.25rem;
+}
+
+.input-form .form-group {
+  margin-bottom: 0.75rem;
 }
 
 .input-form label {
   color: #34495e;
   font-weight: 500;
-  margin-bottom: 0.5rem;
-  display: block;
+  font-size: 0.9rem;
+  margin-bottom: 0.25rem;
 }
 
 .input-form .form-control {
+  font-size: 0.9rem;
+  padding: 0.4rem 0.75rem;
+  height: auto;
   background-color: #fff;
-  border: 2px solid #e2e8f0;
-  border-radius: 8px;
-  padding: 0.75rem;
-  transition: all 0.3s ease;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
 }
 
 .input-form .form-control:focus {
-  border-color: #4299e1;
-  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+  border-color: #3498db;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.25);
+}
+
+.input-form .btn-primary {
+  padding: 0.5rem;
+  font-size: 0.9rem;
+  margin: 0.5rem 0;
 }
 
 .btn-primary {
@@ -204,61 +163,49 @@ button {
   animation: slideIn 0.3s ease;
 }
 
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateX(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-.perspective-panel {
-  background: #ffffff;
-  height: 100%;
-  width: 100%;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.perspective-header {
-  background: linear-gradient(135deg, #3498db, #2980b9);
-  padding: 1rem;
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
-}
-
-.perspective-title {
-  color: white;
-  margin: 0;
-  font-size: 1rem;
-  font-weight: 600;
-  text-align: center;
-}
-
 .perspective-content {
-  flex: 1;
-  padding: 1rem;
-  background-color: #f8f9fa;
-  overflow-y: auto;
-  border-bottom-left-radius: 12px;
-  border-bottom-right-radius: 12px;
+  background: #ffffff;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  height: 200px; /* Fixed height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  border: 1px solid #e9ecef;
 }
 
-/* Add animations */
-.perspective-panel {
-  animation: slideUp 0.3s ease-out;
+.perspective-content img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 6px;
+  transition: transform 0.3s ease;
 }
 
-@keyframes slideUp {
+.perspective-content img:hover {
+  transform: scale(1.02);
+}
+
+/* Add a nice loading state */
+.perspective-content:empty::after {
+  content: "Select a house layout";
+  color: #a0aec0;
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+/* Add subtle animation when image loads */
+.perspective-content img {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;
@@ -266,32 +213,13 @@ button {
   }
 }
 
-/* Add scrollbar styling */
-.perspective-content::-webkit-scrollbar {
-  width: 8px;
-}
-
-.perspective-content::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 4px;
-}
-
-.perspective-content::-webkit-scrollbar-thumb {
-  background: #cbd5e0;
-  border-radius: 4px;
-}
-
-.perspective-content::-webkit-scrollbar-thumb:hover {
-  background: #a0aec0;
-}
-
 /* appliance section +++++++++++++++++++++++++ */
 
 .appliance-list-container {
   position: fixed;
   bottom: 0;
-  left: 15%;
-  right: 32%;
+  left: 22%;
+  right: 38%;
   padding: 1rem;
   background: #f8f9fa;
   border-top: 1px solid #dee2e6;
@@ -339,15 +267,73 @@ button {
 /* Summary Section Styling */
 .summary-section {
   position: fixed;
-  right: 0;
+  right: -32.333333%; /* Hide by default */
   top: 0;
   width: 32.333333%;
   height: calc(100vh - 12vh - 2rem);
   padding: 1rem;
   z-index: 1000;
+  transition: right 0.3s ease-in-out;
+}
+
+.summary-section.open {
+  right: 0;
+}
+
+/* Add toggle button */
+.summary-toggle {
+  position: fixed;
+  right: 0; /* Start from right side when closed */
+  top: 50%;
+  transform: translateY(-50%);
+  background: #3498db;
+  color: white;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 1001;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.summary-toggle.open {
+  right: 32.333333%; /* Move to the left when open */
+  transform: translateY(-50%) rotate(-180deg); /* Rotate opposite direction */
+}
+
+/* Update the summary section position */
+.summary-section {
+  position: fixed;
+  right: -32.333333%;
+  top: 0;
+  width: 32.333333%;
+  height: calc(100vh - 12vh - 2rem);
+  padding: 1rem;
+  z-index: 1000;
+  transition: right 0.3s ease-in-out;
+}
+
+.summary-section.open {
+  right: 0;
+}
+
+/* Add animation for smooth rotation */
+@keyframes rotateButton {
+  from {
+    transform: translateY(-50%) rotate(0deg);
+  }
+  to {
+    transform: translateY(-50%) rotate(180deg);
+  }
 }
 
 .summary-content {
+  margin-top: 100px;
   height: 100%;
   background: white;
   border-radius: 12px;
@@ -476,9 +462,9 @@ button {
 /* main +++++++++++++++++++++++++++++++++++++++++ */
 .draggable-area {
   position: fixed;
-  left: 0;
+  left: -450px;
   right: 0;
-  top: 0px;
+  top: -50px;
   bottom: 15vh;
   overflow: auto;
   background: #f5f5f5;
@@ -585,4 +571,71 @@ button {
 
 .text-danger {
   color: #dc3545 !important;
+}
+
+.hidden-until-selected {
+  display: none;
+}
+
+.hidden-until-selected.show {
+  display: block;
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.zoomable-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.zoomable-image:hover {
+  transform: scale(1.05);
+}
+
+.zoom-modal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 1;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  backdrop-filter: blur(5px);
+}
+
+.modal-content {
+  max-width: 90%;
+  max-height: 90vh;
+  object-fit: contain;
+  animation: zoomIn 0.3s ease;
+  opacity: 1; /* Ensure the image stays fully opaque */
+  z-index: 10000; /* Keep image above the semi-transparent background */
+}
+
+@keyframes zoomIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }

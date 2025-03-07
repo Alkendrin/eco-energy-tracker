@@ -39,13 +39,20 @@
       <!-- left side -->
       <div class="left-sidebar">
         <!-- try not to nest too hard, make left and right section fixed while have middle flexible -->
-        <div class="row h-100">
-          <div class="col-md-12 p-2" style="height: 70vh">
-            <div class="input-panel bg-light pt-3">
-              <h4 class="app-title mb-4">Eco Energy Tracker</h4>
+        <div class="sidebar-container">
+          <div class="input-panel bg-light">
+            <h4 class="app-title mb-4">Eco Energy Tracker</h4>
 
-              <!-- House list -->
-              <div id="navBar" class="mb-4"></div>
+            <!-- House list -->
+            <div id="navBar" class="mb-4"></div>
+
+            <div id="formContent" class="hidden-until-selected">
+              <!-- perspective -->
+              <div class="perspective-content" id="persepective">
+                <!-- Content will be dynamically populated -->
+              </div>
+
+              <hr />
 
               <!-- Input form -->
               <div class="input-form">
@@ -89,17 +96,6 @@
               </div>
             </div>
           </div>
-          <!-- perspective -->
-          <div class="col-md-12 p-2" style="height: 30vh">
-            <div class="perspective-panel">
-              <div class="perspective-header">
-                <h6 class="perspective-title">Floor Plan Perspective</h6>
-              </div>
-              <div class="perspective-content" id="persepective">
-                <!-- Content will be dynamically populated -->
-              </div>
-            </div>
-          </div>
         </div>
       </div>
 
@@ -122,6 +118,12 @@
           "
         ></div>
       </div>
+
+      <button class="summary-toggle" id="summaryToggle">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
+        </svg>
+      </button>
 
       <!-- right -->
       <div class="summary-section">

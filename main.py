@@ -49,7 +49,7 @@ class Api:
 							data-bs-toggle="dropdown" 
 							aria-expanded="false">
 						<i class="fas fa-home me-2"></i>
-						Select House Layout
+						Choose A Layout
 					</button>
 					<ul class="dropdown-menu w-100 shadow-sm border-0" 
 						aria-labelledby="navbarDropdownMenuLink">
@@ -290,7 +290,7 @@ class Api:
 						</div>
 					</div>
 				"""
-			
+			-
 			if(simulation_id == '95'):
 				# Map HTML IDs to room IDs Bungalow 1
 				room_id_map = {
@@ -304,7 +304,6 @@ class Api:
 					'B3_bathroom': 'B3_bathroom',
 					'B3_porch': 'B3_porch',
 					'B3_bedBot': 'B3_bedBot',
-
 				}
 				result = """
 					<div class="floor-plan" style="position: relative; width: 1000px; height: 800px; margin: auto;">

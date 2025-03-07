@@ -58,10 +58,19 @@ function outputApplianceList(response) {
 function setID(name, simulationId) {
     localStorage.setItem("sessionName", name);
     localStorage.setItem("sessionId", simulationId);
-    var sessionName = localStorage.getItem("sessionName");
-    var sessionId = localStorage.getItem("sessionId");
-    document.getElementById("stitle").innerHTML = sessionName;
-    document.getElementById("simulation_title").innerHTML = sessionName;
+
+        // Update the dropdown button text
+    const dropdownButton = document.querySelector('.house-selector .dropdown-toggle');
+    if (dropdownButton) {
+        dropdownButton.textContent = name;
+    }
+
+    document.getElementById("stitle").innerHTML = name;
+    document.getElementById("simulation_title").innerHTML = name;
+
+    // Show the form content when a layout is selected
+    const formContent = document.getElementById('formContent');
+    formContent.classList.add('show'); // Add this line to show the hidden content
 
     const layoutContainer = document.querySelector('.layout-container');
     if (simulationId == 93) {
@@ -74,64 +83,50 @@ function setID(name, simulationId) {
     layoutContainer.style.backgroundSize = 'contain';
 
     showHouse();
-
-    if (sessionName) {
-        //document.getElementById('addRoom').style.display = '';
-        document.getElementById("delete").style.display = "";
-    } else {
-        //document.getElementById('addRoom').style.display = 'none';
-        document.getElementById("delete").style.display = "none";
-    }
-
-    document.getElementById("results").style.display = "none";
-
     showRoom();
+
+    document.getElementById("delete").style.display = name ? "" : "none";
 }
 
 // perspective
 function showHouse() {
     var housename = localStorage.getItem("sessionId");
     const container = document.getElementById("persepective");
+    container.innerHTML = ""; // Clear previous content
+    
     const img = document.createElement("img");
-    if (housename == 87) {
-        img.src = "assets/perspective/bungalow1.png";
+    if (housename == 93) {
+        img.src = "assets/perspective/bungalow_1.png";
+    } else if (housename == 94) {
+        img.src = "assets/perspective/bungalow_2.png";
+    } else if (housename == 95) {
+        img.src = "assets/perspective/bungalow_3.png";
     }
-    if (housename == 91) {
-        img.src = "assets/perspective/bungalow2.png";
-    }
-    if (housename == 92) {
-        img.src = "assets/perspective/bungalow3.png";
-    }
-    if (housename == 89) {
-        img.src = "assets/perspective/duplex1.png";
-    }
-    if (housename == 85) {
-        img.src = "assets/perspective/duplex2.png";
-    }
-    if (housename == 86) {
-        img.src = "assets/perspective/duplex3.png";
-    }
-    if (housename == 84) {
-        img.src = "assets/perspective/t1.png";
-    }
-    if (housename == 88) {
-        img.src = "assets/perspective/t2.png";
-    }
-    if (housename == 90) {
-        img.src = "assets/perspective/t3.png";
-    }
-    img.alt = "Example Image";
 
-    // Make the image responsive to the container's size
-    img.style.width = "100%";
-    img.style.height = "100%";
-    img.style.objectFit = "contain"; // Ensures the image fits inside the container without distortion
+    img.classList.add('zoomable-image');
+    
+    // Create and append zoom modal
+    const modal = document.createElement('div');
+    modal.classList.add('zoom-modal');
+    modal.style.display = 'none';
+    
+    const modalImg = document.createElement('img');
+    modalImg.classList.add('modal-content');
+    modal.appendChild(modalImg);
+    
+    // Add click handlers
+    img.onclick = function() {
+        modal.style.display = 'flex';
+        modalImg.src = this.src;
+    };
 
-    // Clear previous content and add the image to the container
-    container.innerHTML = "";
+    modal.onclick = function() {
+        modal.style.display = 'none';
+    };
+
     container.appendChild(img);
+    document.body.appendChild(modal);
 }
-
 // layout container
 function showRoom() {
     var simulationId = localStorage.getItem("sessionId");
@@ -664,4 +659,61 @@ document.addEventListener('DOMContentLoaded', function () {
     function setTranslate(xPos, yPos, el) {
         el.style.transform = `translate(${xPos}px, ${yPos}px)`;
     }
+});
+
+function onHouseSelect(houseId) {
+    // ...existing house selection code...
+    
+    // Show the form content
+    const formContent = document.getElementById('formContent');
+    formContent.classList.add('show');
+  }
+  
+  // Add this to hide form when house is deselected
+  function onHouseDeselect() {
+    const formContent = document.getElementById('formContent');
+    formContent.classList.remove('show');
+  }
+
+  // Add toggle functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const summarySection = document.querySelector('.summary-section');
+    const summaryToggle = document.getElementById('summaryToggle');
+
+    // Toggle summary panel
+    function toggleSummary() {
+        summarySection.classList.toggle('open');
+        summaryToggle.classList.toggle('open');
+    }
+
+    summaryToggle.addEventListener('click', toggleSummary);
+
+    // Modify the existing compute button click handler
+    const computeBtn = document.getElementById("compute");
+    computeBtn.addEventListener("click", function() {
+        var sessionId = localStorage.getItem("sessionId");
+        if (!sessionId) {
+            alert("select house first");
+            return;
+        }
+
+        // Reset the variables for a new simulation
+        myArray = [];
+        running = true;
+
+        var ratePerHour = document.getElementById("ratePerHour").value;
+        var hours = document.getElementById("hours").value;
+
+        if (ratePerHour < 1) {
+            alert("Please enter rate per kWh");
+        } else if (hours <= 0) {
+            alert("Please enter valid hours");
+        } else {
+            // Open the summary panel when calculating
+            if (!summarySection.classList.contains('open')) {
+                toggleSummary();
+            }
+            startSimulation(hours, ratePerHour);
+        }
+    });
 });
