@@ -68,6 +68,14 @@ function setID(name, simulationId) {
     document.getElementById("stitle").innerHTML = name;
     document.getElementById("simulation_title").innerHTML = name;
 
+    // Toggle appliance list visibility
+    const applianceList = document.querySelector('.appliance-list-container');
+    if (name) {
+        applianceList.classList.add('show');
+    } else {
+        applianceList.classList.remove('show');
+    }
+
     // Show the form content when a layout is selected
     const formContent = document.getElementById('formContent');
     formContent.classList.add('show'); // Add this line to show the hidden content

@@ -74,11 +74,26 @@
   padding: 0;
   background-color: #fff;
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
-  max-height: 98vh; /* Adjust to prevent overflow */
-  min-height: 50vh;
+  max-height: 98vh;
+  overflow: visible; /* Change from auto to visible */
+  border-radius: 8px;
+}
+
+.house-selector .dropdown-menu {
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 1100; /* Higher than sidebar */
+  width: 100%; /* Match dropdown width to button */
+  position: absolute;
+  margin-top: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Add container for scrollable content */
+.sidebar-content {
+  height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
-  border-radius: 8px;
 }
 
 .sidebar-container {
@@ -223,6 +238,25 @@
   padding: 1rem;
   background: #f8f9fa;
   border-top: 1px solid #dee2e6;
+  z-index: 998;
+  /* Add transition and initial state */
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(100%);
+  transition: all 0.3s ease-in-out;
+}
+
+.appliance-list-container.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.appliance-item {
+  cursor: grab;
+  position: relative;
+  z-index: 1001;
+  pointer-events: auto !important;
 }
 
 .appliance-grid {
@@ -333,7 +367,7 @@
 }
 
 .summary-content {
-  margin-top: 100px;
+  margin-top: 80px;
   height: 100%;
   background: white;
   border-radius: 12px;
@@ -565,6 +599,50 @@
   padding-top: 10px;
 }
 
+.trash-zone {
+  position: absolute;
+  top: -45px;
+  left: 10px;
+  padding: 5px;
+  z-index: 1000;
+}
+
+.trash-icon {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 8px 16px;
+  border-radius: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.trash-icon:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  background: rgba(255, 255, 255, 1);
+}
+
+.trash-zone img {
+  width: 34px;
+  height: 24px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  filter: opacity(0.7);
+}
+
+.trash-zone img:hover {
+  transform: scale(1.1);
+  filter: opacity(1);
+}
+
+.trash-label {
+  margin-left: 8px;
+  font-size: 0.85rem;
+  color: #666;
+  font-weight: 500;
+  white-space: nowrap;
+}
 .text-success {
   color: #28a745 !important;
 }
@@ -638,4 +716,13 @@
     opacity: 1;
     transform: scale(1);
   }
+}
+
+/* Update the dropdown styling in style.css */
+.dropdown .dropdown-menu {
+  background: white;
+  z-index: 9999 !important; /* Increase z-index to be above appliance items */
+  position: absolute;
+  margin-top: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
