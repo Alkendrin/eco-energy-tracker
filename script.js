@@ -22,6 +22,12 @@ window.addEventListener("DOMContentLoaded", function () {
     } else {
         document.getElementById("delete").style.display = "none";
     }
+
+    const computeBtn = document.getElementById('compute');
+    computeBtn.addEventListener('click', () => {
+        stopAndCompute();
+        addTableRowHighlighting(); // Add this line
+    });
 });
 
 // show list of layout
@@ -68,13 +74,13 @@ function setID(name, simulationId) {
     document.getElementById("stitle").innerHTML = name;
     document.getElementById("simulation_title").innerHTML = name;
 
-    // Toggle appliance list visibility
-    const applianceList = document.querySelector('.appliance-list-container');
-    if (name) {
-        applianceList.classList.add('show');
-    } else {
-        applianceList.classList.remove('show');
-    }
+        // Toggle appliance list visibility
+        const applianceList = document.querySelector('.appliance-list-container');
+        if (name) {
+            applianceList.classList.add('show');
+        } else {
+            applianceList.classList.remove('show');
+        }
 
     // Show the form content when a layout is selected
     const formContent = document.getElementById('formContent');
@@ -87,6 +93,10 @@ function setID(name, simulationId) {
         layoutContainer.style.background = 'url("assets/blueprint/Bungalow_2.jpg") no-repeat center center';
     } else if (simulationId == 95) {
         layoutContainer.style.background = 'url("assets/blueprint/Bungalow_3.jpg") no-repeat center center';
+    } else if (simulationId == 96) {
+        layoutContainer.style.background = 'url("assets/blueprint/Contemporary_1.jpg") no-repeat center center';
+    } else if (simulationId == 99) {
+        layoutContainer.style.background = 'url("assets/blueprint/Duplex_1.jpg") no-repeat center center';
     }
     layoutContainer.style.backgroundSize = 'contain';
 
@@ -109,7 +119,13 @@ function showHouse() {
         img.src = "assets/perspective/bungalow_2.png";
     } else if (housename == 95) {
         img.src = "assets/perspective/bungalow_3.png";
+    } else if (housename == 96) {
+        img.src = "assets/perspective/contemporary_1.jpg";
+    } else if (housename == 99) {
+        img.src = "assets/perspective/duplex_1.png";
     }
+
+
 
     img.classList.add('zoomable-image');
     
@@ -725,3 +741,33 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+function highlightRoom(roomName, shouldHighlight) {
+    // Find all rooms and droptargets
+    const rooms = document.querySelectorAll('.room');
+    
+    // Iterate through rooms to find matching one
+    rooms.forEach(room => {
+        const droptarget = room.querySelector('.droptarget');
+        if (droptarget && droptarget.id.includes(roomName)) {
+            room.classList.toggle('highlight', shouldHighlight);
+            droptarget.classList.toggle('highlight', shouldHighlight);
+        }
+    });
+}
+
+function addTableRowHighlighting() {
+    const tableRows = document.querySelectorAll('.result-container tbody tr:not(.total-row):not(.target-row):not(.difference-row)');
+    
+    tableRows.forEach(row => {
+        row.addEventListener('mouseenter', (e) => {
+            const roomName = row.querySelector('td:first-child').textContent;
+            highlightRoom(roomName.trim(), true);
+        });
+        
+        row.addEventListener('mouseleave', (e) => {
+            const roomName = row.querySelector('td:first-child').textContent;
+            highlightRoom(roomName.trim(), false);
+        });
+    });
+}

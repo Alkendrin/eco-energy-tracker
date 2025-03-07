@@ -54,7 +54,12 @@
   /*            border: 1px solid black;*/
   margin-bottom: 15px;
   position: relative;
+  transition: background-color 0.2s ease-in-out;
 }
+.droptarget:hover {
+  background-color: rgba(255, 255, 255, 0.5); /* Semi-transparent on hover */
+}
+
 .sleeping-door {
   position: absolute;
   width: 50px;
@@ -89,6 +94,15 @@
   background: blanchedalmond;
   position: relative;
   margin: auto;
+  transition: background-color 0.2s ease-in-out;
+}
+.room:hover {
+  background-color: rgba(
+    255,
+    248,
+    220,
+    0.6
+  ); /* Semi-transparent blanchedalmond */
 }
 .door {
   border: 2px dashed black;
@@ -115,6 +129,7 @@
   max-height: 98vh;
   overflow: visible; /* Change from auto to visible */
   border-radius: 8px;
+  font-weight: 600;
 }
 
 .house-selector .dropdown-menu {
@@ -137,6 +152,7 @@
 .sidebar-container {
   padding: 0.5rem;
   height: 100%;
+  background-color: var(--secondary-700);
 }
 
 .input-panel {
@@ -167,13 +183,13 @@
 
 .input-form label {
   color: #34495e;
-  font-weight: 500;
-  font-size: 0.9rem;
+  font-weight: 600;
+  font-size: 1rem;
   margin-bottom: 0.25rem;
 }
 
 .input-form .form-control {
-  font-size: 0.9rem;
+  font-size: 1rem;
   padding: 0.4rem 0.75rem;
   height: auto;
   background-color: #fff;
@@ -182,8 +198,8 @@
 }
 
 .input-form .form-control:focus {
-  border-color: #3498db;
-  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.25);
+  border-color: var(--primary-500);
+  box-shadow: 0 0 0 2px rgba(255, 61, 0, 0.25);
 }
 
 .input-form .btn-primary {
@@ -204,6 +220,16 @@
 .btn-primary:hover {
   background-color: var(--primary-600) !important;
   transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background-color: var(--secondary-500) !important;
+  color: var(--neutral-900);
+  border: none;
+}
+
+.btn-secondary:hover {
+  background-color: var(--secondary-600) !important;
 }
 
 .form-group {
@@ -273,9 +299,8 @@
   bottom: 0;
   left: 22%;
   right: 38%;
-  padding: 1rem;
-  background: #f8f9fa;
-  border-top: 1px solid #dee2e6;
+  padding: 0.5rem;
+  background-color: var(--secondary-700);
   z-index: 998;
   /* Add transition and initial state */
   opacity: 0;
@@ -352,13 +377,17 @@
   right: 0;
 }
 
+.summary-toggle:hover {
+  background: var(--primary-600);
+}
+
 /* Add toggle button */
 .summary-toggle {
   position: fixed;
   right: 0; /* Start from right side when closed */
   top: 50%;
   transform: translateY(-50%);
-  background: #3498db;
+  background: var(--primary-500);
   color: white;
   border: none;
   width: 40px;
@@ -407,24 +436,27 @@
 .summary-content {
   margin-top: 80px;
   height: 100%;
-  background: white;
+
   border-radius: 12px;
   padding: 1.5rem;
   box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  border: 1px solid var(--primary-100);
 }
 
 .summary-title {
-  color: #2c3e50;
+  color: var(--primary-500);
   font-weight: 600;
   font-size: 1.5rem;
   margin-bottom: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--primary-100);
 }
 
 #simulation_title {
-  color: #3498db;
+  color: var(--primary-700);
   font-size: 1.2rem;
   font-weight: 500;
   margin-bottom: 1rem;
@@ -445,28 +477,32 @@
   border-collapse: separate;
   border-spacing: 0;
   margin-bottom: 1rem;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .result-container thead {
   position: sticky;
   top: 0;
-  background: #f8f9fa;
+  background: var(--primary-50);
   z-index: 1;
 }
 
 .result-container th {
   padding: 0.75rem;
   font-weight: 600;
-  color: #2c3e50;
-  border-bottom: 2px solid #e9ecef;
+  color: var(--primary-700);
+  border-bottom: 2px solid var(--primary-100);
   text-align: left;
   font-size: 0.9rem;
 }
 
 .result-container td {
   padding: 0.75rem;
-  border-bottom: 1px solid #f1f1f1;
-  color: #4a5568;
+  border-bottom: 1px solid var(--primary-50);
+  color: var(--neutral-700);
   font-size: 0.9rem;
 }
 
@@ -475,11 +511,17 @@
 .result-container tr.target-row td,
 .result-container tr.difference-row td {
   font-weight: 600;
-  background: #f8f9fa;
+  background: var(--primary-50);
+  color: var(--primary-900);
 }
 
 .result-container tr.total-row {
-  border-top: 2px solid #e9ecef;
+  border-top: 2px solid var(--primary-100);
+}
+
+/* Hover effects */
+.result-container tbody tr:hover {
+  background-color: var(--primary-50);
 }
 
 /* Scrollbar Styling */
@@ -611,7 +653,7 @@
   left: 15.666667%;
   right: 33.333333%;
   height: 60px;
-  background: linear-gradient(to right, #ffffff, #f8f9fa);
+  background: linear-gradient(to right, white, var(--primary-50));
   z-index: 1001;
   padding: 0 1.5rem;
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
@@ -682,7 +724,7 @@
   white-space: nowrap;
 }
 .text-success {
-  color: #28a745 !important;
+  color: var(--primary-500) !important;
 }
 
 .text-danger {
@@ -763,4 +805,171 @@
   position: absolute;
   margin-top: 0.5rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.highlight {
+  background-color: var(--secondary-50);
+  border-left: 4px solid var(--secondary-500);
+}
+
+.alert-primary {
+  background-color: var(--primary-50);
+  border-color: var(--primary-200);
+  color: var(--primary-900);
+}
+
+.alert-secondary {
+  background-color: var(--secondary-50);
+  border-color: var(--secondary-200);
+  color: var(--secondary-900);
+}
+
+/* Active States */
+.nav-item.active {
+  background-color: var(--primary-50);
+  color: var(--primary-700);
+}
+
+/* Links */
+a {
+  color: var(--primary-500);
+}
+
+a:hover {
+  color: var(--primary-700);
+}
+
+.navbar,
+.navbar-light,
+.navbar-expand-lg {
+  background: var(--primary-500) !important; /* Your main brand color */
+  color: white !important;
+}
+
+.navbar .navbar-brand,
+.navbar .nav-link {
+  color: white !important;
+}
+
+.navbar .nav-link:hover {
+  color: var(--neutral-100) !important;
+  opacity: 0.9;
+}
+
+.house-selector .btn-outline-primary {
+  color: var(--primary-500) !important;
+  border-color: var(--primary-500) !important;
+  background-color: transparent;
+  transition: all 0.3s ease;
+}
+
+.house-selector .btn-outline-primary:hover {
+  color: white !important;
+  background-color: var(--primary-500) !important;
+  border-color: var(--primary-500) !important;
+}
+
+.house-selector .dropdown-menu {
+  border-color: var(--primary-100);
+}
+
+.house-selector .dropdown-item:hover {
+  background-color: var(--primary-50);
+  color: var(--primary-500);
+}
+
+.house-selector .dropdown-item.active {
+  background-color: var(--primary-500);
+  color: white;
+}
+
+/* Define your color variables at the top of your CSS */
+:root {
+  --primary-500: #ff3d00;
+  --primary-100: #ffe0d5;
+  --primary-50: #fff3f0;
+}
+
+.difference-value {
+  font-weight: 600;
+}
+
+.difference-value.negative {
+  color: #dc3545; /* Red for negative values */
+  background-color: rgba(220, 53, 69, 0.1); /* Light red background */
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+}
+
+.difference-value.positive {
+  color: #198754; /* Green for positive values */
+  background-color: rgba(25, 135, 84, 0.1); /* Light green background */
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+}
+
+/* Override the row background for difference values */
+.result-container tr.difference-row td {
+  background: white !important; /* Override the previous background */
+  border-top: 2px solid var(--primary-100);
+}
+
+/* Button Focus States */
+.btn:focus,
+.btn-primary:focus,
+.btn-secondary:focus,
+.btn:active,
+.btn-primary:active,
+.btn-secondary:active,
+.btn:active:focus,
+.btn-primary:active:focus,
+.btn-secondary:active:focus {
+  box-shadow: 0 0 0 0.25rem rgba(255, 61, 0, 0.25) !important; /* Using primary-500 with opacity */
+  border-color: var(--primary-500) !important;
+  outline: none !important;
+}
+
+/* Specific override for outline buttons */
+.btn-outline-primary:focus,
+.btn-outline-primary:active,
+.btn-outline-primary:active:focus {
+  box-shadow: 0 0 0 0.25rem rgba(255, 61, 0, 0.25) !important;
+  background-color: var(--primary-500) !important;
+  border-color: var(--primary-500) !important;
+  color: white !important;
+}
+
+/* Override Bootstrap's default focus ring */
+:focus-visible {
+  outline-color: var(--primary-500) !important;
+}
+
+.droptarget img {
+  opacity: 1 !important;
+  transition: transform 0.2s ease;
+}
+
+.droptarget:hover img {
+  transform: scale(1.05); /* Slight zoom effect on hover */
+}
+
+/* doesnt work */
+.room.highlight {
+  background-color: var(--primary-50);
+  border: 2px solid var(--primary-500);
+  transition: all 0.3s ease;
+  z-index: 2;
+}
+
+.droptarget.highlight {
+  background-color: var(--primary-50);
+  border: 2px dashed var(--primary-500);
+  transition: all 0.3s ease;
+}
+
+.result-container
+  tbody
+  tr:hover:not(.total-row):not(.target-row):not(.difference-row) {
+  background-color: var(--primary-50);
+  cursor: pointer;
 }
