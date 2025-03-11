@@ -542,6 +542,35 @@ class Api:
 						</div>
 					</div>
 				"""
+			
+			if(simulation_id == '100'):
+				# Map HTML IDs to room IDs Bungalow 1
+				room_id_map = {
+					'D1_bed3': 'D1_bed3',
+					'D1_bed2': 'D1_bed2',
+					'D1_kitchen': 'D1_kitchen',
+					'D1_dining': 'D1_dining',
+					'D1_laundry': 'D1_laundry',
+					'D1_bathTop': 'D1_bathTop',
+					'D1_bed1': 'D1_bed1',
+					'D1_bathBot': 'D1_bathBot',
+					'D1_living': 'D1_living',
+					'D1_porch': 'D1_machine',
+
+				}
+				result = """
+					<div class="floor-plan" style="position: relative; width: 1000px; height: 800px; margin: auto;">
+
+						<!-- Bedroom 3 -->
+						<div class="room" style="position: absolute; top: 100px; left: 138px; width: 160px; height: 40px;">
+							<span class="room-name"></span>
+							<div id="D1_bed3" class="droptarget">{D1_bed3}</div>
+						</div>
+
+						
+					</div>
+				"""
+
 
 			# Fill in the placeholders with images
 			for html_id, room_id in room_id_map.items():
