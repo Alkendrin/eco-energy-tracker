@@ -93,15 +93,15 @@ class Api:
 				# Generate the main image and dropdown structure
 				result += f"""
 				<div class="dropdown dropup">
-					    <img data-bs-placement="top" title="{appliance_data['name']}" draggable="false" data-is-update="0" id="s{appliance_data['id']}" data-bs-toggle="dropdown" aria-expanded="false" style="width:25px; height:30px; padding:5px;" src="assets/vectors/{appliance_data['image']}" />
-    					<ul class="dropdown-menu" style="background:white; z-index: 9999!important; position: absolute; top: -50px;" aria-labelledby="s{appliance_data['id']}">
-						<div class="d-flex p-1 text-center">
+					    <img data-bs-placement="top" title="{appliance_data['name']}" draggable="false" data-is-update="0" id="s{appliance_data['id']}" data-bs-toggle="dropdown" aria-expanded="false" src="assets/vectors/{appliance_data['image']}" />
+    					<ul class="dropdown-menu" aria-labelledby="s{appliance_data['id']}">
+						<div class="text-center">
 				"""
 				for sub_appliance in sub_appliances:
 					sub_appliance_data = {sub_appliance_columns[i]: sub_appliance[i] for i in range(len(sub_appliance))}
 					result += f"""
 							<div>
-								<img data-bs-toggle="tooltip" data-bs-placement="top" title="{sub_appliance_data['name']} - {sub_appliance_data['watt']} W" draggable="true" id="{sub_appliance_data['id']}" style="max-height:35px;margin:4px" src="assets/uploads/{sub_appliance_data['image']}"/>
+								<img data-bs-toggle="tooltip" data-bs-placement="top" title="{sub_appliance_data['name']} - {sub_appliance_data['watt']} W" draggable="true" id="{sub_appliance_data['id']}" src="assets/uploads/{sub_appliance_data['image']}"/>
 							</div>
 					"""
 				result += """

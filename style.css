@@ -305,12 +305,32 @@
 
 /* appliance section +++++++++++++++++++++++++ */
 
+.p-3 {
+  padding: 0px !important;
+}
+
+.dropdown img[draggable="false"] {
+  width: 25px;
+  height: 30px;
+  padding: 3px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dropdown-menu .d-flex img[draggable="true"] {
+  width: 25px;
+  height: 30px;
+  padding: 3px;
+  cursor: grab;
+  transition: all 0.2s ease;
+}
+
 .appliance-list-container {
   position: fixed;
-  bottom: 0;
-  left: 22%;
-  right: 38%;
-  padding: 0.5rem;
+  bottom: 20px;
+  left: 20px;
+  padding: 10px;
+  width: 1247px;
   background-color: var(--secondary-50);
   z-index: 998;
   /* Add transition and initial state */
@@ -334,12 +354,20 @@
 }
 
 .appliance-grid {
-  max-width: 1200px;
-  margin: 0 auto;
+  height: 48px;
+  padding: 0px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 0px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  z-index: 9999;
+  background: white;
+  border-radius: 8px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .appliance-grid::-webkit-scrollbar {
-  height: 8px;
 }
 
 .appliance-grid::-webkit-scrollbar-track {
@@ -358,7 +386,6 @@
 
 .appliance-grid > div {
   background: white;
-  padding: 0.5rem;
   border-radius: 6px;
   display: flex;
   align-items: center;
