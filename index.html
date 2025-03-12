@@ -3,6 +3,8 @@
   <head lang="en">
     <meta charset="UTF-8" />
     <link href="style.css" rel="stylesheet" />
+    <title>ECOENERGY TRACKER</title>
+    <link rel="icon" href="assets/logo_icon.PNG" type="image/png" />
     <link href="assets/bootstrap.min.css" rel="stylesheet" />
   </head>
 
@@ -15,6 +17,15 @@
     <main id="body">
       <div class="draggable-area">
         <div class="layout-container" id="roomContainer"></div>
+      </div>
+
+      <div id="splash-screen">
+        <img
+          id="splash-logo"
+          src="assets/logo.png"
+          alt="Eco Energy Tracker Logo"
+        />
+        <button id="start-btn" class="btn btn-primary">Start Simulation</button>
       </div>
 
       <!-- name and trash -->
@@ -101,14 +112,6 @@
                     class="form-control form-control-lg"
                   />
                 </div>
-
-                <button
-                  type="button"
-                  id="compute"
-                  class="btn btn-primary btn-lg w-100 mb-4"
-                >
-                  Calculate
-                </button>
 
                 <div class="form-group mb-3">
                   <label for="targetKwh">Target kWh</label>

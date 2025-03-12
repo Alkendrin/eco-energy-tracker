@@ -9,6 +9,7 @@
 //   }, 3000); // 3000 milliseconds = 3 seconds
 
 window.addEventListener("DOMContentLoaded", function () {
+    localStorage.clear();
     showNavbar();
     showAppliance();
 
@@ -513,6 +514,19 @@ function stopAndCompute() {
 
     let totalEnergy = 0;
     let totalCost = 0;
+    let roomSubtotals = {};
+
+    // First pass: calculate total energy and room subtotals
+    Object.keys(myArray).forEach((roomName) => {
+        roomSubtotals[roomName] = { energy: 0, cost: 0 };
+        
+        myArray[roomName].forEach((item) => {
+            totalEnergy += item.energy;
+            totalCost += item.amount;
+            roomSubtotals[roomName].energy += item.energy;
+            roomSubtotals[roomName].cost += item.amount;
+        });
+    });
 
     // Create table with enhanced styling
     let table = document.createElement("table");
@@ -533,12 +547,14 @@ function stopAndCompute() {
     `;
     let tableBody = table.querySelector("tbody");
 
-    // Add room data
+    // Add room data with subtotals
     Object.keys(myArray).forEach((roomName) => {
+        let firstRow = true;
+        
         myArray[roomName].forEach((item) => {
             let row = document.createElement("tr");
             row.innerHTML = `
-                <td><strong>${roomName}</strong></td>
+                <td>${firstRow ? `<strong>${roomName}</strong>` : ""}</td>
                 <td>${item.applianceName}</td>
                 <td>${item.wattage} W</td>
                 <td>${item.hours_used.toFixed(1)}</td>
@@ -546,10 +562,22 @@ function stopAndCompute() {
                 <td class="cost-value">₱${item.amount.toFixed(2)}</td>
             `;
             tableBody.appendChild(row);
-
-            totalEnergy += item.energy;
-            totalCost += item.amount;
+            firstRow = false;
         });
+        
+        // Add subtotal for each room
+        const roomEnergy = roomSubtotals[roomName].energy;
+        const roomCost = roomSubtotals[roomName].cost;
+        const percentage = (roomEnergy / totalEnergy * 100).toFixed(1);
+        
+        let subtotalRow = document.createElement("tr");
+        subtotalRow.className = "subtotal-row";
+        subtotalRow.innerHTML = `
+            <td colspan="4"><em>Subtotal for ${roomName}</em></td>
+            <td class="kwh-value"><em>${roomEnergy.toFixed(2)} kWh (${percentage}%)</em></td>
+            <td class="cost-value"><em>₱${roomCost.toFixed(2)}</em></td>
+        `;
+        tableBody.appendChild(subtotalRow);
     });
 
     // Add total row with enhanced styling
@@ -595,6 +623,20 @@ function stopAndCompute() {
     }
 
     resultsDiv.appendChild(table);
+    
+    // Add some CSS for the subtotal row
+    const style = document.createElement('style');
+    style.textContent = `
+        .subtotal-row {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .subtotal-row td {
+            padding-top: 8px;
+            padding-bottom: 8px;
+        }
+    `;
+    document.head.appendChild(style);
 }
 
 // calculate kwh target
@@ -881,11 +923,15 @@ function autoUpdateConsumption() {
     const daysInput = document.getElementById("days");
     const hoursInput = document.getElementById("hours");
     const rateInput = document.getElementById("ratePerHour");
+    const targetKwhInput = document.getElementById("targetKwh");
+    const targetBillInput = document.getElementById("targetBill");
     
-    // Auto-update when days, hours, or rate changes
+    // Auto-update when days, hours, rate, or targets change
     daysInput.addEventListener('input', autoUpdateConsumption);
     hoursInput.addEventListener('input', autoUpdateConsumption);
     rateInput.addEventListener('input', autoUpdateConsumption);
+    targetKwhInput.addEventListener('input', autoUpdateConsumption);
+    targetBillInput.addEventListener('input', autoUpdateConsumption);
     
     // Check if we should calculate on page load
     if (localStorage.getItem("sessionId") && 
@@ -894,3 +940,52 @@ function autoUpdateConsumption() {
       setTimeout(autoUpdateConsumption, 500); // Short delay to ensure DOM is ready
     }
 });
+
+function initSplashScreen() {
+    const startButton = document.getElementById('start-btn');
+    const splashScreen = document.getElementById('splash-screen');
+    const topBar = document.querySelector('.top-bar');
+    
+    // Check if button exists
+    if (!startButton) {
+        console.error("Start button not found");
+        return;
+    }
+    
+    console.log("Initializing splash screen");
+    
+    // Add click event to start button
+    startButton.addEventListener('click', () => {
+        console.log("Start button clicked");
+        
+        // Add transition effect
+        splashScreen.style.opacity = '0';
+        
+        // After transition completes, hide splash screen
+        setTimeout(() => {
+            splashScreen.style.display = 'none';
+            
+            // Show the top bar
+            topBar.style.visibility = 'visible';
+            
+            // Save in localStorage that app has been started
+            localStorage.setItem('appStarted', 'true');
+            
+            // Show appliance list container if a house is selected
+            const sessionName = localStorage.getItem("sessionName");
+            if (sessionName) {
+                const applianceList = document.querySelector('.appliance-list-container');
+                if (applianceList) {
+                    applianceList.classList.add('show');
+                }
+                
+                // If a house is selected, make sure the summary section is visible
+                const summarySection = document.querySelector('.summary-section');
+                if (summarySection) {
+                    summarySection.classList.add('open');
+                }
+            }
+        }, 500);
+    });
+}
+
