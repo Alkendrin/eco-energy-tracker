@@ -31,6 +31,14 @@ window.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+document.getElementById('start-btn').addEventListener('click', function() {
+    document.getElementById('splash-screen').classList.add('hidden');
+    // After animation completes, remove from DOM
+    setTimeout(() => {
+        document.getElementById('splash-screen').style.display = 'none';
+    }, 500);
+});
+
 // show list of layout
 async function showNavbar() {
     fetch("http://127.0.0.1:5000/api/navbar")
@@ -100,13 +108,17 @@ function setID(name, simulationId) {
     if (simulationId == 93) {
         layoutContainer.style.background = 'url("assets/blueprint/Bungalow_1.jpg") no-repeat center center';
     } else if (simulationId == 94) {
-        layoutContainer.style.background = 'url("assets/blueprint/Bungalow_2.jpg") no-repeat center center';
+        layoutContainer.style.background = 'url("assets/blueprint/Bungalow_2.png") no-repeat center center';
     } else if (simulationId == 95) {
-        layoutContainer.style.background = 'url("assets/blueprint/Bungalow_3.jpg") no-repeat center center';
+        layoutContainer.style.background = 'url("assets/blueprint/Bungalow_3.png") no-repeat center center';
     } else if (simulationId == 96) {
         layoutContainer.style.background = 'url("assets/blueprint/Contemporary_1.jpg") no-repeat center center';
+    } else if (simulationId == 97) {
+        layoutContainer.style.background = 'url("assets/blueprint/Contemporary_2.png") no-repeat center center';
     } else if (simulationId == 99) {
-        layoutContainer.style.background = 'url("assets/blueprint/Duplex_1.jpg") no-repeat center center';
+        layoutContainer.style.background = 'url("assets/blueprint/Duplex_1.png") no-repeat center center';
+    } else if (simulationId == 100) {
+        layoutContainer.style.background = 'url("assets/blueprint/Duplex_2.jpg") no-repeat center center';
     }
     layoutContainer.style.backgroundSize = 'contain';
 
