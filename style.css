@@ -1147,3 +1147,73 @@ a:hover {
     background-color: var(--secondary-50);
   }
 }
+
+/* Cursor styles */
+body {
+  cursor: default;
+}
+
+.droptarget {
+  cursor: default;
+}
+
+.droptarget:hover {
+  cursor: pointer;
+}
+
+.appliance-item {
+  cursor: grab;
+}
+
+.appliance-item:active {
+  cursor: grabbing;
+}
+
+.room {
+  cursor: default;
+}
+
+.room:hover {
+  cursor: default;
+}
+
+.result-container tr:not(.total-row):not(.target-row):not(.difference-row) {
+  cursor: pointer;
+}
+
+.room.highlight,
+.droptarget.highlight {
+  cursor: pointer;
+}
+
+/* Ensure tables and controls have appropriate cursors */
+th,
+td {
+  cursor: default;
+}
+
+button,
+select,
+.dropdown-toggle,
+.btn {
+  cursor: pointer;
+}
+
+input,
+textarea {
+  cursor: text;
+}
+
+/* Make dragable elements more obvious */
+[draggable="true"] {
+  cursor: grab;
+}
+
+[draggable="true"]:active {
+  cursor: grabbing;
+}
+
+/* Make delete target obvious */
+#delete.droptarget {
+  cursor: no-drop;
+}

@@ -357,18 +357,7 @@ function removeFromCanvas(canvasId) {
         }),
     })
         .then((response) => response.json())
-        .then((data) => {
-            // First update the room display
-            return showRoom().then(() => data);
-        })
-        .then((data) => {
-            // Then wait for a complete DOM refresh cycle
-            return new Promise(resolve => setTimeout(() => resolve(data), 200));
-        })
-        .then((data) => {
-            // Finally update the consumption calculation
-            autoUpdateConsumptionAndShowPanel();
-        })
+        .then((data) => canvasShowMessage(data))
         .catch((error) => {
             console.error("Error removing from canvas:", error);
             Swal.fire({
@@ -378,7 +367,6 @@ function removeFromCanvas(canvasId) {
             });
         });
 }
-
 
 
 // for appliance toggle
