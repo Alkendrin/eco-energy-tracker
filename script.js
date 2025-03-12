@@ -443,7 +443,8 @@ computeBtn.addEventListener("click", function () {
 });
 
 // Simulation function
-async function startSimulation(hours, ratePerHour) {
+// Simulation function
+async function startSimulation(days, hours, ratePerHour) {
     let hoursTracker = {};
 
     // Get appliance inputs and accumulate usage over the total hours entered
@@ -459,12 +460,14 @@ async function startSimulation(hours, ratePerHour) {
         }
     });
 
+    // Calculate total hours from days and hours
+    const totalHours = (days * 24) + hours;
+
     // After processing inputs, compute energy based on total hours
-    computeEnergy(hoursTracker, ratePerHour, hours);
+    computeEnergy(hoursTracker, ratePerHour, totalHours);
 
     stopAndCompute();
 }
-
 // Function to compute energy based on hours
 function computeEnergy(hoursTracker, ratePerHour, totalHours) {
     myArray = {}; // Use an object to group by roomName
@@ -765,32 +768,32 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Modify the existing compute button click handler
     const computeBtn = document.getElementById("compute");
-    computeBtn.addEventListener("click", function() {
-        var sessionId = localStorage.getItem("sessionId");
-        if (!sessionId) {
-            alert("select house first");
-            return;
-        }
+    // computeBtn.addEventListener("click", function() {
+    //     var sessionId = localStorage.getItem("sessionId");
+    //     if (!sessionId) {
+    //         alert("select house first");
+    //         return;
+    //     }
 
-        // Reset the variables for a new simulation
-        myArray = [];
-        running = true;
+    //     // Reset the variables for a new simulation
+    //     myArray = [];
+    //     running = true;
 
-        var ratePerHour = document.getElementById("ratePerHour").value;
-        var hours = document.getElementById("hours").value;
+    //     var ratePerHour = document.getElementById("ratePerHour").value;
+    //     var hours = document.getElementById("hours").value;
 
-        if (ratePerHour < 1) {
-            alert("Please enter rate per kWh");
-        } else if (hours <= 0) {
-            alert("Please enter valid hours");
-        } else {
-            // Open the summary panel when calculating
-            if (!summarySection.classList.contains('open')) {
-                toggleSummary();
-            }
-            startSimulation(hours, ratePerHour);
-        }
-    });
+    //     if (ratePerHour < 1) {
+    //         alert("Please enter rate per kWh");
+    //     } else if (hours <= 0) {
+    //         alert("Please enter valid hours");
+    //     } else {
+    //         // Open the summary panel when calculating
+    //         if (!summarySection.classList.contains('open')) {
+    //             toggleSummary();
+    //         }
+    //         startSimulation(hours, ratePerHour);
+    //     }
+    // });
 });
 
 function highlightRoom(roomName, shouldHighlight) {
@@ -825,14 +828,15 @@ function addTableRowHighlighting() {
 
 function autoUpdateConsumption() {
     // Get current values
-    const hours = document.getElementById("hours").value || 0;
+    const days = parseInt(document.getElementById("days").value) || 0;
+    const hours = parseInt(document.getElementById("hours").value) || 0;
     const ratePerHour = document.getElementById("ratePerHour").value || 0;
     
     // Only auto-calculate if we have some valid values
-    if (hours > 0 && ratePerHour > 0) {
+    if ((days > 0 || hours > 0) && ratePerHour > 0) {
       // Reset array and run calculation
       myArray = [];
-      startSimulation(hours, ratePerHour);
+      startSimulation(days, hours, ratePerHour);
       
       // Add highlighting to rows
       addTableRowHighlighting();
@@ -842,20 +846,29 @@ function autoUpdateConsumption() {
       summaryContent.classList.add("updated");
       setTimeout(() => summaryContent.classList.remove("updated"), 500);
     }
-  }
+}
   
   // Make sure the summary panel is visible when calculation happens
   function autoUpdateConsumptionAndShowPanel() {
-    // Open the panel if it's not already open
-    const summarySection = document.querySelector('.summary-section');
-    if (!summarySection.classList.contains('open')) {
-      summarySection.classList.add('open');
-      const summaryToggle = document.getElementById('summaryToggle');
-      if (summaryToggle) summaryToggle.classList.add('open');
-    }
+    const days = parseInt(document.getElementById("days").value) || 0;
+    const hours = parseInt(document.getElementById("hours").value) || 0;
+    const ratePerHour = document.getElementById("ratePerHour").value || 0;
     
-    autoUpdateConsumption();
-  }
+    if ((days > 0 || hours > 0) && ratePerHour > 0) {
+        // Open the summary panel if not already open
+        const summarySection = document.querySelector('.summary-section');
+        if (!summarySection.classList.contains('open')) {
+            toggleSummary();
+        }
+        
+        // Run the calculation
+        myArray = [];
+        startSimulation(days, hours, ratePerHour);
+        
+        // Add highlighting
+        addTableRowHighlighting();
+    }
+}
   
   // Replace canvasShowMessage with this improved version
   function canvasShowMessage(response) {
@@ -865,17 +878,19 @@ function autoUpdateConsumption() {
   
   // Add event listeners to automatically update calculations when input values change
   document.addEventListener('DOMContentLoaded', function() {
+    const daysInput = document.getElementById("days");
     const hoursInput = document.getElementById("hours");
     const rateInput = document.getElementById("ratePerHour");
     
-    // Auto-update when hours or rate changes
+    // Auto-update when days, hours, or rate changes
+    daysInput.addEventListener('input', autoUpdateConsumption);
     hoursInput.addEventListener('input', autoUpdateConsumption);
     rateInput.addEventListener('input', autoUpdateConsumption);
     
     // Check if we should calculate on page load
     if (localStorage.getItem("sessionId") && 
-        hoursInput.value > 0 && 
-        rateInput.value > 0) {
+        ((daysInput.value > 0 || hoursInput.value > 0) && 
+        rateInput.value > 0)) {
       setTimeout(autoUpdateConsumption, 500); // Short delay to ensure DOM is ready
     }
-  });
+});
