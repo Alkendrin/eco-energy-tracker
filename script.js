@@ -250,31 +250,30 @@ document.addEventListener("drop", function (event) {
         var sessionName = localStorage.getItem("sessionName");
         var sessionId = localStorage.getItem("sessionId");
 
-        // Create a clone of the dragged element if it's a new addition
+        if (roomId === "delete") {
+            removeFromCanvas(canvasId);
+            // Update consumption after deleting appliance
+            setTimeout(() => {
+                autoUpdateConsumptionAndShowPanel();
+            }, 300); // Small delay to ensure canvas is updated
+            return;
+        }
+
+        // Rest of your existing drop handling code...
         if (isUpdate !== "1") {
-            // Clone the original element
             const clone = draggedElement.cloneNode(true);
-
-            // Update the clone's attributes as needed
             clone.setAttribute('data-is-update', '1');
-
-            // Append the clone instead of the original
             event.target.appendChild(clone);
         } else {
-            // If updating position, move the original element
             event.target.appendChild(draggedElement);
         }
 
-        if (roomId != "delete") {
-            if (fromRoom !== roomId) {
-                if (isUpdate == "1") {
-                    updateCanvas(sessionId, roomId, imageId, fromRoom, canvasId);
-                } else {
-                    addToCanvas(sessionId, roomId, imageId);
-                }
+        if (fromRoom !== roomId) {
+            if (isUpdate == "1") {
+                updateCanvas(sessionId, roomId, imageId, fromRoom, canvasId);
+            } else {
+                addToCanvas(sessionId, roomId, imageId);
             }
-        } else {
-            removeFromCanvas(canvasId);
         }
     }
 });
@@ -940,52 +939,3 @@ function autoUpdateConsumption() {
       setTimeout(autoUpdateConsumption, 500); // Short delay to ensure DOM is ready
     }
 });
-
-function initSplashScreen() {
-    const startButton = document.getElementById('start-btn');
-    const splashScreen = document.getElementById('splash-screen');
-    const topBar = document.querySelector('.top-bar');
-    
-    // Check if button exists
-    if (!startButton) {
-        console.error("Start button not found");
-        return;
-    }
-    
-    console.log("Initializing splash screen");
-    
-    // Add click event to start button
-    startButton.addEventListener('click', () => {
-        console.log("Start button clicked");
-        
-        // Add transition effect
-        splashScreen.style.opacity = '0';
-        
-        // After transition completes, hide splash screen
-        setTimeout(() => {
-            splashScreen.style.display = 'none';
-            
-            // Show the top bar
-            topBar.style.visibility = 'visible';
-            
-            // Save in localStorage that app has been started
-            localStorage.setItem('appStarted', 'true');
-            
-            // Show appliance list container if a house is selected
-            const sessionName = localStorage.getItem("sessionName");
-            if (sessionName) {
-                const applianceList = document.querySelector('.appliance-list-container');
-                if (applianceList) {
-                    applianceList.classList.add('show');
-                }
-                
-                // If a house is selected, make sure the summary section is visible
-                const summarySection = document.querySelector('.summary-section');
-                if (summarySection) {
-                    summarySection.classList.add('open');
-                }
-            }
-        }, 500);
-    });
-}
-
