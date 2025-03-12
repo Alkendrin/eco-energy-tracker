@@ -65,7 +65,7 @@ function setID(name, simulationId) {
     localStorage.setItem("sessionName", name);
     localStorage.setItem("sessionId", simulationId);
 
-        // Update the dropdown button text
+    // Update the dropdown button text
     const dropdownButton = document.querySelector('.house-selector .dropdown-toggle');
     if (dropdownButton) {
         dropdownButton.textContent = name;
@@ -74,18 +74,27 @@ function setID(name, simulationId) {
     document.getElementById("stitle").innerHTML = name;
     document.getElementById("simulation_title").innerHTML = name;
 
-        // Toggle appliance list visibility
-        const applianceList = document.querySelector('.appliance-list-container');
-        if (name) {
-            applianceList.classList.add('show');
-        } else {
-            applianceList.classList.remove('show');
-        }
+    // Toggle appliance list visibility
+    const applianceList = document.querySelector('.appliance-list-container');
+    if (name) {
+        applianceList.classList.add('show');
+    } else {
+        applianceList.classList.remove('show');
+    }
 
     // Show the form content when a layout is selected
     const formContent = document.getElementById('formContent');
-    formContent.classList.add('show'); // Add this line to show the hidden content
+    formContent.classList.add('show');
 
+    // Show the summary section when a layout is selected
+    const summarySection = document.querySelector('.summary-section');
+    if (name) {
+        summarySection.classList.add('open');
+    } else {
+        summarySection.classList.remove('open');
+    }
+
+    // Set layout background
     const layoutContainer = document.querySelector('.layout-container');
     if (simulationId == 93) {
         layoutContainer.style.background = 'url("assets/blueprint/Bungalow_1.jpg") no-repeat center center';
@@ -154,13 +163,20 @@ function showHouse() {
 // layout container
 function showRoom() {
     var simulationId = localStorage.getItem("sessionId");
-    fetch(
+    return fetch(
         `http://127.0.0.1:5000/api/fetch_room?simulationId=${simulationId}`
     )
         .then((response) => response.json())
-        .then((data) => outputRoom(data))
-        .catch((error) => console.error("Error fetching room:", error));
-}
+        .then((data) => {
+            outputRoom(data);
+            return data; // Return data for chaining
+        })
+        .catch((error) => {
+            console.error("Error fetching room:", error);
+            throw error; // Rethrow for error handling
+        });
+  }
+  
 
 function outputRoom(response) {
     var a = document.getElementById("roomContainer");
@@ -168,8 +184,21 @@ function outputRoom(response) {
 }
 
 function canvasShowMessage(response) {
-    showRoom();
-}
+    // First make the server request and wait for it to complete
+    showRoom()
+      .then(() => {
+        // Now wait a small amount of time to ensure DOM is updated
+        return new Promise(resolve => setTimeout(resolve, 50));
+      })
+      .then(() => {
+        // After DOM is fully updated, calculate consumption
+        autoUpdateConsumptionAndShowPanel();
+      })
+      .catch(error => {
+        console.error("Failed to update consumption:", error);
+      });
+  }
+  
 
 // Drag and drop functions
 // Changed to handle browser but doesn't work on app
@@ -265,7 +294,18 @@ function updateCanvas(sessionId, roomId, imageId, fromRoom, canvasId) {
         }),
     })
         .then((response) => response.json())
-        .then((data) => canvasShowMessage(data))
+        .then((data) => {
+            // First update the room display
+            return showRoom().then(() => data);
+        })
+        .then((data) => {
+            // Then wait for a complete DOM refresh cycle
+            return new Promise(resolve => setTimeout(() => resolve(data), 200));
+        })
+        .then((data) => {
+            // Finally update the consumption calculation
+            autoUpdateConsumptionAndShowPanel();
+        })
         .catch((error) => {
             console.error("Error updating appliance canvas:", error);
             Swal.fire({
@@ -289,10 +329,21 @@ function addToCanvas(sessionId, roomId, imageId) {
         }),
     })
         .then((response) => response.json())
-        .then((data) => canvasShowMessage(data))
-        .catch((error) =>
-            console.error("Error adding appliance to canvas:", error)
-        );
+        .then((data) => {
+            // First update the room display
+            return showRoom().then(() => data);
+        })
+        .then((data) => {
+            // Then wait for a complete DOM refresh cycle
+            return new Promise(resolve => setTimeout(() => resolve(data), 200));
+        })
+        .then((data) => {
+            // Finally update the consumption calculation
+            autoUpdateConsumptionAndShowPanel();
+        })
+        .catch((error) => {
+            console.error("Error adding appliance to canvas:", error);
+        });
 }
 
 function removeFromCanvas(canvasId) {
@@ -306,7 +357,18 @@ function removeFromCanvas(canvasId) {
         }),
     })
         .then((response) => response.json())
-        .then((data) => canvasShowMessage(data))
+        .then((data) => {
+            // First update the room display
+            return showRoom().then(() => data);
+        })
+        .then((data) => {
+            // Then wait for a complete DOM refresh cycle
+            return new Promise(resolve => setTimeout(() => resolve(data), 200));
+        })
+        .then((data) => {
+            // Finally update the consumption calculation
+            autoUpdateConsumptionAndShowPanel();
+        })
         .catch((error) => {
             console.error("Error removing from canvas:", error);
             Swal.fire({
@@ -316,6 +378,7 @@ function removeFromCanvas(canvasId) {
             });
         });
 }
+
 
 
 // for appliance toggle
@@ -771,3 +834,60 @@ function addTableRowHighlighting() {
         });
     });
 }
+
+function autoUpdateConsumption() {
+    // Get current values
+    const hours = document.getElementById("hours").value || 0;
+    const ratePerHour = document.getElementById("ratePerHour").value || 0;
+    
+    // Only auto-calculate if we have some valid values
+    if (hours > 0 && ratePerHour > 0) {
+      // Reset array and run calculation
+      myArray = [];
+      startSimulation(hours, ratePerHour);
+      
+      // Add highlighting to rows
+      addTableRowHighlighting();
+      
+      // Flash effect on update
+      const summaryContent = document.querySelector(".summary-content");
+      summaryContent.classList.add("updated");
+      setTimeout(() => summaryContent.classList.remove("updated"), 500);
+    }
+  }
+  
+  // Make sure the summary panel is visible when calculation happens
+  function autoUpdateConsumptionAndShowPanel() {
+    // Open the panel if it's not already open
+    const summarySection = document.querySelector('.summary-section');
+    if (!summarySection.classList.contains('open')) {
+      summarySection.classList.add('open');
+      const summaryToggle = document.getElementById('summaryToggle');
+      if (summaryToggle) summaryToggle.classList.add('open');
+    }
+    
+    autoUpdateConsumption();
+  }
+  
+  // Replace canvasShowMessage with this improved version
+  function canvasShowMessage(response) {
+    showRoom();
+    autoUpdateConsumptionAndShowPanel();
+  }
+  
+  // Add event listeners to automatically update calculations when input values change
+  document.addEventListener('DOMContentLoaded', function() {
+    const hoursInput = document.getElementById("hours");
+    const rateInput = document.getElementById("ratePerHour");
+    
+    // Auto-update when hours or rate changes
+    hoursInput.addEventListener('input', autoUpdateConsumption);
+    rateInput.addEventListener('input', autoUpdateConsumption);
+    
+    // Check if we should calculate on page load
+    if (localStorage.getItem("sessionId") && 
+        hoursInput.value > 0 && 
+        rateInput.value > 0) {
+      setTimeout(autoUpdateConsumption, 500); // Short delay to ensure DOM is ready
+    }
+  });

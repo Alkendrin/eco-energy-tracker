@@ -1,3 +1,9 @@
+/* 
+ 297 952
+ 1247 68
+ 613 1040
+ */
+
 :root {
   /* Primary Colors - Based on Logo #E35B2C */
   --primary-50: #fdf1ed;
@@ -101,12 +107,13 @@
 }
 
 .room {
-  border: 2px solid black;
+  border: 2px solid var(--primary-400);
   text-align: center;
-  background: blanchedalmond;
+  background: var(--tertiary-100);
   position: relative;
   margin: auto;
   transition: background-color 0.2s ease-in-out;
+  border-radius: 5px;
 }
 .room:hover {
   background-color: rgba(
@@ -116,6 +123,7 @@
     0.6
   ); /* Semi-transparent blanchedalmond */
 }
+
 .door {
   border: 2px dashed black;
   margin-top: 5px;
@@ -331,7 +339,7 @@
   left: 20px;
   padding: 10px;
   width: 1247px;
-  background-color: var(--secondary-50);
+  background-color: var(--secondary-100);
   z-index: 998;
   /* Add transition and initial state */
   opacity: 0;
@@ -354,11 +362,15 @@
 }
 
 .appliance-grid {
-  height: 48px;
-  padding: 0px;
+  background-color: var(--secondary-50) !important;
+  height: 128px;
+  /* height: 200px; */
+  padding-left: 40px;
+  padding-top: 50px;
+  padding-bottom: 10px;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-  gap: 0px;
+  gap: 5px;
   overflow-x: auto;
   overflow-y: hidden;
   z-index: 9999;
@@ -386,7 +398,7 @@
 
 .appliance-grid > div {
   background: white;
-  border-radius: 6px;
+  border-radius: 900px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -400,104 +412,58 @@
 
 /* the right part ++++++++++++++++++++++++++++++++ */
 /* Summary Section Styling */
+
 .summary-section {
   position: fixed;
-  right: -32.333333%; /* Hide by default */
-  top: 0;
-  width: 32.333333%;
-  height: calc(100vh - 12vh - 2rem);
-  padding: 1rem;
-  z-index: 1000;
-  transition: right 0.3s ease-in-out;
+  right: 20px;
+  top: 20px;
+  width: 613px;
+  height: calc(100vh - 40px);
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  z-index: 990;
+  overflow: hidden;
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+  transform: translateX(633px);
+  opacity: 0.5;
 }
 
 .summary-section.open {
-  right: 0;
-}
-
-.summary-toggle:hover {
-  background: var(--primary-600);
-}
-
-/* Add toggle button */
-.summary-toggle {
-  position: fixed;
-  right: 0; /* Start from right side when closed */
-  top: 50%;
-  transform: translateY(-50%);
-  background: var(--primary-500);
-  color: white;
-  border: none;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  cursor: pointer;
-  z-index: 1001;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-
-.summary-toggle.open {
-  right: 32.333333%; /* Move to the left when open */
-  transform: translateY(-50%) rotate(-180deg); /* Rotate opposite direction */
-}
-
-/* Update the summary section position */
-.summary-section {
-  position: fixed;
-  right: -32.333333%;
-  top: 0;
-  width: 32.333333%;
-  height: calc(100vh - 12vh - 2rem);
-  padding: 1rem;
-  z-index: 1000;
-  transition: right 0.3s ease-in-out;
-}
-
-.summary-section.open {
-  right: 0;
-}
-
-/* Add animation for smooth rotation */
-@keyframes rotateButton {
-  from {
-    transform: translateY(-50%) rotate(0deg);
-  }
-  to {
-    transform: translateY(-50%) rotate(180deg);
-  }
+  transform: translateX(0);
+  opacity: 1;
 }
 
 .summary-content {
-  margin-top: 80px;
   height: 100%;
-
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  border: 1px solid var(--primary-100);
+  overflow: hidden;
+  background-color: var(--secondary-50);
 }
 
 .summary-title {
   color: var(--primary-500);
   font-weight: 600;
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   margin-bottom: 0.5rem;
   padding-bottom: 0.5rem;
   border-bottom: 2px solid var(--primary-100);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 #simulation_title {
   color: var(--primary-700);
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: 500;
   margin-bottom: 1rem;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .result-container {
@@ -507,8 +473,37 @@
   background: #ffffff;
   border-radius: 8px;
   border: 1px solid rgba(0, 0, 0, 0.05);
+  margin-bottom: 10px;
 }
 
+/* Add toggle button for summary panel */
+#summaryToggle {
+  position: fixed;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 60px;
+  background: var(--primary-500);
+  border-radius: 12px 0 0 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 989;
+  box-shadow: -2px 0 6px rgba(0, 0, 0, 0.1);
+  transition: right 0.3s ease;
+}
+
+#summaryToggle::before {
+  content: "◀";
+  color: white;
+  font-size: 12px;
+}
+
+#summaryToggle.open::before {
+  content: "▶";
+}
 /* Table Styling */
 .result-container table {
   width: 100%;
@@ -720,11 +715,12 @@
 .trash-zone {
   position: absolute;
   top: -45px;
-  left: 10px;
+  right: 10px; /* Changed from left: 10px to right: 10px */
   padding: 5px;
   z-index: 1000;
 }
 
+/* Update the trash icon styling for right alignment */
 .trash-icon {
   display: flex;
   align-items: center;
@@ -733,6 +729,7 @@
   border-radius: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: all 0.2s ease;
+  flex-direction: row-reverse; /* Reverse the direction so the label is on the left */
 }
 
 .trash-icon:hover {
@@ -755,12 +752,14 @@
 }
 
 .trash-label {
-  margin-left: 8px;
+  margin-right: 8px; /* Changed from margin-left to margin-right */
+  margin-left: 0;
   font-size: 0.85rem;
   color: #666;
   font-weight: 500;
   white-space: nowrap;
 }
+
 .text-success {
   color: var(--primary-500) !important;
 }
@@ -839,10 +838,84 @@
 /* Update the dropdown styling in style.css */
 .dropdown .dropdown-menu {
   background: white;
-  z-index: 9999 !important; /* Increase z-index to be above appliance items */
+  z-index: 9999 !important;
   position: absolute;
+  /* Position the dropdown menu relative to the trigger */
+  left: 50%;
+  transform: translateX(-50%); /* Center horizontally */
   margin-top: 0.5rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: 10px;
+  min-width: 200px;
+  max-width: none; /* Remove maximum width limitation */
+  width: auto; /* Let it size to content */
+  border: 1px solid var(--primary-100);
+}
+
+/* Add a small arrow/triangle at the top of the dropdown */
+.dropdown .dropdown-menu::after {
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid white;
+}
+
+/* Style the dropdown menu's content container */
+.dropdown .dropdown-menu .text-center {
+  display: flex; /* Change to flex instead of grid */
+  flex-wrap: nowrap; /* Prevent wrapping to new lines */
+  gap: 8px;
+  padding: 5px;
+  width: max-content; /* Allow it to grow as needed */
+  overflow-x: auto; /* Enable horizontal scrolling if needed */
+}
+
+/* Style the dropdown menu's image container */
+.dropdown .dropdown-menu .text-center > div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  border-radius: 6px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.dropdown .dropdown-menu .text-center > div:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background-color: var(--primary-50);
+}
+
+/* Style the images inside dropdown to match appliance list */
+.dropdown-menu .text-center img[draggable="true"] {
+  width: 40px;
+  height: 40px;
+  padding: 3px;
+  cursor: grab;
+  transition: all 0.2s ease;
+  object-fit: contain;
+}
+
+/* Add a title to the dropdown */
+.dropdown .dropdown-menu::before {
+  content: attr(data-title);
+  display: block;
+  font-weight: 600;
+  color: var(--primary-700);
+  font-size: 0.9rem;
+  /* padding: 5px 10px; */
+  border-bottom: 1px solid var(--primary-100);
+  margin-bottom: 8px;
+}
+
+/* Make appliance-list-container scrollbar match */
+.appliance-grid::-webkit-scrollbar {
+  height: 8px;
 }
 
 .highlight {
@@ -991,23 +1064,86 @@ a:hover {
   transform: scale(1.05); /* Slight zoom effect on hover */
 }
 
-/* doesnt work */
+/* Room highlighting styles */
 .room.highlight {
   background-color: var(--primary-50);
   border: 2px solid var(--primary-500);
+  box-shadow: 0 0 8px rgba(227, 91, 44, 0.5);
+  transform: translateY(-2px);
   transition: all 0.3s ease;
-  z-index: 2;
+  z-index: 10; /* Ensure highlighted rooms appear above others */
 }
 
 .droptarget.highlight {
-  background-color: var(--primary-50);
+  background-color: rgba(255, 255, 255, 0.8);
   border: 2px dashed var(--primary-500);
+  box-shadow: inset 0 0 8px rgba(227, 91, 44, 0.3);
   transition: all 0.3s ease;
 }
 
-.result-container
-  tbody
-  tr:hover:not(.total-row):not(.target-row):not(.difference-row) {
+/* Add loading indication for real-time calculation */
+.result-container.updating {
+  position: relative;
+}
+
+.result-container.updating::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.result-container.updating::before {
+  content: "Updating...";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--primary-500);
+  font-weight: 600;
+  z-index: 3;
+  padding: 10px 20px;
+  background: white;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(227, 91, 44, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(227, 91, 44, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(227, 91, 44, 0);
+  }
+}
+
+/* Connected table-room highlighting */
+.result-container tbody tr.highlight-row {
   background-color: var(--primary-50);
-  cursor: pointer;
+  border-left: 4px solid var(--primary-500);
+}
+
+/* Visual indication for real-time updates */
+.summary-content.updated {
+  animation: flash 0.5s;
+}
+
+@keyframes flash {
+  0% {
+    background-color: var(--primary-50);
+  }
+  100% {
+    background-color: var(--secondary-50);
+  }
 }
