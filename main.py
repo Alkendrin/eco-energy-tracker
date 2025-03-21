@@ -1057,10 +1057,6 @@ def delete_appliance_canvas():
     return jsonify(api.delete_appliance_canvas(canvas_id))
 
 if __name__ == '__main__':
-    # Start Flask server in a separate thread
-    threading.Thread(target=lambda: app.run(host='127.0.0.1', port=5000, debug=False, use_reloader=False), daemon=True).start()
-    
-    # Open with the Flask server URL
-    window = webview.create_window('ECO ENERGY', 'http://127.0.0.1:5000', js_api=api)
-    webview.start()
+    # Run Flask server directly without webview
+    app.run(host='127.0.0.1', port=5000, debug=True)
 
