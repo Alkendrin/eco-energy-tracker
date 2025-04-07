@@ -143,8 +143,12 @@ function showHouse() {
         img.src = "assets/perspective/bungalow_3.png";
     } else if (housename == 96) {
         img.src = "assets/perspective/contemporary_1.jpg";
+    } else if (housename == 97) {
+        img.src = "assets/perspective/contemporary_2.png";
     } else if (housename == 99) {
         img.src = "assets/perspective/duplex_1.png";
+    } else if (housename == 100) {
+        img.src = "assets/perspective/duplex_2.png";
     }
 
 
