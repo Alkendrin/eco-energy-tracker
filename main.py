@@ -746,23 +746,44 @@ class Api:
 			restricted_appliance_id_2 = ['77', '78', '79', '80']
 
 			restricted_rooms_id_1 = [
-	            'bath1', 'bath2', 'bed2Right', 'bathright1', 'bathright2',
-	            'bed1right', 'bed1', 'bathLeft1', 'bathLeft2', 'bedroomLeft22',
-	            'bedroomRight11', 'bathRight1', 'bathRight2', 'bedroomRight22',
-	            'bedroomLeft1', 'bedroomLeft2', 'bathLeft', 'bedroomRight1',
-	            'bedroomRight2', 'bathRight', 'bathRight123', 'bedroom1T2',
-	            'bedroom3T2', 'bedroom4T2', 'bedroom6T2', 'bedroom7T2',
-	            'bedroom9T2', 'masterbed1T2', 'masterbed2T2', 'masterbed3T2',
-	            'bedroomLeft11', 'bed1dup1', 'bed2dup1', 'master1dup1', 'master2dup1', 'bed1B2', 'bed2B2','bed3B2',
-	            'masterbedB3', 'bedB3', 'bed2B3', 'bathB2', 'tb1tg', 'tb2tg', 'tb3tg',
-	            'bath1dup1', 'bath2dup1','bath3dup1','bath4dup1', 'masterbathB3','bathB3'
+	                'B1_bedTop',
+					'B1_bedBot',
+					'B2_bedTopLeft',
+					'B2_bedTopRight',
+					'B2_bedBot',
+					'B3_bedTop',
+					'B3_masterBedroom',
+					'B3_bedBot',
+					'C1_mainBed',
+					'C1_bed#3',
+					'D1_bed3',
+					'D1_bed2',
+					'D1_bed1',
+					'C2_mainBed',
+					'C2_bed#2',
+					'D2_bedroom',
+					'C1_bathRight',
+					'B1_bath',
+					'B2_bathTop',
+					'B2_bathBot',
+					'B3_bathroom',
+					'C1_mainBath',
+					'D1_bathTop',
+					'D1_bathBot',
+					'C2_mainBath',
+					'C2_bath'
 	       		]
-
 			restricted_rooms_id_2 = [
-	            'bath1', 'bath2', 'bathright1', 'bathright2',
-	            'bed1right', 'bathLeft1', 'bathLeft2','bathRight1', 'bathRight2', 'bathLeft',
-	            'bedroomRight2','bathB2', 'tb1tg', 'tb2tg', 'tb3tg',
-	            'bath1dup1', 'bath2dup1','bath3dup1','bath4dup1', 'masterbathB3','bathB3'
+	                'C1_bathRight',
+					'B1_bath',
+					'B2_bathTop',
+					'B2_bathBot',
+					'B3_bathroom',
+					'C1_mainBath',
+					'D1_bathTop',
+					'D1_bathBot',
+					'C2_mainBath',
+					'C2_bath'
 	       		]	       		
 
 
@@ -798,7 +819,7 @@ class Api:
 	        restricted_appliance_id_2 = ['77', '78', '79', '80']
 
 	        restricted_rooms_id_1 = [
-	            'bath1', 'bath2', 'bed2Right', 'bathright1', 'bathright2',
+	            'B1_bedTop', 'bath2', 'bed2Right', 'bathright1', 'bathright2',
 	            'bed1right', 'bed1', 'bathLeft1', 'bathLeft2', 'bedroomLeft22',
 	            'bedroomRight11', 'bathRight1', 'bathRight2', 'bedroomRight22',
 	            'bedroomLeft1', 'bedroomLeft2', 'bathLeft', 'bedroomRight1',
