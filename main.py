@@ -1187,7 +1187,7 @@ def get_suggestions():
 
 @app.route('/api/update_appliance_canvas', methods=['POST'])
 def update_appliance_canvas():
-    data = request.json
+    data = request.json 
     if not data:
         return jsonify({'error': 'No data received'}), 400
         
@@ -1217,4 +1217,6 @@ def delete_appliance_canvas():
 if __name__ == '__main__':
     # Run Flask server directly without webview
     app.run(host='127.0.0.1', port=5000, debug=True)
+
+# add limit for inputs
 

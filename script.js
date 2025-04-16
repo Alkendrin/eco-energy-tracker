@@ -955,3 +955,49 @@ function autoUpdateConsumption() {
       setTimeout(autoUpdateConsumption, 500); // Short delay to ensure DOM is ready
     }
 });
+
+function calculateSuggestions() {
+    var sessionId = localStorage.getItem('sessionId');
+            if (!sessionId) {
+                alert('select house first');
+                return;
+            }
+
+
+        const targetAmount = document.getElementById('targetBill').value;
+        const targetHours = document.getElementById('hours').value;
+         var ratePerHour = document.getElementById('ratePerHour').value;
+        // document.getElementById('suggestions').innerHTML = '';
+
+        if (targetAmount && targetHours && ratePerHour) {
+            // Send data to Python backend
+            alert('calculate suggestions');
+            fetch("http://127.0.0.1:5000/api/get_suggestions", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    target_amount: parseFloat(targetAmount),
+                    target_hours: targetHours,
+                    rate_per_hour: ratePerHour,
+                    session_id: sessionId,
+                }),
+            })
+            .then(response => response.json())
+            .then(getSuggestion)
+            .catch(error => {
+                console.error("Error getting suggestions:", error);
+                alert("Failed to get suggestions. Please try again.");
+            });
+
+        } else {
+            alert("Please enter valid target amount, rate Per Hour, and hours.");
+        }
+    }
+
+
+    function getSuggestion(response) {
+            const suggestionsDiv = document.getElementById('results');
+            suggestionsDiv.innerHTML = response.message;
+    }
