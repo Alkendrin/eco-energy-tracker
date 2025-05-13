@@ -995,7 +995,7 @@ class Api:
 	    finally:
 	        cursor.close()
 	        connection.close()
-
+	
 	def get_suggestions(self, target_bill, target_hours, rate_per_hr, simulation_id):
 	    try:
 	        # Connect to the SQLite database
@@ -1115,6 +1115,8 @@ class Api:
 	        cursor.close()
 	        connection.close()
 	
+
+
 
 api = Api()
 
