@@ -757,6 +757,7 @@ function processAndDisplaySuggestionsEnergy(response, targetKwh) {
         let totalEnergy = 0;
         let totalCost = 0;
         let roomSubtotals = {};
+        totalHoursSuggested = 0;
         
         // Process each room's data
         roomSections.forEach(roomSection => {
@@ -773,6 +774,7 @@ function processAndDisplaySuggestionsEnergy(response, targetKwh) {
             }
             
             let firstRow = true;
+            
             
             // Add each appliance as a row
             appliances.forEach(appliance => {
@@ -801,6 +803,7 @@ function processAndDisplaySuggestionsEnergy(response, targetKwh) {
                 `;
                 tableBody.appendChild(row);
                 firstRow = false;
+                totalHoursSuggested += parseFloat(suggestedHours);
             });
             
             totalEnergy += roomSubtotals[roomName].energy;
@@ -831,36 +834,47 @@ function processAndDisplaySuggestionsEnergy(response, targetKwh) {
         let totalRow = document.createElement("tr");
         totalRow.className = "total-row";
         totalRow.innerHTML = `
-            <td colspan="4"><strong>Total Suggested Consumption</strong></td>
+            <td colspan="3"><strong>Total Suggested Consumption</strong></td>
+            <td class="kwh-value"><strong>${totalHoursSuggested.toFixed(1)}</strong></td>
             <td class="kwh-value"><strong>${totalEnergy.toFixed(2)} kWh</strong></td>
             <td class="cost-value"><strong>₱${totalCost.toFixed(2)}</strong></td>
         `;
         tableBody.appendChild(totalRow);
+        const billDiff = null;
+        const billColorClass = null;
         
-        // Add target row
+
         if (targetKwh) {
+            const targetBill = document.getElementById('targetBill').value;
             let targetRow = document.createElement("tr");
             targetRow.className = "target-row";
             targetRow.innerHTML = `
                 <td colspan="4"><strong>Target</strong></td>
                 <td class="kwh-value"><strong>${parseFloat(targetKwh).toFixed(2)} kWh</strong></td>
-                <td class="cost-value"></td>
+                <td class="cost-value"><strong>${targetBill ? "₱" + parseFloat(targetBill).toFixed(2) : ""}</strong></td>
             `;
             tableBody.appendChild(targetRow);
             
             // Add difference row
-            const diff = parseFloat(targetKwh) - totalEnergy;
-            const colorClass = diff >= 0 ? "text-success" : "text-danger";
+            const kwhDiff = parseFloat(targetKwh) - totalEnergy;
+            const kwhColorClass = kwhDiff >= 0 ? "text-success" : "text-danger";
+            
+            let billDiff, billColorClass;
+            if (targetBill) {
+                billDiff = parseFloat(targetBill) - totalCost;
+                billColorClass = billDiff >= 0 ? "text-success" : "text-danger";
+            }
             
             let diffRow = document.createElement("tr");
             diffRow.className = "difference-row";
             diffRow.innerHTML = `
                 <td colspan="4"><strong>Difference</strong></td>
-                <td class="kwh-value ${colorClass}"><strong>${diff.toFixed(2)} kWh</strong></td>
-                <td class="cost-value"></td>
+                <td class="kwh-value ${kwhColorClass}"><strong>${kwhDiff.toFixed(2)} kWh</strong></td>
+                <td class="cost-value ${billColorClass || ""}"><strong>${targetBill ? "₱" + billDiff.toFixed(2) : ""}</strong></td>
             `;
             tableBody.appendChild(diffRow);
         }
+        
         
         resultsDiv.appendChild(table);
         
@@ -1013,169 +1027,175 @@ function calculateSuggestions() {
     }
 }
 
-// function processAndDisplaySuggestions(response, targetAmount) {
-//     const resultsDiv = document.getElementById('results');
-//     resultsDiv.innerHTML = ""; // Clear previous results
+function processAndDisplaySuggestions(response, targetAmount) {
+    const resultsDiv = document.getElementById('results');
+    resultsDiv.innerHTML = ""; // Clear previous results
     
-//     if (response && response.message) {
-//         // Parse the HTML response
-//         const tempDiv = document.createElement('div');
-//         tempDiv.innerHTML = response.message;
+    if (response && response.message) {
+        // Parse the HTML response
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = response.message;
         
-//         // Extract room data from the response
-//         const roomSections = tempDiv.querySelectorAll('.room-section');
-//         // const totalEnergyElement = tempDiv.querySelector('.total-energy p');
-//         const totalBillElement = tempDiv.querySelector('.total-bill p');
+        // Extract room data from the response
+        const roomSections = tempDiv.querySelectorAll('.room-section');
+        // const totalEnergyElement = tempDiv.querySelector('.total-energy p');
+        const totalBillElement = tempDiv.querySelector('.total-bill p');
         
-//         // Create the table structure matching the results format
-//         let table = document.createElement("table");
-//         table.className = "table";
-//         table.innerHTML = `
-//             <thead>
-//                 <tr>
-//                     <th>Room</th>
-//                     <th>Appliance</th>
-//                     <th>Wattage</th>
-//                     <th>Usage (h)</th>
-//                     <th>kWh</th>
-//                     <th>Cost</th>
-//                 </tr>
-//             </thead>
-//             <tbody>
-//             </tbody>
-//         `;
-//         let tableBody = table.querySelector("tbody");
+        // Create the table structure matching the results format
+        let table = document.createElement("table");
+        table.className = "table";
+        table.innerHTML = `
+            <thead>
+                <tr>
+                    <th>Room</th>
+                    <th>Appliance</th>
+                    <th>Wattage</th>
+                    <th>Usage (h)</th>
+                    <th>kWh</th>
+                    <th>Cost</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        `;
+        let tableBody = table.querySelector("tbody");
         
-//         // Track totals
-//         totalEnergy = 0;
-//         totalCost = 0;
-//         let roomSubtotals = {};
-//         totalHoursSuggested = 0; 
+        // Track totals
+        totalEnergy = 0;
+        totalCost = 0;
+        let roomSubtotals = {};
+        totalHoursSuggested = 0; 
         
-//         // Process each room's data
-//         roomSections.forEach(roomSection => {
-//             const roomName = roomSection.querySelector('p.text-primary').textContent;
-//             const appliances = roomSection.querySelectorAll('.appliance');
-//             const roomTotalElement = roomSection.querySelector('.room-total-bill p');
+        // Process each room's data
+        roomSections.forEach(roomSection => {
+            const roomName = roomSection.querySelector('p.text-primary').textContent;
+            const appliances = roomSection.querySelectorAll('.appliance');
+            const roomTotalElement = roomSection.querySelector('.room-total-bill p');
             
-//             roomSubtotals[roomName] = { energy: 0, cost: 0 };
+            roomSubtotals[roomName] = { energy: 0, cost: 0 };
             
-//             // Extract room total cost
-//             if (roomTotalElement) {
-//                 const match = roomTotalElement.textContent.match(/[\d.]+/);
-//                 if (match) roomSubtotals[roomName].cost = parseFloat(match[0]);
-//             }
+            // Extract room total cost
+            if (roomTotalElement) {
+                const match = roomTotalElement.textContent.match(/[\d.]+/);
+                if (match) roomSubtotals[roomName].cost = parseFloat(match[0]);
+            }
             
-//             let firstRow = true;
+            let firstRow = true;
 
     
             
-//             // Add each appliance as a row
-//             appliances.forEach(appliance => {
-//                 // Extract data from the appliance element
-//                 const spans = appliance.querySelectorAll('span');
-//                 const applianceName = spans[0].textContent.replace('Appliance: ', '');
-//                 const suggestedHours = parseFloat(spans[1].textContent.match(/[\d.]+/)[0]);
-//                 const applianceBill = parseFloat(spans[2].textContent.match(/[\d.]+/)[0]);
+            // Add each appliance as a row
+            appliances.forEach(appliance => {
+                // Extract data from the appliance element
+                const spans = appliance.querySelectorAll('span');
+                const applianceName = spans[0].textContent.replace('Appliance: ', '');
+                const suggestedHours = parseFloat(spans[1].textContent.match(/[\d.]+/)[0]);
+                const applianceBill = parseFloat(spans[2].textContent.match(/[\d.]+/)[0]);
                 
-//                 // Calculate wattage and kWh based on bill and hours
-//                 const ratePerHour = parseFloat(document.getElementById('ratePerHour').value);
-//                 const applianceEnergy = applianceBill / ratePerHour;
-//                 const wattage = suggestedHours > 0 ? (applianceEnergy * 1000 / suggestedHours) : 0;
+                // Calculate wattage and kWh based on bill and hours
+                const ratePerHour = parseFloat(document.getElementById('ratePerHour').value);
+                const applianceEnergy = applianceBill / ratePerHour;
+                const wattage = suggestedHours > 0 ? (applianceEnergy * 1000 / suggestedHours) : 0;
                 
-//                 roomSubtotals[roomName].energy += applianceEnergy;
+                roomSubtotals[roomName].energy += applianceEnergy;
                 
-//                 // Create table row
-//                 let row = document.createElement("tr");
-//                 row.innerHTML = `
-//                     <td>${firstRow ? `<strong>${roomName}</strong>` : ""}</td>
-//                     <td>${applianceName}</td>
-//                     <td>${Math.round(wattage)} W</td>
-//                     <td>${suggestedHours.toFixed(1)}</td>
-//                     <td class="kwh-value">${applianceEnergy.toFixed(2)}</td>
-//                     <td class="cost-value">₱${applianceBill.toFixed(2)}</td>
-//                 `;
-//                 tableBody.appendChild(row);
-//                 firstRow = false;
+                // Create table row
+                let row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${firstRow ? `<strong>${roomName}</strong>` : ""}</td>
+                    <td>${applianceName}</td>
+                    <td>${Math.round(wattage)} W</td>
+                    <td>${suggestedHours.toFixed(1)}</td>
+                    <td class="kwh-value">${applianceEnergy.toFixed(2)}</td>
+                    <td class="cost-value">₱${applianceBill.toFixed(2)}</td>
+                `;
+                tableBody.appendChild(row);
+                firstRow = false;
 
-//                 totalHoursSuggested = suggestedHours.toFixed(1);
-//             });
+                totalHoursSuggested = suggestedHours.toFixed(1);
+            });
             
-//             totalEnergy += roomSubtotals[roomName].energy;
-//             totalCost += roomSubtotals[roomName].cost;
+            totalEnergy += roomSubtotals[roomName].energy;
+            totalCost += roomSubtotals[roomName].cost;
             
-//             // Add subtotal for each room
-//             const roomEnergy = roomSubtotals[roomName].energy;
-//             const roomCost = roomSubtotals[roomName].cost;
-//             const percentage = totalEnergy > 0 ? (roomEnergy / totalEnergy * 100).toFixed(1) : '0.0';
+            // Add subtotal for each room
+            const roomEnergy = roomSubtotals[roomName].energy;
+            const roomCost = roomSubtotals[roomName].cost;
+            const percentage = totalEnergy > 0 ? (roomEnergy / totalEnergy * 100).toFixed(1) : '0.0';
             
-//             let subtotalRow = document.createElement("tr");
-//             subtotalRow.className = "subtotal-row";
-//             subtotalRow.innerHTML = `
-//                 <td colspan="4"><em>Subtotal for ${roomName}</em></td>
-//                 <td class="kwh-value"><em>${roomEnergy.toFixed(2)} kWh (${percentage}%)</em></td>
-//                 <td class="cost-value"><em>₱${roomCost.toFixed(2)}</em></td>
-//             `;
-//             tableBody.appendChild(subtotalRow);
-//         });
+            let subtotalRow = document.createElement("tr");
+            subtotalRow.className = "subtotal-row";
+            subtotalRow.innerHTML = `
+                <td colspan="4"><em>Subtotal for ${roomName}</em></td>
+                <td class="kwh-value"><em>${roomEnergy.toFixed(2)} kWh (${percentage}%)</em></td>
+                <td class="cost-value"><em>₱${roomCost.toFixed(2)}</em></td>
+            `;
+            tableBody.appendChild(subtotalRow);
+        });
         
-//         // Extract total bill from response
-//         const totalEnergyElement = tempDiv.querySelector('.total-energy p');
-//         if (totalEnergyElement) {
-//             const energyMatch = totalEnergyElement.textContent.match(/[\d.]+/);
-//             if (energyMatch) totalEnergy = parseFloat(energyMatch[0]);
-//         }
+        // Extract total bill from response
+        const totalEnergyElement = tempDiv.querySelector('.total-energy p');
+        if (totalEnergyElement) {
+            const energyMatch = totalEnergyElement.textContent.match(/[\d.]+/);
+            if (energyMatch) totalEnergy = parseFloat(energyMatch[0]);
+        }
         
-//         if (totalBillElement) {
-//             const costMatch = totalBillElement.textContent.match(/[\d.]+/);
-//             if (costMatch) totalCost = parseFloat(costMatch[0]);
-//         }
+        if (totalBillElement) {
+            const costMatch = totalBillElement.textContent.match(/[\d.]+/);
+            if (costMatch) totalCost = parseFloat(costMatch[0]);
+        }
         
         
-//         // Add total row with enhanced styling
-//         let totalRow = document.createElement("tr");
-//         totalRow.className = "total-row";
-//         totalRow.innerHTML = `
-//             <td colspan="3"><strong>Total Suggested Consumption</strong></td>
-//             <td class="hr-value"><strong>${totalHoursSuggested}</strong></td>
-//             <td class="kwh-value"><strong>${totalEnergy.toFixed(2)} kWh</strong></td>
-//             <td class="cost-value"><strong>₱${totalCost.toFixed(2)}</strong></td>
-//         `;
-//         tableBody.appendChild(totalRow);
+        // Add total row with enhanced styling
+        let totalRow = document.createElement("tr");
+        totalRow.className = "total-row";
+        totalRow.innerHTML = `
+            <td colspan="3"><strong>Total Suggested Consumption</strong></td>
+            <td class="hr-value"><strong>${totalHoursSuggested}</strong></td>
+            <td class="kwh-value"><strong>${totalEnergy.toFixed(2)} kWh</strong></td>
+            <td class="cost-value"><strong>₱${totalCost.toFixed(2)}</strong></td>
+        `;
+        tableBody.appendChild(totalRow);
         
-//         // Add target row
-//         if (targetAmount) {
-//             let targetRow = document.createElement("tr");
-//             targetRow.className = "target-row";
-//             targetRow.innerHTML = `
-//                 <td colspan="4"><strong>Target</strong></td>
-//                 <td class="kwh-value"></td>
-//                 <td class="cost-value"><strong>₱${parseFloat(targetAmount).toFixed(2)}</strong></td>
-//             `;
-//             tableBody.appendChild(targetRow);
+        // Add target row
+        if (targetAmount) {
+            const targetKwh = document.getElementById('targetKwh').value;
+            let targetRow = document.createElement("tr");
+            targetRow.className = "target-row";
+            targetRow.innerHTML = `
+                <td colspan="4"><strong>Target</strong></td>
+                <td class="kwh-value"><strong>${targetKwh} kWh<strong></td>
+                <td class="cost-value"><strong>₱${parseFloat(targetAmount).toFixed(2)}</strong></td>
+            `;
+            tableBody.appendChild(targetRow);
             
-//             // Add difference row
-//             const diff = parseFloat(targetAmount) - totalCost;
-//             const colorClass = diff >= 0 ? "text-success" : "text-danger";
+            // Add difference row
+            const diff = parseFloat(targetAmount) - totalCost;
+            const colorClass = diff >= 0 ? "text-success" : "text-danger";
+
+            if (targetKwh) {
+                kwhDiff = parseFloat(targetKwh) - totalEnergy;
+                kwhColorClass = kwhDiff >= 0 ? "text-success" : "text-danger";
+            }
             
-//             let diffRow = document.createElement("tr");
-//             diffRow.className = "difference-row";
-//             diffRow.innerHTML = `
-//                 <td colspan="4"><strong>Difference</strong></td>
-//                 <td class="kwh-value"></td>
-//                 <td class="cost-value ${colorClass}"><strong>₱${diff.toFixed(2)}</strong></td>
-//             `;
-//             tableBody.appendChild(diffRow);
-//         }
+            let diffRow = document.createElement("tr");
+            diffRow.className = "difference-row";
+            diffRow.innerHTML = `
+                <td colspan="4"><strong>Difference</strong></td>
+                <td class="kwh-value ${kwhColorClass}"><strong>${targetKwh ? kwhDiff.toFixed(2) + " kWh" : ""}</strong></td>
+                <td class="cost-value ${colorClass}"><strong>₱${diff.toFixed(2)}</strong></td>
+            `;
+            tableBody.appendChild(diffRow);
+        }
         
-//         resultsDiv.appendChild(table);
+        resultsDiv.appendChild(table);
         
-//         // Add row highlighting behavior
-//         setTimeout(addTableRowHighlighting, 100);
-//     } else {
-//         resultsDiv.innerHTML = '<div class="alert alert-warning">No suggestions available.</div>';
-//     }
-// }
+        // Add row highlighting behavior
+        setTimeout(addTableRowHighlighting, 100);
+    } else {
+        resultsDiv.innerHTML = '<div class="alert alert-warning">No suggestions available.</div>';
+    }
+}
 
 function getSuggestion(response) {
     const resultsDiv = document.getElementById('results');
