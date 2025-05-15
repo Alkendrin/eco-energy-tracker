@@ -108,8 +108,10 @@
                   <input
                     type="number"
                     min="1"
+                    max="30"
                     id="ratePerHour"
                     class="form-control form-control-lg"
+                    oninput="if(this.value > 30) this.value = 30; if(this.value < 1) this.value = 1;"
                   />
                 </div>
                 <hr />

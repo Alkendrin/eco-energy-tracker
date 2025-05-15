@@ -275,6 +275,18 @@ document.addEventListener("drop", function (event) {
             return;
         }
 
+        if (isRestrictedCombination(roomId, imageId)) {
+            // Flash the container red
+            flashContainerRed(event.target);
+            // Show error message
+            Swal.fire({
+                icon: "error",
+                title: "Restricted",
+                text: "This appliance cannot be placed in this room for safety purposes.",
+            });
+            return;
+        }
+
         // Rest of your existing drop handling code...
         if (isUpdate !== "1") {
             const clone = draggedElement.cloneNode(true);
