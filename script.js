@@ -8,6 +8,8 @@
 //     document.getElementById("body").style.display = ""; // Show the main body
 //   }, 3000); // 3000 milliseconds = 3 seconds
 
+let totalHoursSuggested = 0;
+
 window.addEventListener("DOMContentLoaded", function () {
     localStorage.clear();
     showNavbar();
@@ -666,65 +668,318 @@ function stopAndCompute() {
     document.head.appendChild(style);
 }
 
-// calculate kwh target
 function calculateSuggestionsEnergy() {
-    var sessionId = localStorage.getItem("sessionId");
+    var sessionId = localStorage.getItem('sessionId');
     if (!sessionId) {
-        alert("Pelect house first");
+        Swal.fire({
+            icon: 'warning',
+            title: 'Select House First',
+            text: 'Please select a house layout before calculating suggestions.'
+        });
         return;
     }
 
-    if (document.getElementById("hours").value < 1) {
-        alert("Please input hours that is greater than 0.");
-        return;
-    }
+    const targetKwh = document.getElementById('targetKwh').value;
+    const hours = document.getElementById('hours').value;
+    const ratePerHour = document.getElementById('ratePerHour').value;
 
-    const target_kwh = document.getElementById("targetKWH").value;
-    var ratePerHour = document.getElementById("ratePerHour").value;
-
-    document.getElementById("suggestions").innerHTML = "";
-
-    if (target_kwh && ratePerHour) {
+    if (targetKwh && hours && ratePerHour) {
+        // Show loading indicator
+        document.getElementById('results').innerHTML = '<div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div><p>Calculating suggestions...</p></div>';
+        
+        // Send data to Python backend
         fetch("http://127.0.0.1:5000/api/get_suggestions_energy", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                target_kwh: target_kwh,
+                target_kwh: parseFloat(targetKwh),
+                target_hours: hours,
                 rate_per_hour: ratePerHour,
                 session_id: sessionId,
             }),
         })
-            .then((response) => response.json())
-            .then((data) => getSuggestionEnergy(data))
-            .catch((error) => {
-                console.error("Error calculating suggestions:", error);
-                alert("Error calculating suggestions. Please try again.");
+        .then(response => response.json())
+        .then(data => {
+            processAndDisplaySuggestionsEnergy(data, targetKwh);
+        })
+        .catch(error => {
+            console.error("Error getting energy suggestions:", error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Failed to get energy suggestions. Please try again.'
             });
+        });
     } else {
-        alert("Please enter valid kWh and rate per hour.");
+        Swal.fire({
+            icon: 'warning',
+            title: 'Missing Information',
+            text: 'Please enter valid target kWh, rate per hour, and hours.'
+        });
     }
 }
 
-function getSuggestionEnergy(response) {
-    const suggestionsDiv = document.getElementById("suggestions");
+function processAndDisplaySuggestionsEnergy(response, targetKwh) {
+    const resultsDiv = document.getElementById('results');
+    resultsDiv.innerHTML = ""; // Clear previous results
+    
+    if (response && response.message) {
+        // Parse the HTML response
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = response.message;
+        
+        // Extract room data from the response
+        const roomSections = tempDiv.querySelectorAll('.room-section');
+        const totalBillElement = tempDiv.querySelector('.total-bill p');
+        
+        // Create the table structure matching the results format
+        let table = document.createElement("table");
+        table.className = "table";
+        table.innerHTML = `
+            <thead>
+                <tr>
+                    <th>Room</th>
+                    <th>Appliance</th>
+                    <th>Wattage</th>
+                    <th>Usage (h)</th>
+                    <th>kWh</th>
+                    <th>Cost</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        `;
+        let tableBody = table.querySelector("tbody");
+        
+        // Track totals
+        let totalEnergy = 0;
+        let totalCost = 0;
+        let roomSubtotals = {};
+        
+        // Process each room's data
+        roomSections.forEach(roomSection => {
+            const roomName = roomSection.querySelector('p.text-primary').textContent;
+            const appliances = roomSection.querySelectorAll('.appliance');
+            const roomTotalElement = roomSection.querySelector('.room-total-bill p');
+            
+            roomSubtotals[roomName] = { energy: 0, cost: 0 };
+            
+            // Extract room total cost
+            if (roomTotalElement) {
+                const match = roomTotalElement.textContent.match(/[\d.]+/);
+                if (match) roomSubtotals[roomName].cost = parseFloat(match[0]);
+            }
+            
+            let firstRow = true;
+            
+            // Add each appliance as a row
+            appliances.forEach(appliance => {
+                // Extract data from the appliance element
+                const spans = appliance.querySelectorAll('span');
+                const applianceName = spans[0].textContent.replace('Appliance: ', '');
+                const suggestedHours = parseFloat(spans[1].textContent.match(/[\d.]+/)[0]);
+                const applianceBill = parseFloat(spans[2].textContent.match(/[\d.]+/)[0]);
+                
+                // Calculate wattage and kWh based on bill and hours
+                const ratePerHour = parseFloat(document.getElementById('ratePerHour').value);
+                const applianceEnergy = applianceBill / ratePerHour;
+                const wattage = suggestedHours > 0 ? (applianceEnergy * 1000 / suggestedHours) : 0;
+                
+                roomSubtotals[roomName].energy += applianceEnergy;
+                
+                // Create table row
+                let row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${firstRow ? `<strong>${roomName}</strong>` : ""}</td>
+                    <td>${applianceName}</td>
+                    <td>${Math.round(wattage)} W</td>
+                    <td>${suggestedHours.toFixed(1)}</td>
+                    <td class="kwh-value">${applianceEnergy.toFixed(2)}</td>
+                    <td class="cost-value">₱${applianceBill.toFixed(2)}</td>
+                `;
+                tableBody.appendChild(row);
+                firstRow = false;
+            });
+            
+            totalEnergy += roomSubtotals[roomName].energy;
+            totalCost += roomSubtotals[roomName].cost;
+            
+            // Add subtotal for each room
+            const roomEnergy = roomSubtotals[roomName].energy;
+            const roomCost = roomSubtotals[roomName].cost;
+            const percentage = totalEnergy > 0 ? (roomEnergy / totalEnergy * 100).toFixed(1) : '0.0';
+            
+            let subtotalRow = document.createElement("tr");
+            subtotalRow.className = "subtotal-row";
+            subtotalRow.innerHTML = `
+                <td colspan="4"><em>Subtotal for ${roomName}</em></td>
+                <td class="kwh-value"><em>${roomEnergy.toFixed(2)} kWh (${percentage}%)</em></td>
+                <td class="cost-value"><em>₱${roomCost.toFixed(2)}</em></td>
+            `;
+            tableBody.appendChild(subtotalRow);
+        });
+        
+        // Extract total bill from response
+        if (totalBillElement) {
+            const match = totalBillElement.textContent.match(/[\d.]+/);
+            if (match) totalCost = parseFloat(match[0]);
+        }
+        
+        // Add total row with enhanced styling
+        let totalRow = document.createElement("tr");
+        totalRow.className = "total-row";
+        totalRow.innerHTML = `
+            <td colspan="4"><strong>Total Suggested Consumption</strong></td>
+            <td class="kwh-value"><strong>${totalEnergy.toFixed(2)} kWh</strong></td>
+            <td class="cost-value"><strong>₱${totalCost.toFixed(2)}</strong></td>
+        `;
+        tableBody.appendChild(totalRow);
+        
+        // Add target row
+        if (targetKwh) {
+            let targetRow = document.createElement("tr");
+            targetRow.className = "target-row";
+            targetRow.innerHTML = `
+                <td colspan="4"><strong>Target</strong></td>
+                <td class="kwh-value"><strong>${parseFloat(targetKwh).toFixed(2)} kWh</strong></td>
+                <td class="cost-value"></td>
+            `;
+            tableBody.appendChild(targetRow);
+            
+            // Add difference row
+            const diff = parseFloat(targetKwh) - totalEnergy;
+            const colorClass = diff >= 0 ? "text-success" : "text-danger";
+            
+            let diffRow = document.createElement("tr");
+            diffRow.className = "difference-row";
+            diffRow.innerHTML = `
+                <td colspan="4"><strong>Difference</strong></td>
+                <td class="kwh-value ${colorClass}"><strong>${diff.toFixed(2)} kWh</strong></td>
+                <td class="cost-value"></td>
+            `;
+            tableBody.appendChild(diffRow);
+        }
+        
+        resultsDiv.appendChild(table);
+        
+        // Add row highlighting behavior
+        setTimeout(addTableRowHighlighting, 100);
+    } else {
+        resultsDiv.innerHTML = '<div class="alert alert-warning">No energy suggestions available.</div>';
+    }
 }
 
+// calculate kwh target
+// function calculateSuggestionsEnergy() {
+//     var sessionId = localStorage.getItem("sessionId");
+//     if (!sessionId) {
+//         alert("Pelect house first");
+//         return;
+//     }
+
+//     if (document.getElementById("hours").value < 1) {
+//         alert("Please input hours that is greater than 0.");
+//         return;
+//     }
+
+//     const target_kwh = document.getElementById("targetKWH").value;
+//     var ratePerHour = document.getElementById("ratePerHour").value;
+
+//     document.getElementById("suggestions").innerHTML = "";
+
+//     if (target_kwh && ratePerHour) {
+//         fetch("http://127.0.0.1:5000/api/get_suggestions_energy", {
+//             method: "POST",
+//             headers: {
+//                 "Content-Type": "application/json",
+//             },
+//             body: JSON.stringify({
+//                 target_kwh: target_kwh,
+//                 rate_per_hour: ratePerHour,
+//                 session_id: sessionId,
+//             }),
+//         })
+//             .then((response) => response.json())
+//             .then((data) => getSuggestionEnergy(data))
+//             .catch((error) => {
+//                 console.error("Error calculating suggestions:", error);
+//                 alert("Error calculating suggestions. Please try again.");
+//             });
+//     } else {
+//         alert("Please enter valid kWh and rate per hour.");
+//     }
+// }
+
+// function getSuggestionEnergy(response) {
+//     const suggestionsDiv = document.getElementById("suggestions");
+// }
+
 // calculate bill target
+// function calculateSuggestions() {
+//     alert("calculate suggestions");
+//     var sessionId = localStorage.getItem('sessionId');
+//     if (!sessionId) {
+//         Swal.fire({
+//             icon: 'warning',
+//             title: 'Select House First',
+//             text: 'Please select a house layout before calculating suggestions.'
+//         });
+//         return;
+//     }
+
+//     const targetAmount = document.getElementById("targetAmount").value;
+//     const targetHours = document.getElementById("targetHours").value;
+//     var ratePerHour = document.getElementById("ratePerHour").value;
+//     document.getElementById("suggestions").innerHTML = "";
+
+//     if (targetAmount && targetHours && ratePerHour) {
+//         fetch("http://127.0.0.1:5000/api/get_suggestions", {
+//             method: "POST",
+//             headers: {
+//                 "Content-Type": "application/json",
+//             },
+//             body: JSON.stringify({
+//                 target_amount: parseFloat(targetAmount),
+//                 target_hours: targetHours,
+//                 rate_per_hour: ratePerHour,
+//                 session_id: sessionId,
+//             }),
+//         })
+//             .then((response) => response.json())
+//             .then((data) => getSuggestion(data))
+//             .catch((error) => {
+//                 console.error("Error calculating suggestions:", error);
+//                 alert("Error calculating suggestions. Please try again.");
+//             });
+
+//         // Display suggestions
+//     } else {
+//         alert("Please enter valid target amount, rate Per Hour, and hours.");
+//     }
+// }
+
 function calculateSuggestions() {
-    var sessionId = localStorage.getItem("sessionId");
+    var sessionId = localStorage.getItem('sessionId');
     if (!sessionId) {
-        alert("select house first");
+        Swal.fire({
+            icon: 'warning',
+            title: 'Select House First',
+            text: 'Please select a house layout before calculating suggestions.'
+        });
         return;
     }
 
-    const targetAmount = document.getElementById("targetAmount").value;
-    const targetHours = document.getElementById("targetHours").value;
-    var ratePerHour = document.getElementById("ratePerHour").value;
-    document.getElementById("suggestions").innerHTML = "";
+    const targetAmount = document.getElementById('targetBill').value;
+    const hours = document.getElementById('hours').value;
+    const ratePerHour = document.getElementById('ratePerHour').value;
 
-    if (targetAmount && targetHours && ratePerHour) {
+    if (targetAmount && hours && ratePerHour) {
+        // Show loading indicator
+        document.getElementById('results').innerHTML = '<div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div><p>Calculating suggestions...</p></div>';
+        
+        // Send data to Python backend
         fetch("http://127.0.0.1:5000/api/get_suggestions", {
             method: "POST",
             headers: {
@@ -732,23 +987,195 @@ function calculateSuggestions() {
             },
             body: JSON.stringify({
                 target_amount: parseFloat(targetAmount),
-                target_hours: targetHours,
+                target_hours: hours,
                 rate_per_hour: ratePerHour,
                 session_id: sessionId,
             }),
         })
-            .then((response) => response.json())
-            .then((data) => getSuggestion(data))
-            .catch((error) => {
-                console.error("Error calculating suggestions:", error);
-                alert("Error calculating suggestions. Please try again.");
+        .then(response => response.json())
+        .then(data => {
+            processAndDisplaySuggestions(data, targetAmount);
+        })
+        .catch(error => {
+            console.error("Error getting suggestions:", error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Failed to get suggestions. Please try again.'
             });
-
-        // Display suggestions
+        });
     } else {
-        alert("Please enter valid target amount, rate Per Hour, and hours.");
+        Swal.fire({
+            icon: 'warning',
+            title: 'Missing Information',
+            text: 'Please enter valid target amount, rate per hour, and hours.'
+        });
     }
 }
+
+// function processAndDisplaySuggestions(response, targetAmount) {
+//     const resultsDiv = document.getElementById('results');
+//     resultsDiv.innerHTML = ""; // Clear previous results
+    
+//     if (response && response.message) {
+//         // Parse the HTML response
+//         const tempDiv = document.createElement('div');
+//         tempDiv.innerHTML = response.message;
+        
+//         // Extract room data from the response
+//         const roomSections = tempDiv.querySelectorAll('.room-section');
+//         // const totalEnergyElement = tempDiv.querySelector('.total-energy p');
+//         const totalBillElement = tempDiv.querySelector('.total-bill p');
+        
+//         // Create the table structure matching the results format
+//         let table = document.createElement("table");
+//         table.className = "table";
+//         table.innerHTML = `
+//             <thead>
+//                 <tr>
+//                     <th>Room</th>
+//                     <th>Appliance</th>
+//                     <th>Wattage</th>
+//                     <th>Usage (h)</th>
+//                     <th>kWh</th>
+//                     <th>Cost</th>
+//                 </tr>
+//             </thead>
+//             <tbody>
+//             </tbody>
+//         `;
+//         let tableBody = table.querySelector("tbody");
+        
+//         // Track totals
+//         totalEnergy = 0;
+//         totalCost = 0;
+//         let roomSubtotals = {};
+//         totalHoursSuggested = 0; 
+        
+//         // Process each room's data
+//         roomSections.forEach(roomSection => {
+//             const roomName = roomSection.querySelector('p.text-primary').textContent;
+//             const appliances = roomSection.querySelectorAll('.appliance');
+//             const roomTotalElement = roomSection.querySelector('.room-total-bill p');
+            
+//             roomSubtotals[roomName] = { energy: 0, cost: 0 };
+            
+//             // Extract room total cost
+//             if (roomTotalElement) {
+//                 const match = roomTotalElement.textContent.match(/[\d.]+/);
+//                 if (match) roomSubtotals[roomName].cost = parseFloat(match[0]);
+//             }
+            
+//             let firstRow = true;
+
+    
+            
+//             // Add each appliance as a row
+//             appliances.forEach(appliance => {
+//                 // Extract data from the appliance element
+//                 const spans = appliance.querySelectorAll('span');
+//                 const applianceName = spans[0].textContent.replace('Appliance: ', '');
+//                 const suggestedHours = parseFloat(spans[1].textContent.match(/[\d.]+/)[0]);
+//                 const applianceBill = parseFloat(spans[2].textContent.match(/[\d.]+/)[0]);
+                
+//                 // Calculate wattage and kWh based on bill and hours
+//                 const ratePerHour = parseFloat(document.getElementById('ratePerHour').value);
+//                 const applianceEnergy = applianceBill / ratePerHour;
+//                 const wattage = suggestedHours > 0 ? (applianceEnergy * 1000 / suggestedHours) : 0;
+                
+//                 roomSubtotals[roomName].energy += applianceEnergy;
+                
+//                 // Create table row
+//                 let row = document.createElement("tr");
+//                 row.innerHTML = `
+//                     <td>${firstRow ? `<strong>${roomName}</strong>` : ""}</td>
+//                     <td>${applianceName}</td>
+//                     <td>${Math.round(wattage)} W</td>
+//                     <td>${suggestedHours.toFixed(1)}</td>
+//                     <td class="kwh-value">${applianceEnergy.toFixed(2)}</td>
+//                     <td class="cost-value">₱${applianceBill.toFixed(2)}</td>
+//                 `;
+//                 tableBody.appendChild(row);
+//                 firstRow = false;
+
+//                 totalHoursSuggested = suggestedHours.toFixed(1);
+//             });
+            
+//             totalEnergy += roomSubtotals[roomName].energy;
+//             totalCost += roomSubtotals[roomName].cost;
+            
+//             // Add subtotal for each room
+//             const roomEnergy = roomSubtotals[roomName].energy;
+//             const roomCost = roomSubtotals[roomName].cost;
+//             const percentage = totalEnergy > 0 ? (roomEnergy / totalEnergy * 100).toFixed(1) : '0.0';
+            
+//             let subtotalRow = document.createElement("tr");
+//             subtotalRow.className = "subtotal-row";
+//             subtotalRow.innerHTML = `
+//                 <td colspan="4"><em>Subtotal for ${roomName}</em></td>
+//                 <td class="kwh-value"><em>${roomEnergy.toFixed(2)} kWh (${percentage}%)</em></td>
+//                 <td class="cost-value"><em>₱${roomCost.toFixed(2)}</em></td>
+//             `;
+//             tableBody.appendChild(subtotalRow);
+//         });
+        
+//         // Extract total bill from response
+//         const totalEnergyElement = tempDiv.querySelector('.total-energy p');
+//         if (totalEnergyElement) {
+//             const energyMatch = totalEnergyElement.textContent.match(/[\d.]+/);
+//             if (energyMatch) totalEnergy = parseFloat(energyMatch[0]);
+//         }
+        
+//         if (totalBillElement) {
+//             const costMatch = totalBillElement.textContent.match(/[\d.]+/);
+//             if (costMatch) totalCost = parseFloat(costMatch[0]);
+//         }
+        
+        
+//         // Add total row with enhanced styling
+//         let totalRow = document.createElement("tr");
+//         totalRow.className = "total-row";
+//         totalRow.innerHTML = `
+//             <td colspan="3"><strong>Total Suggested Consumption</strong></td>
+//             <td class="hr-value"><strong>${totalHoursSuggested}</strong></td>
+//             <td class="kwh-value"><strong>${totalEnergy.toFixed(2)} kWh</strong></td>
+//             <td class="cost-value"><strong>₱${totalCost.toFixed(2)}</strong></td>
+//         `;
+//         tableBody.appendChild(totalRow);
+        
+//         // Add target row
+//         if (targetAmount) {
+//             let targetRow = document.createElement("tr");
+//             targetRow.className = "target-row";
+//             targetRow.innerHTML = `
+//                 <td colspan="4"><strong>Target</strong></td>
+//                 <td class="kwh-value"></td>
+//                 <td class="cost-value"><strong>₱${parseFloat(targetAmount).toFixed(2)}</strong></td>
+//             `;
+//             tableBody.appendChild(targetRow);
+            
+//             // Add difference row
+//             const diff = parseFloat(targetAmount) - totalCost;
+//             const colorClass = diff >= 0 ? "text-success" : "text-danger";
+            
+//             let diffRow = document.createElement("tr");
+//             diffRow.className = "difference-row";
+//             diffRow.innerHTML = `
+//                 <td colspan="4"><strong>Difference</strong></td>
+//                 <td class="kwh-value"></td>
+//                 <td class="cost-value ${colorClass}"><strong>₱${diff.toFixed(2)}</strong></td>
+//             `;
+//             tableBody.appendChild(diffRow);
+//         }
+        
+//         resultsDiv.appendChild(table);
+        
+//         // Add row highlighting behavior
+//         setTimeout(addTableRowHighlighting, 100);
+//     } else {
+//         resultsDiv.innerHTML = '<div class="alert alert-warning">No suggestions available.</div>';
+//     }
+// }
 
 function getSuggestion(response) {
     const resultsDiv = document.getElementById('results');
@@ -1121,45 +1548,45 @@ function autoUpdateConsumption() {
     }
 });
 
-function calculateSuggestions() {
-    var sessionId = localStorage.getItem('sessionId');
-            if (!sessionId) {
-                alert('select house first');
-                return;
-            }
+// function calculateSuggestions() {
+//     var sessionId = localStorage.getItem('sessionId');
+//             if (!sessionId) {
+//                 alert('select house first');
+//                 return;
+//             }
 
 
-        const targetAmount = document.getElementById('targetBill').value;
-        const targetHours = document.getElementById('hours').value;
-         var ratePerHour = document.getElementById('ratePerHour').value;
-        // document.getElementById('suggestions').innerHTML = '';
+//         const targetAmount = document.getElementById('targetBill').value;
+//         const targetHours = document.getElementById('hours').value;
+//          var ratePerHour = document.getElementById('ratePerHour').value;
+//         // document.getElementById('suggestions').innerHTML = '';
 
-        if (targetAmount && targetHours && ratePerHour) {
-            // Send data to Python backend
-            alert('calculate suggestions');
-            fetch("http://127.0.0.1:5000/api/get_suggestions", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    target_amount: parseFloat(targetAmount),
-                    target_hours: targetHours,
-                    rate_per_hour: ratePerHour,
-                    session_id: sessionId,
-                }),
-            })
-            .then(response => response.json())
-            .then(getSuggestion)
-            .catch(error => {
-                console.error("Error getting suggestions:", error);
-                alert("Failed to get suggestions. Please try again.");
-            });
+//         if (targetAmount && targetHours && ratePerHour) {
+//             // Send data to Python backend
+//             alert('calculate suggestions');
+//             fetch("http://127.0.0.1:5000/api/get_suggestions", {
+//                 method: "POST",
+//                 headers: {
+//                     "Content-Type": "application/json",
+//                 },
+//                 body: JSON.stringify({
+//                     target_amount: parseFloat(targetAmount),
+//                     target_hours: targetHours,
+//                     rate_per_hour: ratePerHour,
+//                     session_id: sessionId,
+//                 }),
+//             })
+//             .then(response => response.json())
+//             .then(getSuggestion)
+//             .catch(error => {
+//                 console.error("Error getting suggestions:", error);
+//                 alert("Failed to get suggestions. Please try again.");
+//             });
 
-        } else {
-            alert("Please enter valid target amount, rate Per Hour, and hours.");
-        }
-    }
+//         } else {
+//             alert("Please enter valid target amount, rate Per Hour, and hours.");
+//         }
+//     }
 
 
     function getSuggestion(response) {
