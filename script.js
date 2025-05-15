@@ -1166,3 +1166,54 @@ function calculateSuggestions() {
             const suggestionsDiv = document.getElementById('results');
             suggestionsDiv.innerHTML = response.message;
     }
+
+    // Function to check if appliance-room combination is restricted
+function isRestrictedCombination(roomId, applianceId) {
+    // List of restricted appliance IDs
+    const restrictedApplianceIds1 = ['91', '92', '93', '94'];
+    const restrictedApplianceIds2 = ['77', '78', '79', '80'];
+    
+    // List of restricted room IDs for the first appliance group
+    const restrictedRoomIds1 = [
+        'B1_bedTop', 'B1_bedBot', 'B2_bedTopLeft', 'B2_bedTopRight',
+        'B2_bedBot', 'B3_bedTop', 'B3_masterBedroom', 'B3_bedBot',
+        'C1_mainBed', 'C1_bed#3', 'D1_bed3', 'D1_bed2', 'D1_bed1',
+        'C2_mainBed', 'C2_bed#2', 'D2_bedroom', 'C1_bathRight',
+        'B1_bath', 'B2_bathTop', 'B2_bathBot', 'B3_bathroom',
+        'C1_mainBath', 'D1_bathTop', 'D1_bathBot', 'C2_mainBath',
+        'C2_bath'
+    ];
+    
+    // List of restricted room IDs for the second appliance group
+    const restrictedRoomIds2 = [
+        'C1_bathRight', 'B1_bath', 'B2_bathTop', 'B2_bathBot',
+        'B3_bathroom', 'C1_mainBath', 'D1_bathTop', 'D1_bathBot',
+        'C2_mainBath', 'C2_bath'
+    ];
+    
+    // Check restrictions for first group
+    if (restrictedRoomIds1.includes(roomId) && restrictedApplianceIds1.includes(applianceId)) {
+        return true;
+    }
+    
+    // Check restrictions for second group
+    if (restrictedRoomIds2.includes(roomId) && restrictedApplianceIds2.includes(applianceId)) {
+        return true;
+    }
+    
+    return false;
+}
+
+// Function to flash container red
+function flashContainerRed(element) {
+    // Find the closest room container
+    const roomContainer = element.closest('.room');
+    
+    // Add a CSS class for the red flash effect
+    roomContainer.classList.add('restricted-flash');
+    
+    // Remove the class after the animation completes
+    setTimeout(() => {
+        roomContainer.classList.remove('restricted-flash');
+    }, 1000);
+}
