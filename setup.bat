@@ -18,6 +18,7 @@ echo Installing required dependencies...
 pip install flask
 pip install werkzeug
 pip install jinja2
+pip install Flask-CORS
 
 :: Note: sqlite3 comes built-in with Python, so no need to install it separately
 
