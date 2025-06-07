@@ -1617,25 +1617,175 @@ function autoUpdateConsumption() {
     // Function to check if appliance-room combination is restricted
 function isRestrictedCombination(roomId, applianceId) {
     // List of restricted appliance IDs
-    const restrictedApplianceIds1 = ['91', '92', '93', '94'];
-    const restrictedApplianceIds2 = ['77', '78', '79', '80'];
+    //Large Refrigerators - Bedrooms, Bathrooms, Closets, Living Rooms, etc.
+    const restrictedApplianceIds1 = ['77', '78', '79'];
+    //Ovens and Microwaves - Any non-kitchen, non-dining rooms.
+    const restrictedApplianceIds2 = ['93', '94', '95', '96'];
+    //Washing Machines - Bedrooms, Living Rooms, Dining Rooms, Closets, etc.
+    const restrictedApplianceIds3 = ['107', '108', '109'];
+    //TVs Bathrooms, Kitchens, Closets, Laundry, etc.
+    const restrictedApplianceIds4 = ['99', '100', '101', '102', '103', '104'];
+    //Irons - Kitchens, bathrooms, closets, porches, garage.
+    const restrictedApplianceIds5 = ['81', '82'];
+    //Vacuum Cleaners - Bathrooms, kitchens, porches.
+    const restrictedApplianceIds6 = ['105'];
+    // Air Conditioners in non-enclosed or utility areas
+    const restrictedApplianceIds7 = ['65', '66'];
+    // Chargers (all types) in kitchens, bathrooms, porches
+    const restrictedApplianceIds8 = ['67', '68', '69', '70', '71', '72'];
+    // Halogen lights and Incandescent bulbs in closets or bathrooms
+    const restrictedApplianceIds9 = ['85', '91'];
+    // Fans in bathrooms, porches, and walk-in closets
+    const restrictedApplianceIds10 = ['73', '74', '75', '76'];
+    //Desktops, Laptops & Gaming PCs in bathrooms, kitchens, laundry
+    const restrictedApplianceIds11 = ['83', '84', '97', '98'];
+    //CRT TVs in non-living spaces
+    const restrictedApplianceIds12 = ['99'];
+    //Mini Fridge in Bathroom, Porch
+    const restrictedApplianceIds13 = ['80'];
     
     // List of restricted room IDs for the first appliance group
     const restrictedRoomIds1 = [
-        'B1_bedTop', 'B1_bedBot', 'B2_bedTopLeft', 'B2_bedTopRight',
-        'B2_bedBot', 'B3_bedTop', 'B3_masterBedroom', 'B3_bedBot',
-        'C1_mainBed', 'C1_bed#3', 'D1_bed3', 'D1_bed2', 'D1_bed1',
-        'C2_mainBed', 'C2_bed#2', 'D2_bedroom', 'C1_bathRight',
-        'B1_bath', 'B2_bathTop', 'B2_bathBot', 'B3_bathroom',
-        'C1_mainBath', 'D1_bathTop', 'D1_bathBot', 'C2_mainBath',
-        'C2_bath'
+        'B1_bedTop', 'B1_bedBot', 'B1_bath', 'B1_livingRoom',
+'B2_bedTopLeft', 'B2_bedTopRight', 'B2_livingRoom', 'B2_bathTop', 'B2_bathBot', 'B2_bedBot',
+'B3_bedTop', 'B3_bedBot', 'B3_masterBedroom', 'B3_livingRoom', 'B3_bathroom',
+'C1_mainBath', 'C1_walkInCloset', 'C1_bed#2', 'C1_mainBed', 'C1_living', 'C1_bed#3',
+'D1_bed1', 'D1_bed2', 'D1_bed3', 'D1_living', 'D1_bathTop', 'D1_bathBot',
+'C2_mainBath', 'C2_walkInClosetLeft', 'C2_walkInClosetBotLeft', 'C2_walkInClosetBotRight', 'C2_mainBed',
+'C2_greatRoom', 'C2_bath', 'C2_bed#2', 'D2_bedroom', 'D2_living'
+
     ];
-    
     // List of restricted room IDs for the second appliance group
     const restrictedRoomIds2 = [
-        'C1_bathRight', 'B1_bath', 'B2_bathTop', 'B2_bathBot',
-        'B3_bathroom', 'C1_mainBath', 'D1_bathTop', 'D1_bathBot',
-        'C2_mainBath', 'C2_bath'
+          'B1_bedTop', 'B1_bedBot', 'B1_bath', 'B1_livingRoom', 'B1_porch',
+  'B2_bedTopLeft', 'B2_bedTopRight', 'B2_livingRoom', 'B2_bathTop', 'B2_bathBot', 'B2_garage', 'B2_porch', 'B2_bedBot',
+  'B3_walkInCloset', 'B3_bedTop', 'B3_garage', 'B3_masterBedroom', 'B3_livingRoom', 'B3_bathroom', 'B3_porch', 'B3_bedBot',
+  'C1_machine', 'C1_mud', 'C1_bed#2', 'C1_mainBath', 'C1_walkInCloset', 'C1_bathRight', 'C1_mainBed', 'C1_living', 'C1_bed#3', 'C1_coveredPorch',
+  'D1_bed3', 'D1_bed2', 'D1_laundry', 'D1_bathTop', 'D1_bed1', 'D1_bathBot', 'D1_living', 'D1_porch',
+  'C2_coveredDeck', 'C2_laundry', 'C2_walkInClosetLeft', 'C2_greatRoom', 'C2_mainBath', 'C2_walkInClosetBotLeft', 'C2_bath', 'C2_walkInClosetBotRight', 'C2_mainBed', 'C2_foyer', 'C2_bed#2', 'C2_frontProch',
+  'D2_porch', 'D2_bedroom', 'D2_living'
+       
+    ];
+        const restrictedRoomIds3 = [
+            'B1_bedTop', 'B1_bedBot', 'B1_dining', 'B1_livingRoom', 'B1_bath',
+'B2_bedTopLeft', 'B2_bedTopRight', 'B2_livingRoom', 'B2_dining/kitchen',
+'B3_bedTop', 'B3_bedBot', 'B3_dining', 'B3_livingRoom', 'B3_bathroom',
+'C1_bed#2', 'C1_mainBed', 'C1_living', 'C1_dining', 'C1_mainBath',
+'D1_bed1', 'D1_bed2', 'D1_bed3', 'D1_living', 'D1_dining',
+'C2_dining', 'C2_mainBath', 'C2_mainBed', 'C2_bed#2',
+'D2_bedroom', 'D2_dining', 'D2_living'
+
+    ];
+        const restrictedRoomIds4 = [
+            'B1_bath', 'B1_kitchen',
+'B2_bathTop', 'B2_bathBot',
+'B3_bathroom', 'B3_kitchen',
+'C1_mainBath', 'C1_kitchen',
+'D1_bathTop', 'D1_bathBot',
+'C2_kitchen', 'C2_mainBath', 'C2_bath', 'C2_Pantry',
+'D2_kitchen'
+
+    ];
+        const restrictedRoomIds5 = [
+            'B1_kitchen', 'B1_bath', 'B1_porch',
+'B2_bathTop', 'B2_bathBot', 'B2_porch', 'B2_garage',
+'B3_bathroom', 'B3_kitchen', 'B3_garage', 'B3_porch',
+'C1_kitchen', 'C1_mainBath', 'C1_mud',
+'D1_bathTop', 'D1_bathBot', 'D1_porch', 'D1_laundry',
+'C2_kitchen', 'C2_mainBath', 'C2_bath', 'C2_Pantry', 'C2_frontProch', 'C2_coveredDeck', 'C2_laundry'
+
+    ];
+        const restrictedRoomIds6 = [
+            'B1_bath', 'B1_kitchen', 'B1_porch',
+'B2_bathTop', 'B2_bathBot', 'B2_porch',
+'B3_bathroom', 'B3_kitchen', 'B3_porch',
+'C1_kitchen', 'C1_mainBath', 'C1_mud',
+'D1_bathTop', 'D1_bathBot', 'D1_porch',
+'C2_kitchen', 'C2_mainBath', 'C2_bath', 'C2_frontProch', 'C2_coveredDeck',
+'D2_kitchen', 'D2_porch'
+
+    ];
+        const restrictedRoomIds7 = [
+            'B1_kitchen', 'B1_bath', 'B1_porch',
+'B2_bathTop', 'B2_bathBot', 'B2_porch', 'B2_garage',
+'B3_kitchen', 'B3_bathroom', 'B3_porch', 'B3_garage',
+'C1_kitchen', 'C1_mainBath', 'C1_mud',
+'D1_bathTop', 'D1_bathBot', 'D1_porch', 'D1_laundry',
+'C2_kitchen', 'C2_mainBath', 'C2_bath', 'C2_Pantry', 'C2_coveredDeck', 'C2_laundry',
+'D2_porch', 'D2_kitchen'
+
+    ];
+        const restrictedRoomIds8 = [
+              'B1_kitchen', 'B1_bath', 'B1_porch',
+  'B2_bathTop', 'B2_bathBot', 'B2_porch',
+  'B3_kitchen', 'B3_bathroom', 'B3_porch',
+  'C1_kitchen', 'C1_mainBath', 'C1_mud',
+  'D1_bathTop', 'D1_bathBot', 'D1_porch', 'D1_laundry',
+  'C2_kitchen', 'C2_mainBath', 'C2_bath', 'C2_coveredDeck', 'C2_laundry',
+  'D2_porch', 'D2_kitchen'
+    ];
+        const restrictedRoomIds9 = [
+              'B1_bath',
+  'B2_bathTop', 'B2_bathBot',
+  'B3_walkInCloset', 'B3_bathroom',
+  'C1_mainBath', 'C1_walkInCloset', 'C1_bathRight',
+  'D1_bathTop', 'D1_bathBot',
+  'C2_mainBath', 'C2_bath',
+  'C2_walkInClosetLeft', 'C2_walkInClosetBotLeft', 'C2_walkInClosetBotRight'
+    ];
+        const restrictedRoomIds10 = [
+              'B1_bath', 'B1_porch',
+  'B2_bathTop', 'B2_bathBot', 'B2_porch',
+  'B3_walkInCloset', 'B3_bathroom', 'B3_porch',
+  'C1_mainBath', 'C1_walkInCloset',
+  'D1_bathTop', 'D1_bathBot', 'D1_porch',
+  'C2_walkInClosetLeft', 'C2_walkInClosetBotLeft', 'C2_walkInClosetBotRight',
+  'C2_mainBath', 'C2_bath', 'C2_coveredDeck',
+  'D2_porch'
+    ];
+        const restrictedRoomIds11 = [
+              'B1_kitchen', 'B1_bath', 'B1_porch',
+  'B2_bathTop', 'B2_bathBot', 'B2_porch', 'B2_garage',
+  'B3_kitchen', 'B3_bathroom', 'B3_porch', 'B3_garage',
+  'C1_kitchen', 'C1_mainBath',
+  'D1_bathTop', 'D1_bathBot', 'D1_porch', 'D1_laundry',
+  'C2_kitchen', 'C2_mainBath', 'C2_bath', 'C2_coveredDeck', 'C2_laundry',
+  'D2_kitchen', 'D2_porch'
+    ];
+        const restrictedRoomIds12 = [
+              'B1_kitchen', 'B1_bath', 'B1_porch',
+  'B2_bathTop', 'B2_bathBot', 'B2_porch',
+  'B3_kitchen', 'B3_bathroom', 'B3_porch', 'B3_walkInCloset',
+  'C1_kitchen', 'C1_mainBath', 'C1_walkInCloset',
+  'D1_bathTop', 'D1_bathBot', 'D1_porch',
+  'C2_kitchen', 'C2_mainBath', 'C2_bath', 'C2_walkInClosetLeft', 'C2_walkInClosetBotLeft', 'C2_walkInClosetBotRight', 'C2_coveredDeck',
+  'D2_kitchen', 'D2_porch'
+    ];
+            const restrictedRoomIds13 = [
+                  'B1_bath',
+  'B1_porch',
+  'B2_bathTop',
+  'B2_bathBot',
+  'B2_porch',
+  'B3_bathroom',
+  'B3_porch',
+  'C1_mainBath',
+  'C1_mud',
+  'C1_walkInCloset',
+  'C1_bathRight',
+  'C1_coveredPorch',
+  'D1_bathTop',
+  'D1_bathBot',
+  'D1_porch',
+  'D1_laundry',
+  'C2_walkInClosetLeft',
+  'C2_coveredDeck',
+  'C2_walkInClosetBotLeft',
+  'C2_bath',
+  'C2_walkInClosetBotRight',
+  'C2_laundry',
+  'C2_frontProch',
+  'D2_porch'
     ];
     
     // Check restrictions for first group
@@ -1645,6 +1795,50 @@ function isRestrictedCombination(roomId, applianceId) {
     
     // Check restrictions for second group
     if (restrictedRoomIds2.includes(roomId) && restrictedApplianceIds2.includes(applianceId)) {
+        return true;
+    }
+    // Check restrictions for third group
+    if (restrictedRoomIds3.includes(roomId) && restrictedApplianceIds3.includes(applianceId)) {
+        return true;
+    }
+    // Check restrictions for fourth group
+    if (restrictedRoomIds4.includes(roomId) && restrictedApplianceIds4.includes(applianceId)) {
+        return true;
+    }
+    // Check restrictions for fifth group
+    if (restrictedRoomIds5.includes(roomId) && restrictedApplianceIds5.includes(applianceId)) {
+        return true;
+    }
+    // Check restrictions for sixth group
+    if (restrictedRoomIds6.includes(roomId) && restrictedApplianceIds6.includes(applianceId)) {
+        return true;
+    }
+    // Check restrictions for seventh group
+    if (restrictedRoomIds7.includes(roomId) && restrictedApplianceIds7.includes(applianceId)) {
+        return true;
+    }
+    // Check restrictions for eighth group
+    if (restrictedRoomIds8.includes(roomId) && restrictedApplianceIds8.includes(applianceId)) {
+        return true;
+    }
+    // Check restrictions for ninth group
+    if (restrictedRoomIds9.includes(roomId) && restrictedApplianceIds9.includes(applianceId)) {
+        return true;
+    }
+    // Check restrictions for tenth group
+    if (restrictedRoomIds10.includes(roomId) && restrictedApplianceIds10.includes(applianceId)) {
+        return true;
+    }
+    // Check restrictions for eleventh group
+    if (restrictedRoomIds11.includes(roomId) && restrictedApplianceIds11.includes(applianceId)) {
+        return true;
+    }
+    // Check restrictions for twelfth group
+    if (restrictedRoomIds12.includes(roomId) && restrictedApplianceIds12.includes(applianceId)) {
+        return true;
+    }
+    // Check restrictions for thirteenth group
+    if (restrictedRoomIds13.includes(roomId) && restrictedApplianceIds13.includes(applianceId)) {
         return true;
     }
     
